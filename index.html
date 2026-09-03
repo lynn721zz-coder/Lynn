@@ -592,6 +592,20 @@
     .link-value:hover {
       text-decoration: underline;
     }
+    #point-view-rule.readonly-value {
+      width: 100%;
+      min-height: 32px;
+      box-sizing: border-box;
+      justify-content: flex-start;
+      border: 0;
+      background: transparent;
+      color: var(--accent);
+      text-align: left;
+      cursor: pointer;
+    }
+    #point-view-rule.readonly-value:hover {
+      text-decoration: underline;
+    }
 
     .card {
       background: var(--surface);
@@ -1031,6 +1045,17 @@
       text-overflow: ellipsis;
       flex: 0 1 auto;
     }
+    .multi-select-tag-remove {
+      border: 0;
+      padding: 0;
+      margin-left: 5px;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .multi-select-tag-remove:hover { color: var(--danger); }
     .multi-select-more {
       flex: 0 0 auto;
       color: var(--accent);
@@ -1101,6 +1126,18 @@
       cursor: pointer;
     }
     .multi-select-option:hover { background: var(--accent-soft); }
+    .multi-select-search {
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 6px;
+      padding: 6px 8px;
+      border: 1px solid var(--divider);
+      border-radius: 4px;
+      color: var(--fg);
+      font: inherit;
+      outline: none;
+    }
+    .multi-select-search:focus { border-color: var(--accent); }
     .multi-select-option input {
       width: 14px;
       height: 14px;
@@ -2299,6 +2336,12 @@
       color: var(--accent);
       box-shadow: inset 0 0 0 1px var(--border);
     }
+    .dashboard-dimension-tabs button:disabled {
+      color: var(--muted);
+      background: transparent;
+      cursor: not-allowed;
+      opacity: .55;
+    }
     .dashboard-dimension-panel { display: none; }
     .dashboard-dimension-panel.active { display: block; }
     .table-sort-btn {
@@ -2661,9 +2704,9 @@
         <div class="row-between" style="margin-top: 12px; margin-bottom: 12px; gap: var(--gap-sm); flex-wrap: wrap; align-items: center;">
           <div class="dashboard-dimension-tabs" id="dashboard-dimension-tabs">
             <button class="active" data-dashboard-dimension="dept">部门维度</button>
-            <button data-dashboard-dimension="person">个人维度</button>
+            <button data-dashboard-dimension="person">人员维度</button>
           </div>
-          <button class="btn btn-secondary" id="dashboard-export-btn">导出</button>
+          
         </div>
 
         <div class="dashboard-dimension-panel active" data-dashboard-dimension-panel="dept">
@@ -3061,7 +3104,7 @@
         </div>
         <div class="mini-pager" id="rule-pager" data-current-page="1" data-page-size="5">
           <span id="rule-pager-total">共 8 条</span>
-          <label class="pager-size-control">每页<select class="input" id="rule-page-size" aria-label="每页显示条数"><option value="5" selected>5 条</option><option value="10">10 条</option><option value="20">20 条</option></select></label>
+          <label class="pager-size-control">每页<select class="input" id="rule-page-size" aria-label="每页显示条数"><option value="5" selected="">5 条</option><option value="10">10 条</option><option value="20">20 条</option></select></label>
           <button class="btn btn-secondary btn-sm" id="rule-page-prev" disabled="">上一页</button>
           <button class="page-num active" data-page="1">1</button>
           <button class="page-num" data-page="2">2</button>
@@ -3079,16 +3122,15 @@
 
       <div class="filter-panel tab-actions">
         <div class="search-bar point-detail-filter-row" style="margin-bottom: 0; flex-wrap: wrap;">
-          <label class="query-field"><span>日期范围</span><input class="input" style="width: 140px;" id="detail-start-date-filter" type="date" aria-label="开始日期"><span>至</span><input class="input" style="width: 140px;" id="detail-end-date-filter" type="date" aria-label="结束日期"></label>
-          <label class="query-field"><span>员工姓名</span><input class="input" type="text" placeholder="请输入员工姓名" id="detail-name-filter" style="width: 136px;"></label>
-          <label class="query-field"><span>手机号</span><input class="input" type="text" placeholder="请输入手机号" id="detail-phone-filter" style="width: 136px;"></label>
-          
+          <label class="query-field"><span>积分日期</span><input class="input" style="width: 140px;" id="detail-start-date-filter" type="date" aria-label="积分日期开始"><span>至</span><input class="input" style="width: 140px;" id="detail-end-date-filter" type="date" aria-label="积分日期结束"></label>
+          <label class="query-field"><span>员工</span><input class="input" type="text" placeholder="请输入员工姓名或手机号" id="detail-name-filter" style="width: 180px;"></label>
           <label class="query-field"><span>所属部门</span><input class="input" type="text" placeholder="请输入所属部门" id="detail-dept-filter" style="width: 136px;"></label>
+          <label class="query-field"><span>积分原因</span><input class="input" type="text" placeholder="请输入积分原因" id="detail-reason-filter" style="width: 160px;"></label>
           <label class="query-field"><span>积分来源</span><select class="input" style="width: 128px;" id="detail-type-filter">
               <option value="">请选择</option>
-              <option value="手动">手动调整</option>
-              <option value="自动">自动事件</option>
-              <option value="系统">系统计算</option>
+              <option value="智能巡检">智能巡检</option>
+              <option value="双重预防">双重预防</option>
+              <option value="手动配置">手动配置</option>
             </select></label>
           <button class="btn btn-secondary btn-nowrap" id="detail-query-reset" style="font-weight: 600;">重置</button>
           <button class="btn btn-primary btn-nowrap" id="detail-query-submit">查询</button>
@@ -3107,13 +3149,13 @@
           <thead>
             <tr>
               <th class="col-rank">序号</th>
-              <th>日期</th>
+              <th>积分日期</th>
               <th>员工</th>
               <th>手机号</th>
               <th>所属部门</th>
               <th class="num-col">变动分值</th>
-              <th>来源</th>
-              <th>原因</th>
+              <th>积分来源</th>
+              <th>积分原因</th>
               <th>操作</th>
             </tr>
           </thead>
@@ -3125,7 +3167,7 @@
               <td>技术研发部</td>
               <td class="num-col">+15</td>
               <td><span class="pill pill-blue">自动</span></td>
-              <td>发现一般隐患 · 3次</td>
+              <td>发现一般隐患</td>
               <td><button class="btn btn-ghost btn-sm point-detail-btn" data-operator="系统自动">详情</button></td>
             </tr>
             <tr data-operator="张管理" data-manual="true" data-employee-name="孙悦" data-employee-phone="13800138006" data-employee-id="EMP106" data-employee-text="孙悦 · 13800138006">
@@ -3135,8 +3177,8 @@
               <td>财务部</td>
               <td class="num-col">+12</td>
               <td><span class="pill pill-gray">手动</span></td>
-              <td>财务月度专项协作奖励 · 手动录入</td>
-              <td><div class="row-actions"><button class="btn btn-ghost btn-sm point-detail-btn" data-operator="张管理">详情</button><button class="btn btn-ghost btn-sm point-withdraw-btn">撤回</button></div></td>
+              <td>财务月度专项协作奖励</td>
+              <td><div class="row-actions"><button class="btn btn-ghost btn-sm point-detail-btn" data-operator="张管理">详情</button></div></td>
             </tr>
             <tr data-employee-name="王芳" data-employee-phone="13800138002" data-employee-id="EMP018" data-employee-text="王芳 · 13800138002">
               <td><span class="num">2025-07-23 11:05:42</span></td>
@@ -3145,7 +3187,7 @@
               <td>市场部</td>
               <td class="num-col">-8</td>
               <td><span class="pill pill-blue">自动</span></td>
-              <td>迟到记录 · 累计3次</td>
+              <td>发现一般隐患</td>
               <td><button class="btn btn-ghost btn-sm point-detail-btn" data-operator="系统自动">详情</button></td>
             </tr>
             <tr data-employee-name="赵明" data-employee-phone="13800138003" data-employee-id="EMP055" data-employee-text="赵明 · 13800138003">
@@ -3165,7 +3207,7 @@
               <td>运营部</td>
               <td class="num-col">-20</td>
               <td><span class="pill pill-blue">自动</span></td>
-              <td>未按时提交周报 · 2次</td>
+              <td>财务月度专项协作奖励</td>
               <td><button class="btn btn-ghost btn-sm point-detail-btn" data-operator="系统自动">详情</button></td>
             </tr>
             <tr data-employee-name="刘天" data-employee-phone="13800138007" data-employee-id="EMP007" data-employee-text="刘天 · 13800138007">
@@ -3232,8 +3274,8 @@
         </table>
       </div>
       <div class="mini-pager" id="detail-pager" data-current-page="1" data-page-size="5">
-        <span id="detail-pager-total">共 0 条</span>
-        <label class="pager-size-control">每页<select class="input" id="detail-page-size" aria-label="每页显示条数"><option value="5" selected>5 条</option><option value="10">10 条</option><option value="20">20 条</option><option value="50">50 条</option></select></label>
+        <span id="detail-pager-total">共 11 条</span>
+        <label class="pager-size-control">每页<select class="input" id="detail-page-size" aria-label="每页显示条数"><option value="5" selected="">5 条</option><option value="10">10 条</option><option value="20">20 条</option><option value="50">50 条</option></select></label>
         <button class="btn btn-secondary btn-sm" id="detail-page-prev" disabled="">上一页</button>
         <button class="page-num active" data-page="1">1</button>
         <button class="btn btn-secondary btn-sm" id="detail-page-next">下一页</button>
@@ -3320,7 +3362,7 @@
                 <th class="num-col">调整值</th>
                 <th class="num-col">调整后</th>
                 <th>操作人</th>
-                <th>原因</th>
+              <th>积分原因</th>
               </tr>
             </thead>
             <tbody>
@@ -3381,7 +3423,7 @@
       <div class="personal-score-summary" data-od-id="personal-total-summary">
         <div class="personal-score-main">
           <div>
-            <span class="score-kicker">历史累计总积分</span>
+            <span class="score-kicker">本月积分总额</span>
             <div class="score-main-row">
               <div class="points-big">+155</div>
               <span class="score-chip">本月 +35</span>
@@ -3412,15 +3454,12 @@
             <option value="month" selected="">月度</option>
           </select>
           <span class="month-query-label" id="personal-period-label">月份</span>
-          <select class="input" id="personal-month-select" style="width: 140px;">
-            <option value="">全部月份</option>
-            <option value="2025年7月" selected="">2025年7月</option>
-            <option value="2025年6月">2025年6月</option>
-            <option value="2025年5月">2025年5月</option>
-            <option value="2025年4月">2025年4月</option>
-            <option value="2025年3月">2025年3月</option>
-            <option value="2025年2月">2025年2月</option>
-            <option value="2025年1月">2025年1月</option>
+          <input class="input" id="personal-month-select" type="month" value="2025-07" aria-label="选择月份" style="width: 140px;">
+          <select class="input" id="personal-year-select" style="width: 140px; display: none;" aria-label="选择年份">
+            <option value="">全部年份</option>
+            <option value="2025年" selected="">2025年</option>
+            <option value="2024年">2024年</option>
+            <option value="2023年">2023年</option>
           </select>
           <button class="btn btn-primary btn-nowrap" id="personal-month-query-btn">查询</button>
         </div>
@@ -3544,7 +3583,7 @@
       </div>
 
       <div class="sticky-footer-bar">
-        <span class="sf-label">历史累计总积分</span>
+        <span class="sf-label">本月积分总额</span>
         <span class="sf-value" id="my-sticky-total">+155</span>
       </div>
     </section>
@@ -3656,7 +3695,7 @@
 
       <div class="mini-pager" id="mall-product-pager" data-current-page="1" data-page-size="5">
         <span id="mall-product-pager-total">共 6 件</span>
-        <label class="pager-size-control">每页<select class="input" id="mall-product-page-size" aria-label="每页显示商品条数"><option value="5" selected>5 条</option><option value="10">10 条</option><option value="20">20 条</option><option value="50">50 条</option></select></label>
+        <label class="pager-size-control">每页<select class="input" id="mall-product-page-size" aria-label="每页显示商品条数"><option value="5" selected="">5 条</option><option value="10">10 条</option><option value="20">20 条</option><option value="50">50 条</option></select></label>
         <button class="btn btn-secondary btn-sm" id="mall-product-page-prev" disabled="">上一页</button>
         <button class="page-num active" data-page="1">1</button>
         <button class="page-num" data-page="2">2</button>
@@ -4041,6 +4080,8 @@
           <div class="field"><label>事件名称</label><div class="readonly-value" id="rule-detail-name">--</div></div>
           <div class="field"><label>规则来源</label><div class="readonly-value" id="rule-detail-source">--</div></div>
           <div class="field"><label>加分/扣分</label><div class="readonly-value" id="rule-detail-type">--</div></div>
+          <div class="field"><label>创建时间</label><div class="readonly-value" id="rule-detail-create-time">--</div></div>
+          <div class="field"><label>创建人</label><div class="readonly-value" id="rule-detail-create-user">--</div></div>
           <div class="field"><label>积分规则</label><div class="readonly-value" id="rule-detail-score">--</div></div>
           <div class="field field-full"><label>触发条件</label><div class="readonly-value" id="rule-detail-condition">--</div></div>
         </div>
@@ -4049,11 +4090,11 @@
         <div class="rule-detail-module-title"><div><h2>规则变更记录</h2><p>仅展示当前事件的编辑与启停操作</p></div><span class="meta" id="rule-detail-log-meta">仅展示当前事件</span></div>
         <div class="table-wrap">
           <table class="ds-table rule-change-log-table">
-            <thead><tr><th>操作时间</th><th>事件编号</th><th>事件名称</th><th>操作类型</th><th>变更内容</th><th>操作人</th></tr></thead>
+            <thead><tr><th>操作时间</th><th>操作类型</th><th>变更内容</th><th>操作人</th></tr></thead>
             <tbody id="rule-change-log-body">
-              <tr data-rule-code="E05"><td class="meta">2025-07-24 09:18:32</td><td><span class="num">E05</span></td><td>重大事故隐患治理超期</td><td><span class="pill pill-blue">编辑</span></td><td>积分规则：-20 分/次 → -30 分/次</td><td>张管理</td></tr>
-              <tr data-rule-code="E06"><td class="meta">2025-07-24 09:10:05</td><td><span class="num">E06</span></td><td>一般隐患治理超期</td><td><span class="pill pill-green">启用</span></td><td>启停状态：停用 → 启用</td><td>张管理</td></tr>
-              <tr data-rule-code="E01"><td class="meta">2025-07-23 17:42:16</td><td><span class="num">E01</span></td><td>巡检任务按时完成</td><td><span class="pill pill-blue">编辑</span></td><td>触发条件补充完成时间校验</td><td>张管理</td></tr>
+              <tr data-rule-code="E05"><td class="meta">2025-07-24 09:18:32</td><td><span class="pill pill-blue">编辑</span></td><td>积分规则：-20 分/次 → -30 分/次</td><td>张管理</td></tr>
+              <tr data-rule-code="E06"><td class="meta">2025-07-24 09:10:05</td><td><span class="pill pill-green">启用</span></td><td>启停状态：停用 → 启用</td><td>张管理</td></tr>
+              <tr data-rule-code="E01"><td class="meta">2025-07-23 17:42:16</td><td><span class="pill pill-blue">编辑</span></td><td>触发条件补充完成时间校验</td><td>张管理</td></tr>
             </tbody>
           </table>
         </div>
@@ -4316,11 +4357,11 @@
     <div class="modal modal-lg dept-detail-modal-wide">
       <h3 id="dept-detail-title">部门详情</h3>
       <p class="meta" id="dept-detail-summary" style="margin-bottom: var(--gap-md);">--</p>
-      <div class="dept-detail-query" id="dept-detail-query-shell" hidden>
-        <div class="dept-detail-query-fields" id="dept-people-query" hidden>
+      <div class="dept-detail-query" id="dept-detail-query-shell" hidden="">
+        <div class="dept-detail-query-fields" id="dept-people-query" hidden="">
           <label class="query-field"><span>员工姓名/手机号</span><input class="input" id="dept-people-keyword" type="search" placeholder="请输入员工姓名或手机号" autocomplete="off"></label>
         </div>
-        <div class="dept-detail-query-fields" id="dept-points-query" hidden>
+        <div class="dept-detail-query-fields" id="dept-points-query" hidden="">
           <label class="query-field"><span>事件名称</span><input class="input" id="dept-points-event" type="search" placeholder="请输入事件名称" autocomplete="off"></label>
           <label class="query-field"><span>日期</span><input class="input" id="dept-points-start" type="date" aria-label="开始日期"><span>至</span><input class="input" id="dept-points-end" type="date" aria-label="结束日期"></label>
         </div>
@@ -4331,16 +4372,16 @@
       </div>
       <div class="table-wrap">
         <table class="ds-table" id="dept-detail-table">
-          <colgroup id="dept-people-colgroup" hidden>
+          <colgroup id="dept-people-colgroup" hidden="">
             <col style="width: 8%;"><col style="width: 24%;"><col style="width: 24%;"><col style="width: 22%;"><col style="width: 22%;">
           </colgroup>
           <thead id="dept-detail-head"></thead>
           <tbody id="dept-detail-body"></tbody>
         </table>
       </div>
-      <div class="mini-pager dept-people-pager" id="dept-people-pager" hidden>
+      <div class="mini-pager dept-people-pager" id="dept-people-pager" hidden="">
         <span id="dept-people-pager-total">共 0 条</span>
-        <label class="pager-size-control">每页<select class="input" id="dept-people-page-size" aria-label="每页显示条数"><option value="5" selected>5 条</option><option value="10">10 条</option><option value="20">20 条</option><option value="50">50 条</option></select></label>
+        <label class="pager-size-control">每页<select class="input" id="dept-people-page-size" aria-label="每页显示条数"><option value="5" selected="">5 条</option><option value="10">10 条</option><option value="20">20 条</option><option value="50">50 条</option></select></label>
         <button class="btn btn-secondary btn-sm" id="dept-people-page-prev" type="button">上一页</button>
         <span id="dept-people-page-numbers"></span>
         <button class="btn btn-secondary btn-sm" id="dept-people-page-next" type="button">下一页</button>
@@ -4672,15 +4713,16 @@
           <select class="input" id="rule-source-input">
             <option value="智能巡检系统">智能巡检系统</option>
             <option value="双重预防系统">双重预防系统</option>
-            <option value="手动配置" selected>手动配置</option>
+            <option value="手动配置" selected="">手动配置</option>
           </select>
         </div>
         <div class="field">
           <label>启停状态</label>
-          <select class="input" id="rule-status-input">
-            <option value="启用">启用</option>
-            <option value="停用">停用</option>
-          </select>
+          <input type="hidden" id="rule-status-input" value="启用">
+          <span class="rule-status-cell">
+            <button type="button" class="rule-status-switch is-on" id="rule-status-switch-input" role="switch" aria-checked="true" aria-label="启用事件规则"></button>
+            <span class="rule-status-text" id="rule-status-text-input">启用</span>
+          </span>
         </div>
         <div class="field">
           <label>加分/扣分</label>
@@ -4712,12 +4754,16 @@
       <h3>积分详细信息</h3>
       <div class="readonly-grid">
         <div class="readonly-item">
-          <label>日期</label>
+          <label>积分日期</label>
           <div class="readonly-value" id="point-view-date">--</div>
         </div>
         <div class="readonly-item">
           <label>积分人</label>
           <div class="readonly-value" id="point-view-person">--</div>
+        </div>
+        <div class="readonly-item">
+          <label>积分事件</label>
+          <button class="link-value readonly-value" id="point-view-rule" type="button">--</button>
         </div>
         <div class="readonly-item">
           <label>所属部门</label>
@@ -4728,7 +4774,7 @@
           <div class="readonly-value" id="point-view-score">--</div>
         </div>
         <div class="readonly-item">
-          <label>积分来源</label>
+          <label>规则来源</label>
           <div class="readonly-value" id="point-view-source">--</div>
         </div>
         <div class="readonly-item">
@@ -4789,7 +4835,7 @@
           <span class="hint">可选择固定规则，也可选择在规则库中新增的自定义规则，系统会自动带出分值和来源。</span>
         </div>
         <div class="field">
-          <label>发生日期 <span style="color: var(--danger);">*</span></label>
+          <label>积分日期 <span style="color: var(--danger);">*</span></label>
           <input class="input" id="detail-date-input" type="date" value="2025-07-24">
         </div>
         <div class="field field-full">
@@ -4797,6 +4843,7 @@
           <div class="multi-select" id="detail-employee-multi">
             <button class="multi-select-trigger" id="detail-employee-trigger" type="button"><span class="multi-select-values" id="detail-employee-trigger-text"><span class="multi-select-placeholder">请选择员工</span></span></button>
             <div class="multi-select-menu" id="detail-employee-menu">
+              <input class="multi-select-search" id="detail-employee-search" type="search" placeholder="请输入员工姓名搜索" autocomplete="off">
               <label class="multi-select-option"><input type="checkbox" value="李思远" data-phone="13800138001" data-id="EMP042"><span>李思远（13800138001）</span></label>
               <label class="multi-select-option"><input type="checkbox" value="王芳" data-phone="13800138002" data-id="EMP018"><span>王芳（13800138002）</span></label>
               <label class="multi-select-option"><input type="checkbox" value="赵明" data-phone="13800138003" data-id="EMP055"><span>赵明（13800138003）</span></label>
@@ -4821,23 +4868,20 @@
         </div>
         <div class="field">
           <label>变动分值 <span style="color: var(--danger);">*</span></label>
-          <input class="input" id="detail-score-input" type="number" placeholder="正数为加分，负数为扣分">
+          <input class="input" id="detail-score-input" type="number" placeholder="请选择积分规则后自动带出" readonly="">
         </div>
         <div class="field">
-          <label>来源</label>
-          <select class="input" id="detail-source-input">
-            <option>手动</option>
-            <option>自动</option>
-            <option>系统</option>
-          </select>
+          <label>加分/扣分</label>
+          <div class="readonly-value" id="detail-type-readonly">请选择积分规则</div>
         </div>
         <div class="field">
-          <label>操作部门</label>
-          <input class="input" id="detail-dept-input" type="text" placeholder="请输入操作部门">
+          <label>积分来源</label>
+          <div class="readonly-value">手动配置</div>
+          <input id="detail-source-input" type="hidden" value="手动配置">
         </div>
         <div class="field field-full">
-          <label>原因 <span style="color: var(--danger);">*</span></label>
-          <textarea class="textarea" id="detail-reason-input" placeholder="请输入积分变动原因"></textarea>
+          <label>积分原因 <span style="color: var(--danger);">*</span></label>
+          <textarea class="textarea" id="detail-reason-input" placeholder="请输入积分原因"></textarea>
         </div>
       </div>
       <div class="modal-actions">
@@ -4877,6 +4921,10 @@
             <option value="虚拟商品">虚拟商品</option>
             <option value="实物商品">实物商品</option>
           </select>
+        </div>
+        <div class="field">
+          <label>状态</label>
+          <div class="readonly-value" id="mall-product-status">上架中</div>
         </div>
         <div class="field field-full">
           <label>商品名称 <span style="color: var(--danger);">*</span></label>
@@ -4927,6 +4975,7 @@
         <div class="field"><label>所需积分</label><div class="readonly-value" id="mall-product-detail-points">--</div></div>
         <div class="field"><label>库存</label><div class="readonly-value" id="mall-product-detail-stock">--</div></div>
         <div class="field"><label>已兑换</label><div class="readonly-value" id="mall-product-detail-redeemed">--</div></div>
+        <div class="field"><label>状态</label><div class="readonly-value" id="mall-product-detail-status-field">--</div></div>
         <div class="field field-full"><label>商品图片</label><div class="mall-product-detail-images" id="mall-product-detail-images"></div></div>
       </div>
     </div>
@@ -5050,6 +5099,10 @@
 
       // ── Dashboard chart/table toggle ──
       var dashboardToggle = document.getElementById('dashboard-view-toggle');
+      function syncDashboardDimensionTabs(viewType) {
+        var dimensionTabs = document.getElementById('dashboard-dimension-tabs');
+        if (dimensionTabs) dimensionTabs.style.display = viewType === 'table' ? 'inline-flex' : 'none';
+      }
       if (dashboardToggle) {
         dashboardToggle.addEventListener('click', function(e) {
           var btn = e.target.closest('button[data-view]');
@@ -5060,7 +5113,9 @@
           document.querySelectorAll('#view-events .chart-view').forEach(function(v) {
             v.classList.toggle('active', v.dataset.view === viewType);
           });
+          syncDashboardDimensionTabs(viewType);
         });
+        syncDashboardDimensionTabs(dashboardToggle.querySelector('button.active') ? dashboardToggle.querySelector('button.active').dataset.view : 'table');
       }
 
       var dashboardDimensionTabs = document.getElementById('dashboard-dimension-tabs');
@@ -5162,6 +5217,7 @@
       var personalPeriodType = document.getElementById('personal-period-type');
       var personalPeriodLabel = document.getElementById('personal-period-label');
       var personalMonthSelect = document.getElementById('personal-month-select');
+      var personalYearSelect = document.getElementById('personal-year-select');
       var personalMonthQueryBtn = document.getElementById('personal-month-query-btn');
       var personalMonthOptions = [
         { value: '', text: '全部月份' },
@@ -5183,17 +5239,20 @@
       function renderPersonalPeriodOptions() {
         if (!personalMonthSelect) return;
         var mode = personalPeriodType ? personalPeriodType.value : 'month';
-        var options = mode === 'year' ? personalYearOptions : personalMonthOptions;
-        personalMonthSelect.innerHTML = options.map(function(item, index) {
-          var selected = index === 1 ? ' selected' : '';
-          return '<option value="' + item.value + '"' + selected + '>' + item.text + '</option>';
-        }).join('');
+        personalMonthSelect.style.display = mode === 'year' ? 'none' : '';
+        if (personalYearSelect) personalYearSelect.style.display = mode === 'year' ? '' : 'none';
         if (personalPeriodLabel) personalPeriodLabel.textContent = mode === 'year' ? '年份' : '月份';
       }
 
       function filterPersonalMonthCards() {
         var mode = personalPeriodType ? personalPeriodType.value : 'month';
-        var selectedPeriod = personalMonthSelect ? personalMonthSelect.value : '';
+        var selectedPeriod = '';
+        if (mode === 'year') {
+          selectedPeriod = personalYearSelect ? personalYearSelect.value : '';
+        } else if (personalMonthSelect && personalMonthSelect.value) {
+          var monthParts = personalMonthSelect.value.split('-');
+          selectedPeriod = monthParts[0] + '年' + String(Number(monthParts[1])) + '月';
+        }
         var visibleCount = 0;
         document.querySelectorAll('#monthly-cards .month-card').forEach(function(card) {
           var monthText = card.querySelector('.mc-month') ? card.querySelector('.mc-month').textContent.trim() : '';
@@ -5323,6 +5382,8 @@
       var ruleSourceInput = document.getElementById('rule-source-input');
       var ruleSourceReadonly = document.getElementById('rule-source-readonly');
       var ruleStatusInput = document.getElementById('rule-status-input');
+      var ruleStatusSwitchInput = document.getElementById('rule-status-switch-input');
+      var ruleStatusTextInput = document.getElementById('rule-status-text-input');
       var ruleTypeInput = document.getElementById('rule-type-input');
       var ruleScoreInput = document.getElementById('rule-score-input');
       var ruleUnitInput = document.getElementById('rule-unit-input');
@@ -5363,6 +5424,8 @@
         score: document.getElementById('rule-detail-score'),
         type: document.getElementById('rule-detail-type'),
         source: document.getElementById('rule-detail-source'),
+        createTime: document.getElementById('rule-detail-create-time'),
+        createUser: document.getElementById('rule-detail-create-user'),
         status: ruleDetailPageStatus
       };
 
@@ -5378,6 +5441,8 @@
           type: typeText,
           source: cells[6].textContent.trim(),
           status: cells[7] ? cells[7].textContent.trim() : '启用',
+          createTime: row.dataset.createTime || (row.dataset.fixed === 'true' ? '2025-07-01 09:00:00' : '--'),
+          createUser: row.dataset.createUser || (row.dataset.fixed === 'true' ? '系统管理员' : '--'),
           fixed: row.dataset.fixed === 'true'
         };
       }
@@ -5400,16 +5465,12 @@
         var typeTone = actionType === '启用' ? 'green' : actionType === '停用' ? 'gray' : 'blue';
         row.dataset.ruleCode = data.code;
         row.innerHTML = '<td class="meta"></td>' +
-          '<td><span class="num"></span></td>' +
-          '<td></td>' +
           '<td></td>' +
           '<td></td>' +
           '<td>张管理</td>';
         row.children[0].textContent = formatNow();
-        row.children[1].querySelector('.num').textContent = data.code;
-        row.children[2].textContent = data.name;
-        row.children[3].appendChild(createPill(actionType, typeTone));
-        row.children[4].textContent = content || '--';
+        row.children[1].appendChild(createPill(actionType, typeTone));
+        row.children[2].textContent = content || '--';
         ruleChangeLogBody.insertBefore(row, ruleChangeLogBody.firstChild);
       }
 
@@ -5417,7 +5478,7 @@
         if (!ruleChangeLogBody) return;
         var visibleCount = 0;
         Array.prototype.slice.call(ruleChangeLogBody.querySelectorAll('tr')).forEach(function(row) {
-          var rowCode = row.dataset.ruleCode || (row.children[1] ? row.children[1].textContent.trim() : '');
+          var rowCode = row.dataset.ruleCode || '';
           var visible = rowCode === code;
           row.style.display = visible ? '' : 'none';
           if (visible) visibleCount += 1;
@@ -5491,6 +5552,17 @@
         }
       }
 
+      function setRuleFormStatus(status) {
+        var isEnabled = status !== '停用';
+        if (ruleStatusInput) ruleStatusInput.value = isEnabled ? '启用' : '停用';
+        if (ruleStatusSwitchInput) {
+          ruleStatusSwitchInput.classList.toggle('is-on', isEnabled);
+          ruleStatusSwitchInput.setAttribute('aria-checked', isEnabled ? 'true' : 'false');
+          ruleStatusSwitchInput.setAttribute('aria-label', isEnabled ? '启用事件规则' : '停用事件规则');
+        }
+        if (ruleStatusTextInput) ruleStatusTextInput.textContent = isEnabled ? '启用' : '停用';
+      }
+
       function openRuleForm(row) {
         editingRuleRow = row || null;
         if (ruleFormTitle) ruleFormTitle.textContent = row ? '编辑事件规则' : '新增事件规则';
@@ -5503,7 +5575,7 @@
           ruleConditionInput.value = data.condition;
           ruleScoreInput.value = Math.abs(data.score);
           ruleTypeInput.value = data.type;
-          ruleStatusInput.value = data.status;
+          setRuleFormStatus(data.status);
           ruleUnitInput.textContent = '分/次';
         } else {
           if (ruleCodeValue) ruleCodeValue.textContent = getNextRuleCode();
@@ -5516,7 +5588,7 @@
           ruleConditionInput.value = '';
           ruleScoreInput.value = '';
           ruleTypeInput.value = '加分';
-          ruleStatusInput.value = '启用';
+          setRuleFormStatus('启用');
           ruleUnitInput.textContent = '分/次';
         }
         activateTab('rule-form');
@@ -5639,6 +5711,8 @@
         if (ruleDetailFields.score) ruleDetailFields.score.textContent = scoreText;
         if (ruleDetailFields.type) ruleDetailFields.type.textContent = data.type;
         if (ruleDetailFields.source) ruleDetailFields.source.textContent = data.source || '--';
+        if (ruleDetailFields.createTime) ruleDetailFields.createTime.textContent = data.createTime || '--';
+        if (ruleDetailFields.createUser) ruleDetailFields.createUser.textContent = data.createUser || '--';
         if (ruleDetailFields.status) {
           ruleDetailFields.status.textContent = data.status;
           ruleDetailFields.status.className = 'rule-detail-page-status' + (data.status === '停用' ? ' is-disabled' : '');
@@ -5713,6 +5787,11 @@
           showToast('筛选条件已重置', 'success');
         });
       }
+      if (ruleStatusSwitchInput) {
+        ruleStatusSwitchInput.addEventListener('click', function() {
+          setRuleFormStatus(ruleStatusInput && ruleStatusInput.value === '启用' ? '停用' : '启用');
+        });
+      }
       if (rulePager) {
         rulePager.addEventListener('click', function(e) {
           var pageBtn = e.target.closest('.page-num');
@@ -5763,9 +5842,13 @@
             source: ruleSource,
             status: ruleStatusInput.value,
             unit: String(ruleUnitInput.textContent || '分/次').trim() || '分/次',
+            createTime: fixedData ? fixedData.createTime : formatNow(),
+            createUser: fixedData ? fixedData.createUser : '张管理',
             fixed: isFixed
           };
           renderRuleRow(row, nextData);
+          row.dataset.createTime = nextData.createTime;
+          row.dataset.createUser = nextData.createUser;
           if (!editingRuleRow && ruleTableBody) ruleTableBody.appendChild(row);
           activateTab('event-rules');
           applyRuleFilters();
@@ -5807,7 +5890,7 @@
       var detailFormSave = document.getElementById('detail-form-save');
       var detailTableBody = document.getElementById('detail-table-body');
       var detailNameFilter = document.getElementById('detail-name-filter');
-      var detailPhoneFilter = document.getElementById('detail-phone-filter');
+      var detailReasonFilter = document.getElementById('detail-reason-filter');
       var detailIdFilter = document.getElementById('detail-id-filter');
       var detailDeptFilter = document.getElementById('detail-dept-filter');
       var detailTypeFilter = document.getElementById('detail-type-filter');
@@ -5827,10 +5910,11 @@
       var detailEmployeeTrigger = document.getElementById('detail-employee-trigger');
       var detailEmployeeTriggerText = document.getElementById('detail-employee-trigger-text');
       var detailEmployeeMenu = document.getElementById('detail-employee-menu');
+      var detailEmployeeSearch = document.getElementById('detail-employee-search');
       var detailEmployeeTooltip = document.getElementById('detail-employee-tooltip');
       var detailScoreInput = document.getElementById('detail-score-input');
+      var detailTypeReadonly = document.getElementById('detail-type-readonly');
       var detailSourceInput = document.getElementById('detail-source-input');
-      var detailDeptInput = document.getElementById('detail-dept-input');
       var detailReasonInput = document.getElementById('detail-reason-input');
       var pointDetailViewModal = document.getElementById('point-detail-view-modal');
       var pointDetailViewClose = document.getElementById('point-detail-view-close');
@@ -5847,6 +5931,7 @@
         belongDept: document.getElementById('point-view-belong-dept'),
         score: document.getElementById('point-view-score'),
         source: document.getElementById('point-view-source'),
+        rule: document.getElementById('point-view-rule'),
         operator: document.getElementById('point-view-operator'),
         operateDept: document.getElementById('point-view-operate-dept'),
         reason: document.getElementById('point-view-reason')
@@ -5878,10 +5963,25 @@
           return;
         }
         var selectedTexts = selectedOptions.map(function(option) { return option.textContent.trim(); });
-        selectedTexts.slice(0, 5).forEach(function(text) {
+        selectedOptions.slice(0, 5).forEach(function(option) {
           var tag = document.createElement('span');
           tag.className = 'multi-select-tag';
-          tag.textContent = text;
+          tag.appendChild(document.createTextNode(option.textContent.trim()));
+          var remove = document.createElement('button');
+          remove.className = 'multi-select-tag-remove';
+          remove.type = 'button';
+          remove.setAttribute('aria-label', '移除' + option.value);
+          remove.textContent = '×';
+          remove.addEventListener('click', function(e) {
+            e.stopPropagation();
+            option.selected = false;
+            var checkbox = detailEmployeeMenu && Array.from(detailEmployeeMenu.querySelectorAll('input[type="checkbox"]')).find(function(input) {
+              return input.value === option.value;
+            });
+            if (checkbox) checkbox.checked = false;
+            updateDetailEmployeeTriggerText();
+          });
+          tag.appendChild(remove);
           detailEmployeeTriggerText.appendChild(tag);
         });
         if (selectedTexts.length > 5) {
@@ -5925,6 +6025,10 @@
           Array.from(detailEmployeeInput.options).forEach(function(option) { option.selected = false; });
         }
         if (detailEmployeeMulti) detailEmployeeMulti.classList.remove('open');
+        if (detailEmployeeSearch) {
+          detailEmployeeSearch.value = '';
+          detailEmployeeMenu.querySelectorAll('.multi-select-option').forEach(function(option) { option.style.display = ''; });
+        }
         updateDetailEmployeeTriggerText();
       }
 
@@ -5939,6 +6043,15 @@
           e.stopPropagation();
         });
         detailEmployeeMenu.addEventListener('change', syncDetailEmployeeSelectFromChecks);
+      }
+      if (detailEmployeeSearch && detailEmployeeMenu) {
+        detailEmployeeSearch.addEventListener('input', function() {
+          var keyword = detailEmployeeSearch.value.trim().toLowerCase();
+          detailEmployeeMenu.querySelectorAll('.multi-select-option').forEach(function(option) {
+            var employeeName = option.querySelector('input') ? option.querySelector('input').value.toLowerCase() : option.textContent.trim().toLowerCase();
+            option.style.display = employeeName.indexOf(keyword) > -1 ? '' : 'none';
+          });
+        });
       }
       document.addEventListener('click', function(e) {
         if (!detailEmployeeMulti || !detailEmployeeMulti.classList.contains('open')) return;
@@ -5955,6 +6068,12 @@
         if (pointViewFields.belongDept) pointViewFields.belongDept.textContent = row.dataset.belongDept || cells[4].textContent.trim();
         if (pointViewFields.score) pointViewFields.score.textContent = row.dataset.score || cells[5].textContent.trim();
         if (pointViewFields.source) pointViewFields.source.textContent = row.dataset.source || cells[6].textContent.trim();
+        if (pointViewFields.rule) {
+          var ruleCode = row.dataset.ruleCode || 'E01';
+          var ruleName = row.dataset.ruleName || '巡检任务按时完成';
+          pointViewFields.rule.textContent = ruleCode + ' · ' + ruleName;
+          pointViewFields.rule.dataset.ruleCode = ruleCode;
+        }
         if (pointViewFields.operator) pointViewFields.operator.textContent = row.dataset.operator || '系统自动';
         if (pointViewFields.operateDept) pointViewFields.operateDept.textContent = row.dataset.operateDept || cells[4].textContent.trim();
         if (pointViewFields.reason) pointViewFields.reason.textContent = row.dataset.reason || cells[7].textContent.trim();
@@ -6016,6 +6135,7 @@
           option.value = rule.code;
           option.textContent = rule.code + ' · ' + rule.name + '（' + (rule.score > 0 ? '+' : '') + rule.score + ' 分）';
           option.dataset.score = String(rule.score);
+          option.dataset.type = rule.type || (rule.score < 0 ? '扣分' : '加分');
           option.dataset.source = rule.source || '';
           option.dataset.name = rule.name;
           detailRuleInput.appendChild(option);
@@ -6027,17 +6147,39 @@
         if (!detailRuleInput || !detailRuleInput.value) return;
         var selected = detailRuleInput.options[detailRuleInput.selectedIndex];
         detailScoreInput.value = selected.dataset.score || '';
-        detailSourceInput.value = '手动';
-        detailDeptInput.value = selected.dataset.source || '';
+        if (detailTypeReadonly) detailTypeReadonly.textContent = selected.dataset.type || (Number(selected.dataset.score) < 0 ? '扣分' : '加分');
+        detailSourceInput.value = '手动配置';
         detailReasonInput.value = selected.dataset.name ? selected.dataset.name + ' · 手动录入' : '';
+      }
+
+      function normalizeDetailRuleSources() {
+        if (!detailTableBody) return;
+        var sourceLabels = ['双重预防', '手动配置', '智能巡检', '智能巡检', '双重预防', '智能巡检', '智能巡检', '双重预防', '智能巡检', '双重预防', '智能巡检'];
+        var ruleCodes = ['E04', 'E02', 'E02', 'E07', 'E06', 'E05', 'E01', 'E03', 'E08', 'E02', 'E05'];
+        var ruleNames = ['上报一般隐患', '巡检任务超期完成', '巡检任务超期完成', '一般隐患整改完成', '一般隐患治理超期', '重大事故隐患治理超期', '巡检任务按时完成', '上报一般隐患', '重大事故隐患整改完成', '巡检任务超期完成', '重大事故隐患治理超期'];
+        Array.from(detailTableBody.querySelectorAll('tr')).forEach(function(row, index) {
+          var cells = row.querySelectorAll('td');
+          var sourceCell = row.querySelector('.detail-row-index') ? cells[6] : cells[5];
+          if (!sourceCell) return;
+          var source = row.dataset.source || sourceLabels[index] || '手动配置';
+          if (source === '自动') source = '智能巡检';
+          if (source === '手动') source = '手动配置';
+          if (source === '系统') source = '双重预防';
+          row.dataset.source = source;
+          if (!row.dataset.ruleCode) row.dataset.ruleCode = ruleCodes[index] || 'E01';
+          if (!row.dataset.ruleName) row.dataset.ruleName = ruleNames[index] || '巡检任务按时完成';
+          sourceCell.innerHTML = '';
+          sourceCell.appendChild(createPill(source, source === '手动配置' ? 'gray' : 'blue'));
+        });
       }
 
       function applyDetailFilters() {
         if (!detailTableBody) return;
+        normalizeDetailRuleSources();
         var nameKeyword = detailNameFilter ? detailNameFilter.value.trim().toLowerCase() : '';
-        var phoneKeyword = detailPhoneFilter ? detailPhoneFilter.value.trim().toLowerCase() : '';
         var idKeyword = detailIdFilter ? detailIdFilter.value.trim().toLowerCase() : '';
         var deptKeyword = detailDeptFilter ? detailDeptFilter.value.trim().toLowerCase() : '';
+        var reasonKeyword = detailReasonFilter ? detailReasonFilter.value.trim().toLowerCase() : '';
         var typeValue = detailTypeFilter ? detailTypeFilter.value.trim() : '';
         var startDateValue = detailStartDateFilter ? detailStartDateFilter.value.trim() : '';
         var endDateValue = detailEndDateFilter ? detailEndDateFilter.value.trim() : '';
@@ -6047,12 +6189,14 @@
           var employeePhone = (row.dataset.employeePhone || (cells[3] ? cells[3].textContent : '')).trim().toLowerCase();
           var employeeId = (row.dataset.employeeId || '').trim().toLowerCase();
           var dept = (row.dataset.belongDept || (cells[4] ? cells[4].textContent : '')).trim().toLowerCase();
+          var reason = (row.dataset.reason || (cells[7] ? cells[7].textContent : '')).trim().toLowerCase();
           var source = (row.dataset.source || (cells[6] ? cells[6].textContent : '')).trim();
-          var dateText = cells[1] ? cells[1].textContent.trim().slice(0, 10) : '';
-          var matched = (!nameKeyword || employeeName.indexOf(nameKeyword) > -1) &&
-            (!phoneKeyword || employeePhone.indexOf(phoneKeyword) > -1) &&
+          var dateCell = row.querySelector('.num') || cells[0];
+          var dateText = dateCell ? dateCell.textContent.trim().slice(0, 10) : '';
+          var matched = (!nameKeyword || employeeName.indexOf(nameKeyword) > -1 || employeePhone.indexOf(nameKeyword) > -1) &&
             (!idKeyword || employeeId.indexOf(idKeyword) > -1) &&
             (!deptKeyword || dept.indexOf(deptKeyword) > -1) &&
+            (!reasonKeyword || reason.indexOf(reasonKeyword) > -1) &&
             (!typeValue || source.indexOf(typeValue) > -1) &&
             (!startDateValue || dateText >= startDateValue) &&
             (!endDateValue || dateText <= endDateValue);
@@ -6101,7 +6245,7 @@
         var latestDate = '';
         if (detailTableBody) {
           Array.from(detailTableBody.querySelectorAll('tr')).forEach(function(row) {
-            var cell = row.querySelectorAll('td')[1];
+            var cell = row.querySelector('.num');
             var dateText = cell ? cell.textContent.trim().slice(0, 10) : '';
             if (/^\d{4}-\d{2}-\d{2}$/.test(dateText) && dateText > latestDate) latestDate = dateText;
           });
@@ -6123,7 +6267,7 @@
       }
 
       function resetDetailFilters() {
-        [detailNameFilter, detailPhoneFilter, detailIdFilter, detailDeptFilter].forEach(function(input) {
+        [detailNameFilter, detailIdFilter, detailDeptFilter, detailReasonFilter].forEach(function(input) {
           if (input) input.value = '';
         });
         if (detailTypeFilter) detailTypeFilter.value = '';
@@ -6138,8 +6282,8 @@
           detailDateInput.value = '2025-07-24';
           resetDetailEmployeeMultiSelect();
           detailScoreInput.value = '';
-          detailSourceInput.value = '手动';
-          detailDeptInput.value = '';
+          if (detailTypeReadonly) detailTypeReadonly.textContent = '请选择积分规则';
+          detailSourceInput.value = '手动配置';
           detailReasonInput.value = '';
           detailFormModal.classList.add('open');
         });
@@ -6155,7 +6299,7 @@
           var score = parseInt(detailScoreInput.value, 10);
           var selectedEmployeeOptions = getSelectedDetailEmployeeOptions();
           if (!detailRuleInput.value || !detailDateInput.value || !selectedEmployeeOptions.length || isNaN(score) || score === 0 || !detailReasonInput.value.trim()) {
-            showToast('请选择积分规则，并完整填写发生日期、员工、变动分值和原因', 'error');
+            showToast('请选择积分规则，并完整填写积分日期、员工、变动分值和原因', 'error');
             return;
           }
           selectedEmployeeOptions.slice().reverse().forEach(function(selectedEmployeeOption) {
@@ -6164,7 +6308,7 @@
             var selectedEmployeePhone = selectedEmployeeOption.dataset.phone || '';
             var selectedEmployeeId = selectedEmployeeOption.dataset.id || '--';
             var selectedEmployeeText = selectedEmployeeName + (selectedEmployeePhone ? ' · ' + selectedEmployeePhone : '');
-            var belongDept = detailDeptInput.value.trim() || '--';
+            var belongDept = '--';
             row.dataset.operator = '张管理';
             row.dataset.operateDept = belongDept;
             row.dataset.employeeName = selectedEmployeeName;
@@ -6175,6 +6319,8 @@
             row.dataset.score = (score > 0 ? '+' : '') + score;
             row.dataset.source = detailSourceInput.value;
             row.dataset.reason = detailReasonInput.value.trim();
+            row.dataset.ruleCode = detailRuleInput.value;
+            row.dataset.ruleName = detailRuleInput.options[detailRuleInput.selectedIndex].dataset.name || '';
             var dateCell = row.insertCell();
             dateCell.innerHTML = '<span class="num"></span>';
             dateCell.querySelector('.num').textContent = getCurrentDateTimeText(detailDateInput.value);
@@ -6187,12 +6333,12 @@
             scoreCell.className = 'num-col' + (score < 0 ? ' val-negative' : '');
             scoreCell.textContent = (score > 0 ? '+' : '') + score;
             var sourceCell = row.insertCell();
-            sourceCell.appendChild(createPill(detailSourceInput.value, detailSourceInput.value === '手动' ? 'gray' : 'blue'));
+            sourceCell.appendChild(createPill(detailSourceInput.value, detailSourceInput.value === '手动配置' ? 'gray' : 'blue'));
             row.insertCell().textContent = detailReasonInput.value.trim();
             var actionCell = row.insertCell();
             actionCell.innerHTML = '<div class="row-actions"><button class="btn btn-ghost btn-sm point-detail-btn" data-operator="张管理">详情</button><button class="btn btn-ghost btn-sm point-withdraw-btn">撤回</button></div>';
-            row.dataset.manual = detailSourceInput.value === '手动' ? 'true' : 'false';
-            if (detailSourceInput.value !== '手动') {
+            row.dataset.manual = detailSourceInput.value === '手动配置' ? 'true' : 'false';
+            if (detailSourceInput.value !== '手动配置') {
               var withdrawBtn = actionCell.querySelector('.point-withdraw-btn');
               if (withdrawBtn) withdrawBtn.remove();
             }
@@ -6244,6 +6390,16 @@
       setDetailDateRangeDefault();
       applyDetailFilters();
       if (pointDetailViewClose) pointDetailViewClose.addEventListener('click', function() { closeModal(pointDetailViewModal); });
+      if (pointViewFields.rule) {
+        pointViewFields.rule.addEventListener('click', function() {
+          var ruleCode = pointViewFields.rule.dataset.ruleCode;
+          var ruleRow = ruleTableBody && Array.from(ruleTableBody.querySelectorAll('tr')).find(function(row) {
+            return getRuleRowData(row).code === ruleCode;
+          });
+          closeModal(pointDetailViewModal);
+          if (ruleRow) openRuleDetail(ruleRow);
+        });
+      }
       if (pointDetailViewModal) {
         pointDetailViewModal.addEventListener('click', function(e) { if (e.target === pointDetailViewModal) closeModal(pointDetailViewModal); });
       }
@@ -6269,6 +6425,7 @@
       var mallProductCode = document.getElementById('mall-product-code');
       var mallProductCodeHint = document.getElementById('mall-product-code-hint');
       var mallProductTypeInput = document.getElementById('mall-product-type-input');
+      var mallProductStatus = document.getElementById('mall-product-status');
       var mallProductNameInput = document.getElementById('mall-product-name-input');
       var mallProductPointsInput = document.getElementById('mall-product-points-input');
       var mallProductStockInput = document.getElementById('mall-product-stock-input');
@@ -6294,6 +6451,7 @@
       var mallProductDetailStock = document.getElementById('mall-product-detail-stock');
       var mallProductDetailRedeemed = document.getElementById('mall-product-detail-redeemed');
       var mallProductDetailStatus = document.getElementById('mall-product-detail-status');
+      var mallProductDetailStatusField = document.getElementById('mall-product-detail-status-field');
       var mallProductDetailImages = document.getElementById('mall-product-detail-images');
       var mallProductOperationLogBody = document.getElementById('mall-product-operation-log-body');
       var mallProductDetailLogMeta = document.getElementById('mall-product-detail-log-meta');
@@ -6391,6 +6549,7 @@
           mallProductDetailStatus.textContent = product.statusText;
           mallProductDetailStatus.className = 'mall-product-detail-status' + (product.statusText === '已下架' ? ' is-offline' : '');
         }
+        if (mallProductDetailStatusField) mallProductDetailStatusField.textContent = product.statusText;
         if (mallProductDetailImages) {
           mallProductDetailImages.innerHTML = '';
           var imageNames = String(product.imageName || '已上传图片').split(' 等 ')[0].split(',');
@@ -6552,6 +6711,7 @@
         if (mallProductCode) mallProductCode.textContent = getNextProductCode();
         if (mallProductCodeHint) mallProductCodeHint.textContent = '保存时由系统生成，不支持手动修改。';
         if (mallProductTypeInput) mallProductTypeInput.value = '虚拟商品';
+        if (mallProductStatus) mallProductStatus.textContent = '上架中';
         if (mallProductNameInput) mallProductNameInput.value = '';
         if (mallProductPointsInput) mallProductPointsInput.value = '';
         if (mallProductStockInput) mallProductStockInput.value = '';
@@ -6652,6 +6812,7 @@
         if (mallProductCode) mallProductCode.textContent = product.code;
         if (mallProductCodeHint) mallProductCodeHint.textContent = '商品编号由系统生成，编辑时不支持修改。';
         if (mallProductTypeInput) mallProductTypeInput.value = product.type;
+        if (mallProductStatus) mallProductStatus.textContent = product.statusText;
         if (mallProductNameInput) mallProductNameInput.value = product.name;
         if (mallProductPointsInput) mallProductPointsInput.value = product.points;
         if (mallProductStockInput) mallProductStockInput.value = product.type === '虚拟商品' ? '' : product.stock;
@@ -8432,6 +8593,10 @@
       });
     })();
   </script>
+
+
+
+
 
 
 
