@@ -4924,7 +4924,10 @@
         </div>
         <div class="field">
           <label>状态</label>
-          <div class="readonly-value" id="mall-product-status">上架中</div>
+          <span class="rule-status-cell">
+            <button type="button" class="rule-status-switch is-on" id="mall-product-status-switch" role="switch" aria-checked="true" aria-label="商品上架状态"></button>
+            <span class="rule-status-text" id="mall-product-status-text">上架中</span>
+          </span>
         </div>
         <div class="field field-full">
           <label>商品名称 <span style="color: var(--danger);">*</span></label>
@@ -6425,7 +6428,8 @@
       var mallProductCode = document.getElementById('mall-product-code');
       var mallProductCodeHint = document.getElementById('mall-product-code-hint');
       var mallProductTypeInput = document.getElementById('mall-product-type-input');
-      var mallProductStatus = document.getElementById('mall-product-status');
+      var mallProductStatusSwitch = document.getElementById('mall-product-status-switch');
+      var mallProductStatusText = document.getElementById('mall-product-status-text');
       var mallProductNameInput = document.getElementById('mall-product-name-input');
       var mallProductPointsInput = document.getElementById('mall-product-points-input');
       var mallProductStockInput = document.getElementById('mall-product-stock-input');
@@ -6711,7 +6715,11 @@
         if (mallProductCode) mallProductCode.textContent = getNextProductCode();
         if (mallProductCodeHint) mallProductCodeHint.textContent = '保存时由系统生成，不支持手动修改。';
         if (mallProductTypeInput) mallProductTypeInput.value = '虚拟商品';
-        if (mallProductStatus) mallProductStatus.textContent = '上架中';
+        if (mallProductStatusSwitch) {
+          mallProductStatusSwitch.classList.add('is-on');
+          mallProductStatusSwitch.setAttribute('aria-checked', 'true');
+        }
+        if (mallProductStatusText) mallProductStatusText.textContent = '上架中';
         if (mallProductNameInput) mallProductNameInput.value = '';
         if (mallProductPointsInput) mallProductPointsInput.value = '';
         if (mallProductStockInput) mallProductStockInput.value = '';
@@ -6812,7 +6820,12 @@
         if (mallProductCode) mallProductCode.textContent = product.code;
         if (mallProductCodeHint) mallProductCodeHint.textContent = '商品编号由系统生成，编辑时不支持修改。';
         if (mallProductTypeInput) mallProductTypeInput.value = product.type;
-        if (mallProductStatus) mallProductStatus.textContent = product.statusText;
+        if (mallProductStatusSwitch) {
+          var isProductOn = product.statusText !== '已下架';
+          mallProductStatusSwitch.classList.toggle('is-on', isProductOn);
+          mallProductStatusSwitch.setAttribute('aria-checked', isProductOn ? 'true' : 'false');
+        }
+        if (mallProductStatusText) mallProductStatusText.textContent = product.statusText;
         if (mallProductNameInput) mallProductNameInput.value = product.name;
         if (mallProductPointsInput) mallProductPointsInput.value = product.points;
         if (mallProductStockInput) mallProductStockInput.value = product.type === '虚拟商品' ? '' : product.stock;
@@ -6888,6 +6901,14 @@
       if (mallProductTypeInput) {
         mallProductTypeInput.addEventListener('change', syncMallProductType);
       }
+      if (mallProductStatusSwitch) {
+        mallProductStatusSwitch.addEventListener('click', function() {
+          var isOn = !mallProductStatusSwitch.classList.contains('is-on');
+          mallProductStatusSwitch.classList.toggle('is-on', isOn);
+          mallProductStatusSwitch.setAttribute('aria-checked', isOn ? 'true' : 'false');
+          if (mallProductStatusText) mallProductStatusText.textContent = isOn ? '上架中' : '已下架';
+        });
+      }
       if (mallProductImageInput) {
         mallProductImageInput.addEventListener('change', function() {
           var files = Array.from(mallProductImageInput.files || []);
@@ -6942,6 +6963,7 @@
             return;
           }
           var existingProduct = editingMallProductRow ? getMallProductFromRow(editingMallProductRow) : null;
+          var statusText = mallProductStatusSwitch && mallProductStatusSwitch.classList.contains('is-on') ? '上架中' : '已下架';
           var product = {
             code: mallProductCode.textContent,
             type: type,
@@ -6949,8 +6971,8 @@
             points: points,
             stock: stock,
             redeemed: existingProduct ? existingProduct.redeemed : '0',
-            statusText: existingProduct ? existingProduct.statusText : '上架中',
-            statusTone: existingProduct ? existingProduct.statusTone : 'green',
+            statusText: statusText,
+            statusTone: statusText === '已下架' ? 'gray' : 'green',
             imageName: selectedMallProductImages.length === 1
               ? selectedMallProductImages[0].name
               : selectedMallProductImages[0].name + ' 等 ' + selectedMallProductImages.length + ' 张',
