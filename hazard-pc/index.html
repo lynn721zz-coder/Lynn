@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-page-node-id="Qb9CdxHyi2StqHG62G2YY5" data-dm-ref="1" style=""><head data-page-node-id="OI0Ut9eyG2KywjfpHqsnKm">
+<html lang="zh-CN" data-page-node-id="Qb9CdxHyi2StqHG62G2YY5" data-dm-ref="1" style="--freeze-name-left: 52px;"><head data-page-node-id="OI0Ut9eyG2KywjfpHqsnKm">
 <meta charset="UTF-8" data-page-node-id="Lg4ZGGfg9h6wRvFoZ4OFzf">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="zfghHw2eOsqsrcIweL3wbC">
 <title>隐患治理 - 双重预防</title>
@@ -527,9 +527,94 @@
   #detailView table.d2-table td { color: #555; line-height: 1.7; }
   #detailView table.d2-table td.t-time { white-space: nowrap; }
 
-  /* ========== 隐患统计分析视图开关 ========== */
+  /* ========== 隐患统计分析 / 逾期隐患 视图开关 ========== */
   .page-body.stats-mode { padding: 0; }
-  .page-body.stats-mode > :not(#statsView) { display: none !important; }
+  .page-body.stats-mode > :not(#statsView):not(#overdueView) { display: none !important; }
+  .page-body.overdue-mode { padding: 0; }
+  .page-body.overdue-mode > :not(#statsView):not(#overdueView) { display: none !important; }
+
+  /* ========== 逾期隐患视图（命名空间 #overdueView） ========== */
+  #overdueView{
+    font-family: "Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+    background:#EEEEEE; color:#1D2129; min-width:1200px; min-height:100%;
+    padding:20px 24px 28px; display:flex; flex-direction:column; gap:16px;
+  }
+  #overdueView *{ margin:0; padding:0; box-sizing:border-box; }
+  #overdueView .ov-top{ display:flex; gap:16px; }
+  #overdueView .ov-left{ flex:0 0 380px; display:flex; flex-direction:column; gap:16px; }
+  #overdueView .ov-card{ background:#FFFFFF; border-radius:8px; position:relative; overflow:hidden; }
+  /* 主卡片：当前逾期 */
+  #overdueView .ov-main{ padding:24px 22px 0; }
+  #overdueView .ov-main-head{ display:flex; align-items:center; gap:18px; padding-bottom:20px; position:relative; z-index:1; }
+  #overdueView .ov-ico{ width:58px; height:58px; border-radius:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  #overdueView .ov-ico-blue{ background:linear-gradient(135deg,#CFE4FF,#E8F2FF); }
+  #overdueView .ov-ico-purple{ background:linear-gradient(135deg,#E3D5FF,#F0EAFF); }
+  #overdueView .ov-num{ font-size:34px; font-weight:700; color:#1D2129; line-height:1.1; }
+  #overdueView .ov-num-label{ font-size:13px; color:#86909C; margin-top:5px; }
+  #overdueView .ov-split{ border-top:1px solid #F0F1F3; display:flex; position:relative; z-index:1; }
+  #overdueView .ov-split-item{ flex:1; display:flex; align-items:center; justify-content:center; gap:12px; padding:15px 0; font-size:13px; color:#4E5969; white-space:nowrap; }
+  #overdueView .ov-split-item + .ov-split-item{ border-left:1px solid #F0F1F3; }
+  #overdueView .ov-split-item b{ font-size:18px; color:#1D2129; font-weight:600; }
+  /* 本周逾期卡片 */
+  #overdueView .ov-week{ display:flex; align-items:center; gap:18px; padding:20px 22px; flex:1; }
+  #overdueView .ov-week-label{ font-size:14px; color:#4E5969; flex:1; }
+  #overdueView .ov-week-num{ font-size:30px; font-weight:700; color:#1D2129; }
+  #overdueView .ov-deco{ position:absolute; top:0; right:0; width:150px; height:130px; pointer-events:none; }
+  /* 趋势图卡片 */
+  #overdueView .ov-chart-card{ flex:1; background:#FFFFFF; border-radius:8px; padding:18px 22px 12px; min-width:0; }
+  #overdueView .ov-chart-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
+  #overdueView .ov-chart-title{ display:flex; align-items:center; gap:8px; font-size:15px; font-weight:600; color:#1D2129; }
+  #overdueView .ov-chart-title::before{ content:''; width:4px; height:16px; background:#366EF4; border-radius:2px; }
+  #overdueView .ov-legend{ display:flex; gap:20px; }
+  #overdueView .ov-legend-item{ display:flex; align-items:center; gap:6px; font-size:12px; color:#4E5969; }
+  #overdueView .ov-legend-dot{ width:10px; height:10px; border-radius:2px; }
+  #overdueView .ov-chart{ display:block; width:100%; height:auto; }
+  /* 筛选卡片 */
+  #overdueView .ov-filter-card{ background:#FFFFFF; border-radius:8px; padding:20px 22px 6px; }
+  #overdueView .ov-fgrid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px 28px; }
+  #overdueView .ov-fi{ display:flex; align-items:center; gap:8px; min-width:0; }
+  #overdueView .ov-fi > label{ font-size:13px; color:#4E5969; white-space:nowrap; flex-shrink:0; }
+  #overdueView .ov-input,#overdueView .ov-select{ flex:1; min-width:0; height:32px; border:1px solid #E0E3E8; border-radius:4px; padding:0 10px; display:flex; align-items:center; gap:6px; background:#FFFFFF; font-size:13px; color:#A9AEB8; }
+  #overdueView .ov-input:hover,#overdueView .ov-select:hover{ border-color:#366EF4; }
+  #overdueView .ov-input input{ border:none; outline:none; flex:1; min-width:0; font-size:13px; font-family:inherit; background:transparent; color:#1D2129; }
+  #overdueView .ov-input input::placeholder{ color:#A9AEB8; }
+  #overdueView .ov-select span{ flex:1; overflow:hidden; white-space:nowrap; }
+  #overdueView .ov-range em{ font-style:normal; color:#A9AEB8; margin:0 2px; font-size:12px; }
+  #overdueView .ov-range span{ color:#A9AEB8; font-size:13px; }
+  #overdueView .ov-select{ position:relative; }
+  #overdueView .ov-select.selected > span{ color:#1D2129; }
+  #overdueView .ov-clear{ display:none; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; padding:2px; }
+  #overdueView .ov-select.selected .ov-clear{ display:flex; }
+  #overdueView .ov-select.selected .ov-arrow{ display:none; }
+  #overdueView .ov-clear:hover circle, #overdueView .ov-clear:hover path{ stroke:#366EF4; }
+  #overdueView .ov-dd{ display:none; position:absolute; top:calc(100% + 4px); left:0; right:0; background:#FFFFFF; border:1px solid #E0E3E8; border-radius:4px; box-shadow:0 8px 20px rgba(29,33,41,0.10); z-index:30; max-height:244px; overflow-y:auto; padding:4px 0; }
+  #overdueView .ov-select.open .ov-dd{ display:block; }
+  #overdueView .ov-dd-item{ padding:7px 12px; font-size:13px; color:#1D2129; cursor:pointer; white-space:nowrap; }
+  #overdueView .ov-dd-item:hover{ background:#F2F3F5; }
+  #overdueView .ov-dd-item.active{ color:#366EF4; background:#ECF2FE; }
+  #overdueView .ov-filter-card{ overflow:visible; }
+  #overdueView .ov-btns{ grid-column:4 / 5; display:flex; justify-content:flex-end; align-items:center; gap:10px; padding:6px 0 14px; }
+  #overdueView .ov-btn{ height:32px; padding:0 24px; border-radius:4px; font-size:13px; cursor:pointer; border:none; font-family:inherit; }
+  #overdueView .ov-btn-primary{ background:#366EF4; color:#FFFFFF; }
+  #overdueView .ov-btn-primary:hover{ background:#5B87F5; }
+  #overdueView .ov-btn-plain{ background:#FFFFFF; border:1px solid #E0E3E8; color:#4E5969; }
+  #overdueView .ov-btn-plain:hover{ border-color:#366EF4; color:#366EF4; }
+  /* 表格卡片 */
+  #overdueView .ov-table-card{ background:#FFFFFF; border-radius:8px; padding:18px 22px 22px; flex:1; }
+  #overdueView .ov-table-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  #overdueView .ov-table-head .ov-table-title{ margin-bottom:0; }
+  #overdueView .ov-export{ height:32px; padding:0 14px; border:1px solid #E0E3E8; border-radius:4px; background:#FFFFFF; font-size:13px; color:#4E5969; display:flex; align-items:center; gap:6px; cursor:pointer; font-family:inherit; }
+  #overdueView .ov-export:hover{ border-color:#366EF4; color:#366EF4; }
+  #overdueView .ov-export:hover path, #overdueView .ov-export:hover rect{ stroke:#366EF4; }
+  #overdueView .ov-table-title{ font-size:15px; font-weight:600; color:#1D2129; margin-bottom:14px; }
+  #overdueView table{ width:100%; border-collapse:collapse; font-size:13px; }
+  #overdueView thead th{ background:#F2F3F5; color:#4E5969; font-weight:500; text-align:left; padding:11px 12px; white-space:nowrap; }
+  #overdueView tbody td{ padding:12px; border-bottom:1px solid #F0F1F3; color:#1D2129; white-space:nowrap; }
+  #overdueView tbody tr:last-child td{ border-bottom:none; }
+  #overdueView tbody tr:hover td{ background:#F7F9FC; }
+  #overdueView .ov-ell{ max-width:132px; overflow:hidden; text-overflow:ellipsis; }
+  #overdueView .ov-detail{ color:#366EF4; cursor:pointer; }
+  #overdueView .ov-detail:hover{ text-decoration:underline; }
 </style>
 <title data-page-node-id="ZuA3VM2M0nD2GBHly1p0hz" data-pnid-children="16lR9N9LePUvZIfKIYCOGs" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important">隐患治理 - 双重预防</title>
 <style id="statsViewStyle">
@@ -676,7 +761,7 @@
   .dr-clear:hover { color: #0052D9; }
   .dr-hint { font-size: 12px; color: #A6A6A6; }
 </style>
-</head>
+<style id="__dm_no_drag_style__">* { -webkit-user-drag: none !important; }</style><style id="__dm_bindable_badge_style__">[data-sp-bindable="database"]{outline:1px dashed #0088ff;outline-offset:2px;border-radius:4px;}[data-sp-bindable="database"] *{pointer-events:none !important;transition:none !important;animation:none !important;}[data-sp-bindable="database"]{transition:none !important;animation:none !important;}</style></head>
 <body data-page-node-id="bGZXbRhD8NWtyOeypI8zIK" style="position: relative;">
 
 <!-- 顶部栏 -->
@@ -748,14 +833,14 @@
       </li>
       <ul class="submenu" data-page-node-id="nfAqCTFnLcRPLHB7jn4FcN">
         <li data-page-node-id="ElzskUURDasdXYhX6rHmfg">专项排查</li>
-        <li class="active" data-page-node-id="AGCouJoaTtRnP54YX1z8zL">隐患治理</li>
+        <li class="" data-page-node-id="AGCouJoaTtRnP54YX1z8zL">隐患治理</li>
         <li data-page-node-id="IBLWOP55WfMM30aCb7ZjDA">隐患库管理</li>
         <li data-page-node-id="zDQTGaHgvbvAusS4SWcLfN">隐患配置</li>
         <li data-page-node-id="A6EtHoeB3wypxelDnYlLjj" style="">隐患统计分析</li>
         <li data-page-node-id="MCkJwwPF7jTpAg2QDzxkul">待审批隐患</li>
         <li data-page-node-id="NCm7Q274CR2L1W9RxCtYTo">待整改隐患</li>
-        <li data-page-node-id="v7tP8b7H8HGwfZSDQhGpQS">待核查隐患</li>
-        <li data-page-node-id="RsIviE1DMyH568QzmWYrvb">逾期隐患</li>
+        
+        <li data-page-node-id="RsIviE1DMyH568QzmWYrvb" class="active">逾期隐患</li>
         <li data-page-node-id="oAgkmiFK72oocMGbKYL568">待接收隐患</li>
         <li data-page-node-id="GwiARXnmaLPIvaqpFAz2Pk">整改完成隐患</li>
         <li data-page-node-id="DyPI6flEGxw9dnBdtVzjms">临期隐患统计</li>
@@ -785,7 +870,7 @@
       <button class="ptab-collapse" data-page-node-id="45bAbqaX4YlDQKNmRZEdDY">⇤</button>
     </div>
 
-    <div class="page-body" data-page-node-id="2ENBOeqYXKelNfrpB1hp0x">
+    <div class="page-body overdue-mode" data-page-node-id="2ENBOeqYXKelNfrpB1hp0x">
 
       <!-- 列表卡片：选项卡 + 筛选 -->
       <div class="card" data-page-node-id="PvQyCxV5EkJ1qQL5tZDIgi">
@@ -861,6 +946,7 @@
             </div>
           </div>
         </form>
+      
       <div id="statsView" style="display:none" data-page-node-id="omYaqzmLL2Mim9BnQkXA76">
 <div class="content" data-page-node-id="NSDABqLnyIQFpTNEqFGNsY">
 
@@ -1133,8 +1219,8 @@
       <div class="card table-card" data-page-node-id="tFeAwGHxKRDre1sXNV9DTr">
         <div class="card-head" data-page-node-id="fqFFslh7mV6neB6UIh8Ien">
           <div class="card-title" data-page-node-id="qOPaXJ3m6Cf6MnVWzB6BgY">隐患治理</div>
-          <button class="btn btn-plain col-config-btn" type="button" style="margin-left:-6px;margin-right:10px;">
-            <svg style="width:12px;height:12px;vertical-align:-1px;margin-right:4px;" viewBox="0 0 16 16"><path d="M8 5.6A2.4 2.4 0 1 1 8 10.4 2.4 2.4 0 0 1 8 5.6z" fill="none" stroke="currentColor" stroke-width="1.3"></path><path d="M8 1.5v2.1M8 12.4v2.1M1.5 8h2.1M12.4 8h2.1M3.5 3.5l1.5 1.5M11 11l1.5 1.5M12.5 3.5L11 5M5 11l-1.5 1.5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>列配置
+          <button class="btn btn-plain col-config-btn" type="button" style="margin-left:-6px;margin-right:10px;" data-page-node-id="1bSk7rPQGSdhX4vUED4YG2">
+            <svg style="width:12px;height:12px;vertical-align:-1px;margin-right:4px;" viewBox="0 0 16 16" data-page-node-id="TNI1GSGbhNqk2n227ULUGS"><path d="M8 5.6A2.4 2.4 0 1 1 8 10.4 2.4 2.4 0 0 1 8 5.6z" fill="none" stroke="currentColor" stroke-width="1.3" data-page-node-id="FdNssTN0Ymm7l7HiTiiVtD"></path><path d="M8 1.5v2.1M8 12.4v2.1M1.5 8h2.1M12.4 8h2.1M3.5 3.5l1.5 1.5M11 11l1.5 1.5M12.5 3.5L11 5M5 11l-1.5 1.5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" data-page-node-id="Hbmr6ZEBmYWtZA3RZ1uDWK"></path></svg>列配置
           </button>
           <button class="btn btn-plain" type="button" data-page-node-id="eAyuosiNbeXdhC0F7cZ1J4">
             <svg style="width:12px;height:12px;vertical-align:-1px;margin-right:4px;" viewBox="0 0 16 16" data-page-node-id="WAHQ59vCiFNONSn7c5QlOM"><path d="M8 2v8M8 2L5 5M8 2l3 3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" data-page-node-id="xl9q3wRsXECQxdCcvRDO3p"></path><path d="M2.5 10v3.5h11V10" fill="none" stroke="currentColor" stroke-width="1.4" data-page-node-id="DXHH5jRm9GsXjXswvkEO26"></path></svg>导 出
@@ -1146,96 +1232,96 @@
           <table data-page-node-id="kjkJj8PlzESPwaCe95cMHK">
             <thead data-page-node-id="ZCTUX5X3AT9CCrUIRUS8O0">
               <tr data-page-node-id="Vg7i2QD41onlH3U23ChWBU">
-                <th class="idx" data-page-node-id="eRqzXAaYTlVtLyRYgcq2vc">序号</th>
-                <th data-page-node-id="0rgBbdveJOPvOFocNDxdjf">隐患名称</th>
-                <th data-page-node-id="b73Taicg3uw50BWMYcQBcD">所属部门</th>
-                <th data-page-node-id="4H9G2LQmYQPuWvVCErmRHR">所属分析单元</th>
-                <th data-page-node-id="rLdj4EaO1Y4JiPqVOhE5JN">隐患级别</th>
-                <th data-page-node-id="T5uAE8xTR7TQpmCb0ZPLOK">隐患类别</th>
-                <th data-page-node-id="IE4Nmqx9YCC5OhVRHGipW8">是否重大事故隐患</th>
-                <th data-page-node-id="d7wrQFUMe63cKCpUbXuEIn">隐患来源</th>
-                <th data-page-node-id="4sEwCW0EA58qpW4tBFJQhd">发现时间</th>
-                <th>排查类型</th>
-                <th>排查级别</th>
-                <th>发现人</th>
-                <th>隐患状态</th>
-                <th>是否外部检查</th>
-                <th data-page-node-id="nIBsfxDs07hQDgxn5vtTdw">操作</th>
-              </tr>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+              <th class="idx col-freeze-l" data-page-node-id="eRqzXAaYTlVtLyRYgcq2vc" data-ci="0">序号</th><th data-page-node-id="0rgBbdveJOPvOFocNDxdjf" data-ci="1" class="col-freeze-name">隐患名称</th><th data-page-node-id="b73Taicg3uw50BWMYcQBcD" data-ci="2">所属部门</th><th data-page-node-id="4H9G2LQmYQPuWvVCErmRHR" data-ci="3">所属分析单元</th><th data-page-node-id="rLdj4EaO1Y4JiPqVOhE5JN" data-ci="4">隐患级别</th><th data-page-node-id="T5uAE8xTR7TQpmCb0ZPLOK" data-ci="5">隐患类别</th><th data-page-node-id="IE4Nmqx9YCC5OhVRHGipW8" data-ci="6">是否重大事故隐患</th><th data-page-node-id="d7wrQFUMe63cKCpUbXuEIn" data-ci="7">隐患来源</th><th data-page-node-id="4sEwCW0EA58qpW4tBFJQhd" data-ci="8">发现时间</th><th data-page-node-id="KOZBB8u4Er5Mmu9SDvKzdW" data-ci="9" style="display: none;">排查类型</th><th data-page-node-id="E99EITCMCWmACfog1RTN8O" data-ci="10" style="display: none;">排查级别</th><th data-page-node-id="6at8E3I2SQgC6y5FZTWHPp" data-ci="11" style="display: none;">发现人</th><th data-page-node-id="Kc4IaHIDgQkZM1QvTXuoMc" data-ci="12" style="display: none;">隐患状态</th><th data-page-node-id="MGvYERueSYVikhhr5Jjfix" data-ci="13" style="display: none;">是否外部检查</th><th data-page-node-id="nIBsfxDs07hQDgxn5vtTdw" data-ci="14" class="col-freeze-r">操作</th></tr>
             </thead>
             <tbody data-page-node-id="mwJi7RRTfDDTjw2mm0IccH">
               <tr data-page-node-id="VDcVEqS2fZ2Wt8T50P9RXc">
-                <td class="idx" data-page-node-id="OurDFEfBs19Q1eHPF6QjQ9">1</td>
-                <td data-page-node-id="vAMRra3h8CCxE9fkuxGe1F">演示数据01</td>
-                <td data-page-node-id="GzAvgiQVaZQufH4lRZCVuV"><span class="dept" data-page-node-id="DO8xAcoAoa9ody3C0MiFCw"><svg viewBox="0 0 16 16" data-page-node-id="sGuPGXg9X7BI6thnhv2LD9"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="sUpVWpMRVwA3TeXNCKiIB2"></path></svg>HSE部</span></td>
-                <td data-page-node-id="8linYxZG3xl07KDwIbcn46">0512风险分析单元</td>
-                <td data-page-node-id="Ck2PfmGRGmEzA7tIVSwVxt">四级隐患</td>
-                <td data-page-node-id="83vq5m3JhzOMbj9pCEKHAZ">综合管理</td>
-                <td data-page-node-id="4T8LXQo2RDjDd7fjX28Els">否</td>
-                <td data-page-node-id="qjUFpC2R6qnsPj4oL4CCpk">随手拍</td>
-                <td data-page-node-id="Wh4GTUBIsODGMMRNr2NQGV">2026-09-18 10:23</td><td>随手拍</td><td>企业级及以下自查</td><td>熊辰婷</td><td>整改中</td><td>否</td>
-                <td data-page-node-id="dWdsCUmIl0SduqCsmK3F8O"><div class="op" data-page-node-id="o49i7fUxjBkHajEJwDmolp"><a data-page-node-id="t8zdsmtQ1dyPcvgiKyBU6k">详情</a><a data-page-node-id="VrW2YRzwlelT0TkxnGFhFi" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a class="disabled" data-page-node-id="uUqPxR12BEe9hZGlh0gX09">删除</a></div></td>
-              </tr>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+              <td class="idx col-freeze-l" data-page-node-id="OurDFEfBs19Q1eHPF6QjQ9" data-ci="0">1</td><td data-page-node-id="vAMRra3h8CCxE9fkuxGe1F" data-ci="1" class="col-freeze-name">演示数据01</td><td data-page-node-id="GzAvgiQVaZQufH4lRZCVuV" data-ci="2"><span class="dept" data-page-node-id="DO8xAcoAoa9ody3C0MiFCw"><svg viewBox="0 0 16 16" data-page-node-id="sGuPGXg9X7BI6thnhv2LD9"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="sUpVWpMRVwA3TeXNCKiIB2"></path></svg>HSE部</span></td><td data-page-node-id="8linYxZG3xl07KDwIbcn46" data-ci="3">0512风险分析单元</td><td data-page-node-id="Ck2PfmGRGmEzA7tIVSwVxt" data-ci="4">四级隐患</td><td data-page-node-id="83vq5m3JhzOMbj9pCEKHAZ" data-ci="5">综合管理</td><td data-page-node-id="4T8LXQo2RDjDd7fjX28Els" data-ci="6">否</td><td data-page-node-id="qjUFpC2R6qnsPj4oL4CCpk" data-ci="7">随手拍</td><td data-page-node-id="Wh4GTUBIsODGMMRNr2NQGV" data-ci="8">2026-09-18 10:23</td><td data-page-node-id="oVY2SiKHeYUMQHeamcjUmy" data-ci="9" style="display: none;">随手拍</td><td data-page-node-id="dHytkcCMEeBtizoCu18jYl" data-ci="10" style="display: none;">企业级及以下自查</td><td data-page-node-id="E9osIIyKJcgXi7tPPFPbVv" data-ci="11" style="display: none;">熊辰婷</td><td data-page-node-id="7QMh7gOl3vSwIyLG1JXptx" data-ci="12" style="display: none;">整改中</td><td data-page-node-id="Hq3sf5hczmtY9DBc79T4Kw" data-ci="13" style="display: none;">否</td><td data-page-node-id="dWdsCUmIl0SduqCsmK3F8O" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="o49i7fUxjBkHajEJwDmolp"><a data-page-node-id="t8zdsmtQ1dyPcvgiKyBU6k">详情</a><a data-page-node-id="VrW2YRzwlelT0TkxnGFhFi" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a class="disabled" data-page-node-id="uUqPxR12BEe9hZGlh0gX09">删除</a></div></td></tr>
               <tr data-page-node-id="KZX0PoNXGPc1ZAKTKQT3Pz">
-                <td class="idx" data-page-node-id="8V8XrQqbVOPBA9UNXcUgAA">2</td>
-                <td data-page-node-id="cK32DteiH6CGk9B9H3T3u0">导入的内部隐患01</td>
-                <td data-page-node-id="843HrOaCiVnoDTWmpphvoB"><span class="dept" data-page-node-id="hVxgNmltBeUTU1m5bAuHm9"><svg viewBox="0 0 16 16" data-page-node-id="qzYWalCebmL6BFCh0okVGl"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="TMyMvY7qmPUf2OWl7EAfrh"></path></svg>X-test</span></td>
-                <td data-page-node-id="T2Kh6K69XHU5Cw6vQF0Pkt">测试代发发送问题</td>
-                <td data-page-node-id="1l9KUNBpAS9g7JN1cstogK">三级隐患</td>
-                <td data-page-node-id="GzwOcP0fgcqgJoDjIfBHsZ">电子防范</td>
-                <td data-page-node-id="70JqKxzvL1o08zTbzVWclX">否</td>
-                <td data-page-node-id="bFU0gzGYBuPxMA1Nv5sd2h">专项排查</td>
-                <td data-page-node-id="e7WovOy7yJhHZMBHUuTBOk">2026-09-17 16:40</td><td>专项检查</td><td>部门级排查</td><td>常假设</td><td>整改中</td><td>否</td>
-                <td data-page-node-id="75SmjJqInHHbKSCx19fRRZ"><div class="op" data-page-node-id="faWsfOJCMk17H3e6y90hh6"><a data-page-node-id="dskGTnK8U1RrqD3YHgHMtD">详情</a><a data-page-node-id="ib4YWPhHRpECQmIkr9huBb" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a data-page-node-id="Noo8wp0hGqVzfpBNIdVSdk">删除</a></div></td>
-              </tr>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+              <td class="idx col-freeze-l" data-page-node-id="8V8XrQqbVOPBA9UNXcUgAA" data-ci="0">2</td><td data-page-node-id="cK32DteiH6CGk9B9H3T3u0" data-ci="1" class="col-freeze-name">导入的内部隐患01</td><td data-page-node-id="843HrOaCiVnoDTWmpphvoB" data-ci="2"><span class="dept" data-page-node-id="hVxgNmltBeUTU1m5bAuHm9"><svg viewBox="0 0 16 16" data-page-node-id="qzYWalCebmL6BFCh0okVGl"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="TMyMvY7qmPUf2OWl7EAfrh"></path></svg>X-test</span></td><td data-page-node-id="T2Kh6K69XHU5Cw6vQF0Pkt" data-ci="3">测试代发发送问题</td><td data-page-node-id="1l9KUNBpAS9g7JN1cstogK" data-ci="4">三级隐患</td><td data-page-node-id="GzwOcP0fgcqgJoDjIfBHsZ" data-ci="5">电子防范</td><td data-page-node-id="70JqKxzvL1o08zTbzVWclX" data-ci="6">否</td><td data-page-node-id="bFU0gzGYBuPxMA1Nv5sd2h" data-ci="7">专项排查</td><td data-page-node-id="e7WovOy7yJhHZMBHUuTBOk" data-ci="8">2026-09-17 16:40</td><td data-page-node-id="yGLlePe80vUmSjAVh40EIg" data-ci="9" style="display: none;">专项检查</td><td data-page-node-id="T7Kz788gcKRX7cerhlBDBq" data-ci="10" style="display: none;">部门级排查</td><td data-page-node-id="PqZu5Ed5J2fgHXAGQUqWKw" data-ci="11" style="display: none;">常假设</td><td data-page-node-id="rKbcQZjaTZzFCMEA4I03JC" data-ci="12" style="display: none;">整改中</td><td data-page-node-id="2B5GtvGj6gMJOK0V5s5CA7" data-ci="13" style="display: none;">否</td><td data-page-node-id="75SmjJqInHHbKSCx19fRRZ" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="faWsfOJCMk17H3e6y90hh6"><a data-page-node-id="dskGTnK8U1RrqD3YHgHMtD">详情</a><a data-page-node-id="ib4YWPhHRpECQmIkr9huBb" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a data-page-node-id="Noo8wp0hGqVzfpBNIdVSdk">删除</a></div></td></tr>
               <tr data-page-node-id="EUbEkzZCk9VLz2jFn2A9bf">
-                <td class="idx" data-page-node-id="LBbhxIllLKkY1vC3hHG0to">3</td>
-                <td data-page-node-id="cfVY5AhDqEpPesGoXa1lTn">导入的内部隐患01</td>
-                <td data-page-node-id="CprQbptViQvo88nsovQRU7"><span class="dept" data-page-node-id="H5t3u5HecrCJNuukG9pwLa"><svg viewBox="0 0 16 16" data-page-node-id="WmObvCJLD0o4MYkZtuXQTH"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="JRTdCZQtOrao6zE4IDPfFb"></path></svg>线上配置专用...</span></td>
-                <td data-page-node-id="sgbpPT3t7REgteUZZsLGNf">测试代发发送问题</td>
-                <td data-page-node-id="HqOV8igVRmIPomGdrv5XA0">三级隐患</td>
-                <td data-page-node-id="nVV1bSYpRJS4eHPmTmLCTX">综合管理</td>
-                <td data-page-node-id="er69uG0IZwHzBjVFHw4BNT">否</td>
-                <td data-page-node-id="caGxW9P3VhvWBnIEC3YTXL">专项排查</td>
-                <td data-page-node-id="nDlsPlBdviE0e4sPx6WUtC">2026-09-17 15:02</td><td>日常排查</td><td>企业级及以下自查</td><td>熊辰婷</td><td>已整改</td><td>否</td>
-                <td data-page-node-id="6kBbP696lDXtojG2EDBWBA"><div class="op" data-page-node-id="qARvbpb1suGAD7nEDlIvyE"><a data-page-node-id="fdfc7pY1zEpTVLEMTuxgP2">详情</a><a data-page-node-id="nHiOVctUxWupQ4ouHiKHuo" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a class="disabled" data-page-node-id="e5lJzcgs6FYQoSlEGYNfOp">删除</a></div></td>
-              </tr>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+              <td class="idx col-freeze-l" data-page-node-id="LBbhxIllLKkY1vC3hHG0to" data-ci="0">3</td><td data-page-node-id="cfVY5AhDqEpPesGoXa1lTn" data-ci="1" class="col-freeze-name">导入的内部隐患01</td><td data-page-node-id="CprQbptViQvo88nsovQRU7" data-ci="2"><span class="dept" data-page-node-id="H5t3u5HecrCJNuukG9pwLa"><svg viewBox="0 0 16 16" data-page-node-id="WmObvCJLD0o4MYkZtuXQTH"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="JRTdCZQtOrao6zE4IDPfFb"></path></svg>线上配置专用...</span></td><td data-page-node-id="sgbpPT3t7REgteUZZsLGNf" data-ci="3">测试代发发送问题</td><td data-page-node-id="HqOV8igVRmIPomGdrv5XA0" data-ci="4">三级隐患</td><td data-page-node-id="nVV1bSYpRJS4eHPmTmLCTX" data-ci="5">综合管理</td><td data-page-node-id="er69uG0IZwHzBjVFHw4BNT" data-ci="6">否</td><td data-page-node-id="caGxW9P3VhvWBnIEC3YTXL" data-ci="7">专项排查</td><td data-page-node-id="nDlsPlBdviE0e4sPx6WUtC" data-ci="8">2026-09-17 15:02</td><td data-page-node-id="hzknzOMIu3yfges3stFZQa" data-ci="9" style="display: none;">日常排查</td><td data-page-node-id="n8wX1FXpID3oAwwBkCFF3q" data-ci="10" style="display: none;">企业级及以下自查</td><td data-page-node-id="DmkQlEUG1ceHRexY5h7TSV" data-ci="11" style="display: none;">熊辰婷</td><td data-page-node-id="eNmYzU0DXFLUDWy8cqfGBu" data-ci="12" style="display: none;">已整改</td><td data-page-node-id="sGWGZYKktTveFbhw9SfFcd" data-ci="13" style="display: none;">否</td><td data-page-node-id="6kBbP696lDXtojG2EDBWBA" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="qARvbpb1suGAD7nEDlIvyE"><a data-page-node-id="fdfc7pY1zEpTVLEMTuxgP2">详情</a><a data-page-node-id="nHiOVctUxWupQ4ouHiKHuo" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a class="disabled" data-page-node-id="e5lJzcgs6FYQoSlEGYNfOp">删除</a></div></td></tr>
               <tr data-page-node-id="ywJDHHXm8mZ6FSJelW3rAD">
-                <td class="idx" data-page-node-id="QEQBDv4SOd410C34iLjdfz">4</td>
-                <td data-page-node-id="TrikDsXJYvxjrSZh3uP9Hg">导入的外部隐患01</td>
-                <td data-page-node-id="o9NRufw74DvoieB0g6Dwmg"><span class="dept" data-page-node-id="jpvUADBz8XxE5l5ak2bvHf"><svg viewBox="0 0 16 16" data-page-node-id="dtwPpugaMxIDEmXkZAokDb"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="CeMkbeaN1IEDfOyCZNu9WO"></path></svg>线上配置专用...</span></td>
-                <td data-page-node-id="ZhphlGdBou0ot4V0sIqZQg">3.603单元</td>
-                <td data-page-node-id="swdrihlkhhhDEtiPbHA74D">三级隐患</td>
-                <td data-page-node-id="14n7kvqrjRxEpZhLhhZfMY">综合管理</td>
-                <td data-page-node-id="zIOJrU8l6piqzLgURLyVkQ">否</td>
-                <td data-page-node-id="vjGq71E4GmvRzKrFbyBNrH">专项排查</td>
-                <td data-page-node-id="ukguHXMcV0WPCRRQrtcSrT">2026-09-16 11:35</td><td>综合检查</td><td>公司级排查</td><td>王强</td><td>整改中</td><td>是</td>
-                <td data-page-node-id="KrAjomAHPjiMB2SSzbjuGH"><div class="op" data-page-node-id="Jg5fjoekWShgFZr1l1ZdU5"><a data-page-node-id="gf7VYhRlM78QLtfyVFJHN1">详情</a><a data-page-node-id="BP5UHoVubMmsZZM4QkITtX" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a class="disabled" data-page-node-id="ZFiHpyCsqR3h7BrdpObHTz">删除</a></div></td>
-              </tr>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+              <td class="idx col-freeze-l" data-page-node-id="QEQBDv4SOd410C34iLjdfz" data-ci="0">4</td><td data-page-node-id="TrikDsXJYvxjrSZh3uP9Hg" data-ci="1" class="col-freeze-name">导入的外部隐患01</td><td data-page-node-id="o9NRufw74DvoieB0g6Dwmg" data-ci="2"><span class="dept" data-page-node-id="jpvUADBz8XxE5l5ak2bvHf"><svg viewBox="0 0 16 16" data-page-node-id="dtwPpugaMxIDEmXkZAokDb"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="CeMkbeaN1IEDfOyCZNu9WO"></path></svg>线上配置专用...</span></td><td data-page-node-id="ZhphlGdBou0ot4V0sIqZQg" data-ci="3">3.603单元</td><td data-page-node-id="swdrihlkhhhDEtiPbHA74D" data-ci="4">三级隐患</td><td data-page-node-id="14n7kvqrjRxEpZhLhhZfMY" data-ci="5">综合管理</td><td data-page-node-id="zIOJrU8l6piqzLgURLyVkQ" data-ci="6">否</td><td data-page-node-id="vjGq71E4GmvRzKrFbyBNrH" data-ci="7">专项排查</td><td data-page-node-id="ukguHXMcV0WPCRRQrtcSrT" data-ci="8">2026-09-16 11:35</td><td data-page-node-id="NJregXG7C5mX0jm6U2z8Bc" data-ci="9" style="display: none;">综合检查</td><td data-page-node-id="QXbYmnZVPUCF4KqsIBVlu5" data-ci="10" style="display: none;">公司级排查</td><td data-page-node-id="paNbZGtVwMhjmlC8D2hFN1" data-ci="11" style="display: none;">王强</td><td data-page-node-id="kEmubbIXyyC5Vq6GkVHUpo" data-ci="12" style="display: none;">整改中</td><td data-page-node-id="xmQ2KskoNCykawk2D59fHu" data-ci="13" style="display: none;">是</td><td data-page-node-id="KrAjomAHPjiMB2SSzbjuGH" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="Jg5fjoekWShgFZr1l1ZdU5"><a data-page-node-id="gf7VYhRlM78QLtfyVFJHN1">详情</a><a data-page-node-id="BP5UHoVubMmsZZM4QkITtX" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a class="disabled" data-page-node-id="ZFiHpyCsqR3h7BrdpObHTz">删除</a></div></td></tr>
               <tr data-page-node-id="9L6EZmCGEhxwtvYxVDeVDX">
-                <td class="idx" data-page-node-id="47VWYdHtlexdgcC6L3avLn">5</td>
-                <td data-page-node-id="ztu2bFss7eF3rV3RJE54tI">导入的内部隐患03</td>
-                <td data-page-node-id="fElrpzZcyyomFgDrJFbqap"><span class="dept" data-page-node-id="zNfdlkgvSrCqrIPXAGAavL"><svg viewBox="0 0 16 16" data-page-node-id="bLlJZ0AcvvjHRzjyeReelg"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="ua2E6b7Umn0d3vVH242ItN"></path></svg>线上配置专用...</span></td>
-                <td data-page-node-id="nA5tiO7OYH7JtZfeGgNJi5">分析单元hx</td>
-                <td data-page-node-id="AiDRvVNgLCgLkBe49HUpQw">四级隐患</td>
-                <td data-page-node-id="PKpZwhBMDa81fNiQc7mquS">综合管理</td>
-                <td data-page-node-id="bvutpdh6UKGAXrcBHVn2LX">否</td>
-                <td data-page-node-id="ujLAXyyTVIhpGJlXHJ3pbP">专项排查</td>
-                <td data-page-node-id="1vOOGCAGtjHp8ve0U5TPAZ">2026-09-15 09:47</td><td>专项检查</td><td>部门级排查</td><td>常假设</td><td>整改中</td><td>否</td>
-                <td data-page-node-id="VdyjRwgrqDVdbUoA8uRLmG"><div class="op" data-page-node-id="kNbwl940EFG5ygEdyWxCIb"><a data-page-node-id="DLvemwP1B08CMkikxEMI7A">详情</a><a data-page-node-id="rEpBq7ZS2L31gVjVzShoUh" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a data-page-node-id="Znjo26UV4iyfwfXm06gtDP">删除</a></div></td>
-              </tr>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+              <td class="idx col-freeze-l" data-page-node-id="47VWYdHtlexdgcC6L3avLn" data-ci="0">5</td><td data-page-node-id="ztu2bFss7eF3rV3RJE54tI" data-ci="1" class="col-freeze-name">导入的内部隐患03</td><td data-page-node-id="fElrpzZcyyomFgDrJFbqap" data-ci="2"><span class="dept" data-page-node-id="zNfdlkgvSrCqrIPXAGAavL"><svg viewBox="0 0 16 16" data-page-node-id="bLlJZ0AcvvjHRzjyeReelg"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="ua2E6b7Umn0d3vVH242ItN"></path></svg>线上配置专用...</span></td><td data-page-node-id="nA5tiO7OYH7JtZfeGgNJi5" data-ci="3">分析单元hx</td><td data-page-node-id="AiDRvVNgLCgLkBe49HUpQw" data-ci="4">四级隐患</td><td data-page-node-id="PKpZwhBMDa81fNiQc7mquS" data-ci="5">综合管理</td><td data-page-node-id="bvutpdh6UKGAXrcBHVn2LX" data-ci="6">否</td><td data-page-node-id="ujLAXyyTVIhpGJlXHJ3pbP" data-ci="7">专项排查</td><td data-page-node-id="1vOOGCAGtjHp8ve0U5TPAZ" data-ci="8">2026-09-15 09:47</td><td data-page-node-id="U32uJFSoCjBYiFqILe3Xc2" data-ci="9" style="display: none;">专项检查</td><td data-page-node-id="WHYsBcpVQACggbw491XxI5" data-ci="10" style="display: none;">部门级排查</td><td data-page-node-id="E1awdtH1RwvSsLvnVyGCeM" data-ci="11" style="display: none;">常假设</td><td data-page-node-id="2DVTXTkJ4S3mZNVcMPHFh7" data-ci="12" style="display: none;">整改中</td><td data-page-node-id="Rs4v7vNRjeX6vzvifuHyTz" data-ci="13" style="display: none;">否</td><td data-page-node-id="VdyjRwgrqDVdbUoA8uRLmG" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="kNbwl940EFG5ygEdyWxCIb"><a data-page-node-id="DLvemwP1B08CMkikxEMI7A">详情</a><a data-page-node-id="rEpBq7ZS2L31gVjVzShoUh" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a data-page-node-id="Znjo26UV4iyfwfXm06gtDP">删除</a></div></td></tr>
               <tr data-page-node-id="V3J2NilELu4SQa0BfOhLHH">
-                <td class="idx" data-page-node-id="cDUOC3aob8p1GJ0HDpXKHl">6</td>
-                <td data-page-node-id="GLh9ouFvAhlZIgvwIzJHBX">导入的内部隐患02</td>
-                <td data-page-node-id="3HJy3IJjfprIvTGkUGAuqe"><span class="dept" data-page-node-id="8CVM9pFzd8PBJuqq8Gc7DS"><svg viewBox="0 0 16 16" data-page-node-id="UcWLq8DxGmQG9fv1rszx14"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="23aDHkqLIVgmZooALvcmXk"></path></svg>X-test</span></td>
-                <td data-page-node-id="I7cRXdwoxMniGRx5E89P5v">导入的分析单元04</td>
-                <td data-page-node-id="cy18a33gnR2Hd5wodBn0AD">三级隐患</td>
-                <td data-page-node-id="ILAorPk840tC2FghEXA3Us">其他</td>
-                <td data-page-node-id="fOfXnw6kTnSafsSs6T5GPd">否</td>
-                <td data-page-node-id="ZH38yTv4dBJqyNkzbdibcu">专项排查</td>
-                <td data-page-node-id="bhrJzxd6AsGBkR1vt8GqdH">2026-09-14 14:18</td><td>日常排查</td><td>企业级及以下自查</td><td>熊辰婷</td><td>已验收</td><td>否</td>
-                <td data-page-node-id="HYHvSG3Na3LNUn2KCsEpzD"><div class="op" data-page-node-id="pzGJuw77S6dW5AXRnQTuFr"><a data-page-node-id="HZgDod2fvU7CMGAK5KXauG">详情</a><a data-page-node-id="DlUlqMBO78golFrqITOizm" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a data-page-node-id="UZ1NCEM4PzNCvS8u3SG7zR">删除</a></div></td>
-              </tr>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+              <td class="idx col-freeze-l" data-page-node-id="cDUOC3aob8p1GJ0HDpXKHl" data-ci="0">6</td><td data-page-node-id="GLh9ouFvAhlZIgvwIzJHBX" data-ci="1" class="col-freeze-name">导入的内部隐患02</td><td data-page-node-id="3HJy3IJjfprIvTGkUGAuqe" data-ci="2"><span class="dept" data-page-node-id="8CVM9pFzd8PBJuqq8Gc7DS"><svg viewBox="0 0 16 16" data-page-node-id="UcWLq8DxGmQG9fv1rszx14"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="23aDHkqLIVgmZooALvcmXk"></path></svg>X-test</span></td><td data-page-node-id="I7cRXdwoxMniGRx5E89P5v" data-ci="3">导入的分析单元04</td><td data-page-node-id="cy18a33gnR2Hd5wodBn0AD" data-ci="4">三级隐患</td><td data-page-node-id="ILAorPk840tC2FghEXA3Us" data-ci="5">其他</td><td data-page-node-id="fOfXnw6kTnSafsSs6T5GPd" data-ci="6">否</td><td data-page-node-id="ZH38yTv4dBJqyNkzbdibcu" data-ci="7">专项排查</td><td data-page-node-id="bhrJzxd6AsGBkR1vt8GqdH" data-ci="8">2026-09-14 14:18</td><td data-page-node-id="vb9PYdmrZG0kjN3niwh19t" data-ci="9" style="display: none;">日常排查</td><td data-page-node-id="Ou0tR6nyWwLT2SZ3iJeDxa" data-ci="10" style="display: none;">企业级及以下自查</td><td data-page-node-id="bXPoajVMsQdldFI60UH3JS" data-ci="11" style="display: none;">熊辰婷</td><td data-page-node-id="vvKF7Ql08lFBuzpW2SP3My" data-ci="12" style="display: none;">已验收</td><td data-page-node-id="keRVW409wiFXo1uY25OKma" data-ci="13" style="display: none;">否</td><td data-page-node-id="HYHvSG3Na3LNUn2KCsEpzD" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="pzGJuw77S6dW5AXRnQTuFr"><a data-page-node-id="HZgDod2fvU7CMGAK5KXauG">详情</a><a data-page-node-id="DlUlqMBO78golFrqITOizm" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a data-page-node-id="UZ1NCEM4PzNCvS8u3SG7zR">删除</a></div></td></tr>
             </tbody>
           </table>
         </div>
@@ -1243,18 +1329,105 @@
         <div class="table-foot" data-page-node-id="G6wOAIDsZQHOiB4obbo5PL">
           <div class="total" data-page-node-id="65HvICNvtOEBtDuIB5zUMi">共 635 条</div>
           <div class="foot-right" data-page-node-id="SXd5BLOOeXoix6MZXpkFYC">
-            <select id="pgSize" class="pg-size" title="每页展示条数">
-              <option value="10" selected>10条/页</option>
-              <option value="20">20条/页</option>
-              <option value="50">50条/页</option>
-              <option value="100">100条/页</option>
+            <select id="pgSize" class="pg-size" title="每页展示条数" data-page-node-id="pxseAccZflTqBIi1iCStFZ">
+              <option value="10" selected="" data-page-node-id="9LkbedBhloyBMmNBVFQErL">10条/页</option>
+              <option value="20" data-page-node-id="99ilesupsCkxFuQv87Va3H">20条/页</option>
+              <option value="50" data-page-node-id="rcif0iCGLc0K6zAYiR2tfY">50条/页</option>
+              <option value="100" data-page-node-id="krrk54kh8wRDrCgY3TTJm6">100条/页</option>
             </select>
-            <div class="pager"></div>
+            <div class="pager" data-page-node-id="OZCUDc47Q64z3I6X7EdcUo"><span class="pg pg-arrow disabled">‹</span><span class="pg active" data-page="1">1</span><span class="pg" data-page="2">2</span><span class="pg" data-page="3">3</span><span class="pg" data-page="4">4</span><span class="pg" data-page="5">5</span><span class="pg-dots">•••</span><span class="pg" data-page="64">64</span><span class="pg pg-arrow">›</span></div>
           </div>
         </div>
       </div>
 
-    <div id="detailView" style="display: none;" data-page-node-id="OD2yAB7lVkKRN6iQvpXWWy"></div></div>
+    <div id="detailView" style="display: none;" data-page-node-id="OD2yAB7lVkKRN6iQvpXWWy"></div><div id="overdueView" style="" data-page-node-id="z1UwejuOB5DkrDpiimfto9">
+        <!-- 顶部：统计卡 + 趋势图 -->
+        <div class="ov-top" data-page-node-id="aaDrvL6FLhi0ZAxbA1x3Hq">
+          <div class="ov-left" data-page-node-id="56d8xUCa2j12k24pCvHbY3">
+            <div class="ov-card" data-page-node-id="eMklxfufV3HcCjKhBQhX3c">
+              <svg class="ov-deco" viewBox="0 0 150 130" data-page-node-id="Ajn8TVKCDj7TJd60xcoQw0"><polygon points="150,0 40,0 150,110" fill="#E3EEFF" data-page-node-id="drO91WVgs62t8T0mv91xvQ"></polygon><polygon points="150,0 78,0 150,66" fill="#CFE2FF" data-page-node-id="A74YJffoaQZCvOM9zSHGao"></polygon><polygon points="150,96 150,130 108,130" fill="#EAF3FF" data-page-node-id="BsZrCCBMZiXswuIMtgBYs8"></polygon></svg>
+              <div class="ov-main" data-page-node-id="8LgDsSba3oTEM5HzHfgbKd">
+                <div class="ov-main-head" data-page-node-id="HpJcJqNkYHEdBbfMCPJQI4">
+                  <div class="ov-ico ov-ico-blue" data-page-node-id="1N6BChX6HAajojCGNlxJwY"><svg width="30" height="30" viewBox="0 0 24 24" data-page-node-id="MVAaGUzjHyjjBckViWCe2f"><path d="M6 2.5h12v3.2L13.6 12l4.4 6.3v3.2H6v-3.2L10.4 12 6 5.7V2.5z" fill="#366EF4" data-page-node-id="01HSx0eqpk3vBICPNsGZnP"></path><path d="M8.2 4.5h7.6l-2.6 3.8h-2.4L8.2 4.5zM10.8 15.7h2.4l2.6 3.8H8.2l2.6-3.8z" fill="#FFFFFF" opacity=".85" data-page-node-id="PNk2Ipa6T4RsaTBV5Vq9uj"></path></svg></div>
+                  <div data-page-node-id="QGHIlEBC3rfIbH7heuAqkz">
+                    <div class="ov-num" data-page-node-id="TSD5AnnSujZV9l4yWwtmUv">164</div>
+                    <div class="ov-num-label" data-page-node-id="CAQObrgxS9pAFrLPfEeeZa">当前逾期(条)</div>
+                  </div>
+                </div>
+                <div class="ov-split" data-page-node-id="nbQBTPp0dxOmsHwP3gmBBx">
+                  <div class="ov-split-item" data-page-node-id="FK2n4vsnGpGGndz0ReLbs7">逾期未整改(条)<b data-page-node-id="xWf4bFbsRCs4CeUak1fZL6">136</b></div>
+                  <div class="ov-split-item" data-page-node-id="Ac0ydqV0W2eYctLltgIRaR">逾期已整改(条)<b data-page-node-id="jX6ycrZP4vtQIe5VbFQENN">28</b></div>
+                </div>
+              </div>
+            </div>
+            <div class="ov-card ov-week" data-page-node-id="ORmd9EsvD7O04CoUnDmgsE">
+              <div class="ov-ico ov-ico-purple" data-page-node-id="wDPWXz0uYAqho9DVRGoPyy"><svg width="28" height="28" viewBox="0 0 24 24" data-page-node-id="64CmSN7tFOMvFKzoYRvNQe"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5" fill="#8B5CF6" data-page-node-id="Mep83Vg5cNAJ4GsK9tssqm"></rect><path d="M8 2.5v4M16 2.5v4" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" data-page-node-id="9hqa50AXjKGoMjreRG2abv"></path><circle cx="12" cy="13.2" r="4.1" fill="#FFFFFF" data-page-node-id="EvwVIDAczj5VhDzhthBiFU"></circle><path d="M12 11.2v2.1l1.5 1" stroke="#8B5CF6" stroke-width="1.4" stroke-linecap="round" fill="none" data-page-node-id="0Cchlu8yiBXLQg3o14RQGb"></path></svg></div>
+              <div class="ov-week-label" data-page-node-id="SLzTjeoNSfArs6XUQeSR5Q">本周逾期(条)</div>
+              <div class="ov-week-num" data-page-node-id="Lewfkr1oObQx2jWMOgvAqV">0</div>
+            </div>
+          </div>
+          <div class="ov-card ov-chart-card" data-page-node-id="LlVfi6pmmSAY2iX4Iwazhz">
+            <div class="ov-chart-head" data-page-node-id="P9qDhjw1AlFXVnybg9hlWj">
+              <div class="ov-chart-title" data-page-node-id="qfTrmo2YNRLRRJSbTGwvOW">逾期趋势图</div>
+              <div class="ov-legend" data-page-node-id="2gWbKPJoRZoD92qYpknHAp">
+                <div class="ov-legend-item" data-page-node-id="5kq84fSewj7B5bbEJfoQTC"><span class="ov-legend-dot" style="background:#366EF4" data-page-node-id="FtRWpYm5o3ZjKdKvGLNPvw"></span>逾期隐患</div>
+                <div class="ov-legend-item" data-page-node-id="FQK0jwhehoki7sYFx9xFg0"><span class="ov-legend-dot" style="background:#F5A623" data-page-node-id="mCcexLU0JmvXCBPNmoQrNJ"></span>逾期未整改</div>
+                <div class="ov-legend-item" data-page-node-id="CKopCbxwfsuCVtO8u0cAv7"><span class="ov-legend-dot" style="background:#26BFA8" data-page-node-id="LhhAQdlMp94oyMRTC5EDCB"></span>逾期已整改</div>
+              </div>
+            </div>
+            <svg class="ov-chart" viewBox="0 0 1000 320" data-page-node-id="A2BiFFVbyamNePFhmH1yNC">
+              <defs data-page-node-id="wfEx1M2qpmQW5OEv0g4Xcf">
+                <linearGradient id="ovArea" x1="0" y1="0" x2="0" y2="1" data-page-node-id="Zc1JXGpHzrx5hTkku44oe8"><stop offset="0" stop-color="#366EF4" stop-opacity="0.16" data-page-node-id="b6uAPblUuoF2qqZfqBJwTC"></stop><stop offset="1" stop-color="#366EF4" stop-opacity="0" data-page-node-id="dFfQtlTO7CS862zPsprgLm"></stop></linearGradient>
+              </defs>
+              <g stroke="#EEF0F3" stroke-dasharray="3 3" data-page-node-id="84nKG6QRN4oIIWSN0MuNHy"><line x1="50" y1="16" x2="980" y2="16" data-page-node-id="RWwFMRz9FHJCsFqLgFgoEf"></line><line x1="50" y1="69" x2="980" y2="69" data-page-node-id="MUA1iPSbTgOmNJRc3LLO2i"></line><line x1="50" y1="122" x2="980" y2="122" data-page-node-id="nN4AfL7apJC6P9QrU8KnoY"></line><line x1="50" y1="174" x2="980" y2="174" data-page-node-id="aDhVAlEWEHR6MrcYYDqks0"></line><line x1="50" y1="227" x2="980" y2="227" data-page-node-id="LAtYiHZZRc47K86sFvj8Fm"></line></g>
+              <line x1="50" y1="280" x2="980" y2="280" stroke="#E5E6EB" data-page-node-id="PJnR88IT4C0PpShkewVzjP"></line>
+              <g font-size="12" fill="#A9AEB8" text-anchor="end" data-page-node-id="gAEGhNuNz62J04Maeny7FS"><text x="42" y="284" data-page-node-id="eT8RBmhHcGB5qmpRYwgyxi">0</text><text x="42" y="231" data-page-node-id="Dq4UxK9okgrUWH2jdW6gAR">3</text><text x="42" y="178" data-page-node-id="PMr4MQjlg7WP9mrvWr2bDX">6</text><text x="42" y="126" data-page-node-id="HKdmbZCeW1Isu7Oa78emWS">9</text><text x="42" y="73" data-page-node-id="DgHUhqaxkKPK4ALlGRLfd6">12</text><text x="42" y="20" data-page-node-id="rZ05Mvxs8jRDzgzgGYDDPL">15</text></g>
+              <g font-size="12" fill="#86909C" text-anchor="middle" data-page-node-id="DKFo4WoL0LhgdPXpPAKJWU"><text x="70" y="306" data-page-node-id="MG0QGVWudYum1SBBko7d1Y">2025-10</text><text x="152" y="306" data-page-node-id="rybyBd14ImdhqYuYjKVZRJ">2025-11</text><text x="234" y="306" data-page-node-id="n2hmJpJd3rTPN7sWs38Ayr">2025-12</text><text x="317" y="306" data-page-node-id="CpzBZzLKpOqUXmeWwUohoM">2026-01</text><text x="399" y="306" data-page-node-id="hQC16U5xQ0p53bHy9aLpD6">2026-02</text><text x="481" y="306" data-page-node-id="eZj8UHPuVnbkF7FAIbwLee">2026-03</text><text x="564" y="306" data-page-node-id="ckVuy9ol7nKPHSg1U6LIaV">2026-04</text><text x="646" y="306" data-page-node-id="fNuFf0F32zQOjaXgERCmxb">2026-05</text><text x="728" y="306" data-page-node-id="5kY1nRLEmu8Bgur1GRUgCG">2026-06</text><text x="810" y="306" data-page-node-id="9UGJYu9iaZJpGiBP0GFRvz">2026-07</text><text x="893" y="306" data-page-node-id="TpZdbfQAhSCmGcGajm9DyX">2026-08</text><text x="975" y="306" data-page-node-id="rvuShWbzD3nDgneRxUjbR9">2026-09</text></g>
+              <path d="M70,280 L70,157 L152,157 L234,157 L317,104 L399,174 L481,34 L564,157 L646,139 L728,192 L810,192 L893,192 L975,280 Z" fill="url(#ovArea)" data-page-node-id="ir7VARuUCqQ9GJceKXY2xn"></path>
+              <polyline points="70,227 152,245 234,245 317,245 399,262 481,245 564,245 646,262 728,280 810,262 893,280 975,280" fill="none" stroke="#26BFA8" stroke-width="2" data-page-node-id="alAViLVsNsuoAQbzaKKmD3"></polyline>
+              <polyline points="70,210 152,192 234,192 317,122 399,210 481,69 564,157 646,157 728,192 810,157 893,192 975,280" fill="none" stroke="#F5A623" stroke-width="2" data-page-node-id="DA0ZIxbFjZPcl1ybHjio9J"></polyline>
+              <polyline points="70,157 152,157 234,157 317,104 399,174 481,34 564,157 646,139 728,192 810,192 893,192 975,280" fill="none" stroke="#366EF4" stroke-width="2" data-page-node-id="eciysrV4WMRMzhwtQmcwoe"></polyline>
+              <g fill="#FFFFFF" stroke="#26BFA8" stroke-width="2" data-page-node-id="Eqny8A8saMAsU4kQfj3oNI"><circle cx="70" cy="227" r="4" data-page-node-id="BVcwk2UbjAmqnj8uLtVZmE"><title>2025-10 逾期已整改 3</title></circle><circle cx="152" cy="245" r="4" data-page-node-id="B00jVPCJAgBdm0QwK9vbKp"><title>2025-11 逾期已整改 2</title></circle><circle cx="234" cy="245" r="4" data-page-node-id="ri2azfBoJEh1hH3ejL0afH"><title>2025-12 逾期已整改 2</title></circle><circle cx="317" cy="245" r="4" data-page-node-id="XBdNHpbxN1FNA4HW1DQtgR"><title>2026-01 逾期已整改 2</title></circle><circle cx="399" cy="262" r="4" data-page-node-id="JvsyB0sR9ZFqFpIy4Hu2wG"><title>2026-02 逾期已整改 1</title></circle><circle cx="481" cy="245" r="4" data-page-node-id="UzzsAEp7HEKE9W5vXAAshy"><title>2026-03 逾期已整改 2</title></circle><circle cx="564" cy="245" r="4" data-page-node-id="U4tTuPktgrd7GHsTsEwZLg"><title>2026-04 逾期已整改 2</title></circle><circle cx="646" cy="262" r="4" data-page-node-id="cHkpBq54cAYkxPgAbGhver"><title>2026-05 逾期已整改 1</title></circle><circle cx="728" cy="280" r="4" data-page-node-id="gGqz6kl2JI2ziiiWhWKAp8"><title>2026-06 逾期已整改 0</title></circle><circle cx="810" cy="262" r="4" data-page-node-id="ktWX08tjUUt66IqTretqtW"><title>2026-07 逾期已整改 1</title></circle><circle cx="893" cy="280" r="4" data-page-node-id="rYWLD7y58vawvlKRgk592d"><title>2026-08 逾期已整改 0</title></circle><circle cx="975" cy="280" r="4" data-page-node-id="52E9Fn317mG9vlB67DQFey"><title>2026-09 逾期已整改 0</title></circle></g>
+              <g fill="#FFFFFF" stroke="#F5A623" stroke-width="2" data-page-node-id="KV9nnGwF9hvFROcNF3L1yO"><circle cx="70" cy="210" r="4" data-page-node-id="E3oqIxNHvJvGnweR8tAGiO"><title>2025-10 逾期未整改 4</title></circle><circle cx="152" cy="192" r="4" data-page-node-id="0cvuEV5uO98GPBVS57Db0V"><title>2025-11 逾期未整改 5</title></circle><circle cx="234" cy="192" r="4" data-page-node-id="jpzGCpSl0F7VNVdoy4yDNv"><title>2025-12 逾期未整改 5</title></circle><circle cx="317" cy="122" r="4" data-page-node-id="t49jpyAvho3OmPph8iZD0G"><title>2026-01 逾期未整改 9</title></circle><circle cx="399" cy="210" r="4" data-page-node-id="ofvNvWicX8hbgdcyfWy39F"><title>2026-02 逾期未整改 4</title></circle><circle cx="481" cy="69" r="4" data-page-node-id="CiWjUbLTG0aIBA1F85Obc1"><title>2026-03 逾期未整改 12</title></circle><circle cx="564" cy="157" r="4" data-page-node-id="GNGCJfaBWkN9AAHmFfxr37"><title>2026-04 逾期未整改 7</title></circle><circle cx="646" cy="157" r="4" data-page-node-id="OXtev3InFEFktl4AmDL6wi"><title>2026-05 逾期未整改 7</title></circle><circle cx="728" cy="192" r="4" data-page-node-id="V5JaBqk1e5KBbcESgFt3an"><title>2026-06 逾期未整改 5</title></circle><circle cx="810" cy="157" r="4" data-page-node-id="AbQpfbDQN2VczUtcJv6oT7"><title>2026-07 逾期未整改 7</title></circle><circle cx="893" cy="192" r="4" data-page-node-id="9cCFuQKDhjqcnK3vJ7Shw7"><title>2026-08 逾期未整改 5</title></circle><circle cx="975" cy="280" r="4" data-page-node-id="KHlOdvx3ME1usK1sGAjOAR"><title>2026-09 逾期未整改 0</title></circle></g>
+              <g fill="#FFFFFF" stroke="#366EF4" stroke-width="2" data-page-node-id="ZtQfY1H2qENzUVlVoVngsG"><circle cx="70" cy="157" r="4" data-page-node-id="5U6ybqiCrnYrvDIBwgRpLm"><title>2025-10 逾期隐患 7</title></circle><circle cx="152" cy="157" r="4" data-page-node-id="CcElc4JRtObjdNxS4xFwiQ"><title>2025-11 逾期隐患 7</title></circle><circle cx="234" cy="157" r="4" data-page-node-id="VNTICSCP2ce2ZDAlAAUwEB"><title>2025-12 逾期隐患 7</title></circle><circle cx="317" cy="104" r="4" data-page-node-id="e1vfZjI0fkFhrNpIJy9mcR"><title>2026-01 逾期隐患 10</title></circle><circle cx="399" cy="174" r="4" data-page-node-id="W1FCwHq2RWrGRzdyJF45FO"><title>2026-02 逾期隐患 6</title></circle><circle cx="481" cy="34" r="4" data-page-node-id="je65LMVQdSRlBESB1X6r2t"><title>2026-03 逾期隐患 14</title></circle><circle cx="564" cy="157" r="4" data-page-node-id="VtfExdSLZEawwHfBFA8NCu"><title>2026-04 逾期隐患 7</title></circle><circle cx="646" cy="139" r="4" data-page-node-id="2VGvRgPAWLhD5SrtcvE2i2"><title>2026-05 逾期隐患 8</title></circle><circle cx="728" cy="192" r="4" data-page-node-id="w5YNMaJHVSFdHg9PICRMkv"><title>2026-06 逾期隐患 5</title></circle><circle cx="810" cy="192" r="4" data-page-node-id="yWAdsrB0faDwsCgKbxoydm"><title>2026-07 逾期隐患 5</title></circle><circle cx="893" cy="192" r="4" data-page-node-id="ajBPLCEGPnfJ44MNyDiAIN"><title>2026-08 逾期隐患 5</title></circle><circle cx="975" cy="280" r="4" data-page-node-id="ijTJcxdw6J166saOIyEeLZ"><title>2026-09 逾期隐患 0</title></circle></g>
+            </svg>
+          </div>
+        </div>
+
+        <!-- 筛选区 -->
+        <div class="ov-card ov-filter-card" data-page-node-id="cFUQaAuHg98iHp0rvf1Y6b">
+          <div class="ov-fgrid" data-page-node-id="TioxBSwXog1K6bPl5iB4pz">
+            <div class="ov-fi" data-page-node-id="LOHvhmGbCg6Qvk4K9ThWOg"><label data-page-node-id="DRbp2f7XlQFnDcGdVc9CYI">隐患名称：</label><div class="ov-input" data-page-node-id="KHillqORwvUjBEuXNcfKoq"><input type="text" placeholder="请输入" data-page-node-id="R5BhoBH9NtHtntcwr1kw7V"></div></div>
+            <div class="ov-fi" data-page-node-id="o7BMR5LEy9qB0jtymXgXfN"><label data-page-node-id="sZwno2MiJG4NujlacKpI5O">隐患级别：</label><div class="ov-select" data-page-node-id="TToAvnCHfG3FlWlWfFfZ8A"><span data-page-node-id="KhzJwpXzZ89QmeCdREOvMA">请选择</span><svg viewBox="0 0 12 12" width="12" height="12" data-page-node-id="hBVf1BL49V4i6CHF9PWnog"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round" data-page-node-id="RRi8co2fhDd3OVH4geXElo"></path></svg></div></div>
+            <div class="ov-fi" data-page-node-id="z2DRwnbYG7qNpm33ylZ08b"><label data-page-node-id="FsKYwwd1KxtL0C62SFPEkJ">隐患状态：</label><div class="ov-select" id="ovStatusSel" data-page-node-id="yp6LNzwsO0Y0mjmc0NpLBt"><span class="ov-sel-label" data-page-node-id="F8dcgvLeZOBDHDHGqMnDin">请选择</span><svg class="ov-arrow" viewBox="0 0 12 12" width="12" height="12" data-page-node-id="ppTkMVGIGERrrkEGipAoe8"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round" data-page-node-id="e9kCEcJWn80HPhXQJHyOQe"></path></svg><span class="ov-clear" title="清空" data-page-node-id="tZLryQOm9hZLHRME3f3dGY"><svg viewBox="0 0 14 14" width="14" height="14" data-page-node-id="KMmBvlOjY8SvnAKuqG6gYY"><circle cx="7" cy="7" r="6" fill="none" stroke="#A9AEB8" stroke-width="1.2" data-page-node-id="OEffDiDBkKaYjnWkJXWXG4"></circle><path d="M4.8 4.8l4.4 4.4M9.2 4.8L4.8 9.2" stroke="#A9AEB8" stroke-width="1.2" stroke-linecap="round" data-page-node-id="DETeH0RqvoKoBFdFOeKZ5L"></path></svg></span><div class="ov-dd" data-page-node-id="TBRRnvCWSOL9VYZGUU3SqO"><div class="ov-dd-item" data-page-node-id="1Zi8wLcSinPEivt8kXlHFr">待提交</div><div class="ov-dd-item" data-page-node-id="qt2pV3ulbDmRaAGAW3TlQa">待审批</div><div class="ov-dd-item" data-page-node-id="Fi9NtWAhNcCswKqxe8lOjU">待接收</div><div class="ov-dd-item" data-page-node-id="efmNRLiqYmKx6OLHd5zsfm">待整改</div><div class="ov-dd-item" data-page-node-id="88uvrL1vuogxXiTTf0MrAM">待延期审批</div><div class="ov-dd-item" data-page-node-id="4TQmICiNKWRZdrxLS9oFnb">待重新提交</div><div class="ov-dd-item" data-page-node-id="MqFxntVLqycK9CUH2kqBcj">待验收</div><div class="ov-dd-item" data-page-node-id="InHFY7LdEp8QxQCwC5tsSU">待上级单位确认</div><div class="ov-dd-item" data-page-node-id="Amkx8CY8elFgneXxfg0Gwa">待上级单位验收</div><div class="ov-dd-item" data-page-node-id="ZudzwREKLciAl9ZetTzvUO">已完成</div></div></div></div>
+            <div class="ov-fi" data-page-node-id="BjT45mNIY0XrkFlJFDZm26"><label data-page-node-id="RoLTmJRXj37gxY4Qp6eAQT">专业类别：</label><div class="ov-select" data-page-node-id="kV4ZIhND03ynUbODUU7Atl"><span data-page-node-id="liUXqbRPLzeS1ZgFJfHHAt">请选择</span><svg viewBox="0 0 12 12" width="12" height="12" data-page-node-id="jq8WqFkgyEqWacBUNxm2Vz"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round" data-page-node-id="Htsskiz8CsmHIGG9V5RNui"></path></svg></div></div>
+            <div class="ov-fi" data-page-node-id="olTmxLSuHqSFcC4FWOmLek"><label data-page-node-id="bbCQKx8AqXaDpGR69P0nAD">整改期限：</label><div class="ov-input ov-range" data-page-node-id="Hxe62rSw8kt4nsiGBNnXur"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" data-page-node-id="5oWOAvggyaxddriY3GzvDg"><rect x="1.5" y="2.5" width="13" height="12" rx="1" stroke="#86909C" stroke-width="1.2" data-page-node-id="pmVIZkrpiliG7i2yfniHN2"></rect><path d="M1.5 6h13M5 1v3M11 1v3" stroke="#86909C" stroke-width="1.2" data-page-node-id="RmCe054R60hrdsVUCcTcoz"></path></svg><span data-page-node-id="9W2RxjGuHPMC8nVM8bsTDu">开始日期</span><em data-page-node-id="8kR8ELs5h4lCzjjr533bEH">至</em><span data-page-node-id="rxFXCc6bbIomqUyUZ6aL1f">结束日期</span></div></div>
+            <div class="ov-fi" data-page-node-id="6AnBp8JOlCoB1SGELLWWt7"><label data-page-node-id="FkgmvradElH86POq6iGCiw">发现时间：</label><div class="ov-input ov-range" data-page-node-id="IzCuCBllxZGoZKYIKfHFqy"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" data-page-node-id="azLMl9Rq0dad9BZ4qetP14"><rect x="1.5" y="2.5" width="13" height="12" rx="1" stroke="#86909C" stroke-width="1.2" data-page-node-id="QnQGFhCnbBa4oERdrOVOaK"></rect><path d="M1.5 6h13M5 1v3M11 1v3" stroke="#86909C" stroke-width="1.2" data-page-node-id="flIc6kKtpvW0dVFCLevI0u"></path></svg><span data-page-node-id="y9IDGBfmoV9v06B9XABs0u">开始日期</span><em data-page-node-id="kDaFPnzDP9QhqRgQH1y71s">至</em><span data-page-node-id="oFeqiod4gJZNLpXcpYtJjQ">结束日期</span></div></div>
+            <div class="ov-fi" data-page-node-id="FePpmX9wIPQDvoHKr20Xej"><label data-page-node-id="b6vsMfYooyjeGELbwtOc9U">所属部门：</label><div class="ov-select" data-page-node-id="DPqOhvDvfySJqCjig10w2F"><span data-page-node-id="WUCQojAzTUI5vUVr4kAFHz">请选择</span><svg viewBox="0 0 12 12" width="12" height="12" data-page-node-id="ObMSUxBNH1c1RmK0GNSohR"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round" data-page-node-id="iQDdyM1mzT6OMh6r4QcwOU"></path></svg></div></div>
+            <div class="ov-fi" data-page-node-id="d854kd2D5itg7352PIHX5n"><label data-page-node-id="88jt3v1Vl0V8XSnX39TC8C">发现人：</label><div class="ov-input" data-page-node-id="cJ8IcqZYJC5ZeKbgiKeBsC"><input type="text" placeholder="请输入" data-page-node-id="NbFJ9nVZivK7T7MSdC2K4G"></div></div>
+            <div class="ov-fi" data-page-node-id="4loCH77ZtBH55ezAiJEo1H"><label data-page-node-id="4K9QMTfvlAOayEqIlBhfw8">排查类型（一）：</label><div class="ov-select" data-page-node-id="eaPltBbmZBGDY9vRJ2RqAt"><span data-page-node-id="g5XYfeDv4or5brsfTj0ZVf">请选择</span><svg viewBox="0 0 12 12" width="12" height="12" data-page-node-id="SCSWA1LXzn5N1qG4Xpp1fa"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round" data-page-node-id="rHJpZfn6wsGF0OGldxDX2T"></path></svg></div></div>
+            <div class="ov-fi" data-page-node-id="blKGDpkD2WSIkvgQUpdyCn"><label data-page-node-id="tck48hGcVKouLHfwZz8GSD">排查类型（二）：</label><div class="ov-select" data-page-node-id="oZsoixbaU2SJ9c34ih2DFb"><span data-page-node-id="iztiZq7KpZX8YCaCcFsThd">请选择</span><svg viewBox="0 0 12 12" width="12" height="12" data-page-node-id="0b1EmLM7ik5vC7mcrHPkoy"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round" data-page-node-id="Z49sWzT8eJdWfVrmfJREon"></path></svg></div></div>
+            <div class="ov-fi" data-page-node-id="zzMjcw6DibqIYbOOTYxWC2"><label data-page-node-id="IccOYda6Fe7HxdZGKsAn6C">排查级别：</label><div class="ov-select" data-page-node-id="Rc4Jhvi6OaziAb9BNGPvxj"><span data-page-node-id="K1oaWhRSHErxcMN33HPslx">请选择</span><svg viewBox="0 0 12 12" width="12" height="12" data-page-node-id="uxsLEx4ETioukAxqQqmL5Q"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round" data-page-node-id="lnlXRoxtk7u4DUuNb85O1l"></path></svg></div></div>
+            <div class="ov-btns" data-page-node-id="E8019BrPt7YZNL7ckXkU9H"><button class="ov-btn ov-btn-primary" type="button" data-page-node-id="sEljYP1YjECzKjfvlzgJh0">查 询</button><button class="ov-btn ov-btn-plain" type="button" data-page-node-id="5x4wuHL4cM5m8lKNIVvvN3">重 置</button></div>
+          </div>
+        </div>
+
+        <!-- 逾期隐患表格 -->
+        <div class="ov-card ov-table-card" data-page-node-id="ZrL7Mou3FGtJ6nLMgKF4GJ">
+          <div class="ov-table-head" data-page-node-id="WFratAvZvioP4fKlJpkGF2"><div class="ov-table-title" data-page-node-id="bQ7f4fFyUTAvfoP7fOLBl3">逾期隐患</div><button class="ov-export" type="button" title="导出当前列表数据" data-page-node-id="ZGIkJFVymr0jp0bvAiC6tb"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" data-page-node-id="UYGntw9EvbTKFmVdcXsOIx"><path d="M8 2v8M8 10l-3-3M8 10l3-3" stroke="#4E5969" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="L20H7HCmmUR8lPPF9gPCAq"></path><path d="M2.5 11.5v2h11v-2" stroke="#4E5969" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="yDVjtmI2hQNcsuqUUsnCGt"></path></svg>导出</button></div>
+          <table data-page-node-id="9ywiDGICBHgzY7nlwmWsah">
+            <thead data-page-node-id="IX0vPNWdVoSGsrTAr4SjTN"><tr data-page-node-id="ndh0Ky8VACXSFAYChCqVTj"><th style="width:52px;" data-page-node-id="QXk10dHVwJJUWxHfI8zIkW">序号</th><th data-page-node-id="nQ7yBEbgLVtgyEIt6tg5po">隐患名称</th><th data-page-node-id="Cn0ohH47Na38HiZ0rajcj5">所属部门</th><th data-page-node-id="yvHGtKXIzFSoybFNQRZcm3">隐患级别</th><th data-page-node-id="CkCFPodMJewIX7rRxWNCDS">隐患类别</th><th data-page-node-id="anR6sgrqbMcx1FmePhvJxp">是否重大事故隐患</th><th data-page-node-id="F4NMNhqtQvDXJ3G70THDCE">隐患来源</th><th data-page-node-id="BUANFu7r1L8rg3bYe1Vj7U">排查类型（一）</th><th data-page-node-id="aqdJ5PMdq6ar2i3u3ZTuOS">排查类型（二）</th><th data-page-node-id="AzGLTTPOoxu3yGPpIfQcpC">排查级别</th><th data-page-node-id="583PhjkhdWrUckeBcYXlGS">操作</th></tr></thead>
+            <tbody data-page-node-id="8USZucRizFbgddm6aMrCbi">
+              <tr data-page-node-id="Qg0Ehcyo5ucbZRaTZVbvUv"><td data-page-node-id="EerRfK0YCI6ldmayJXoZUp">1</td><td class="ov-ell" data-page-node-id="1zMJzyxrB2SrvPga5AvdkA">测试隐患-逾期整改验证</td><td class="ov-ell" data-page-node-id="dh1DfE65t5HGIFaEcj4ftk">线上配置专用部门</td><td data-page-node-id="IwQMYrfNQpeGzGt43FoUyC">四级隐患</td><td data-page-node-id="VJwX4LFRkur0TuwpDce4EC">工艺</td><td data-page-node-id="xtmxtKyNlD3CJDeKpu5WKp">否</td><td data-page-node-id="ZQ0JbNGBke0GZFHpDOfV7o">专项排查</td><td class="ov-ell" data-page-node-id="nQQbzoHb0PgPp74SdZLCuX">综合性排查</td><td class="ov-ell" data-page-node-id="lrAGBc8OBkZgdPTwg256UV">督查/安全健康督查</td><td class="ov-ell" data-page-node-id="Ewyh9AI7mdZWVIFZTGITw1">二级公司检查</td><td data-page-node-id="iKmseIFOT2cvetwOoM0bzC"><span class="ov-detail" data-page-node-id="Gtm1k5mp25FArFHryJCyW8">详情</span></td></tr>
+              <tr data-page-node-id="o9UELDVacBjM4uuPLAogC4"><td data-page-node-id="sCT4BYFudsVHRdfMmLMrSi">2</td><td class="ov-ell" data-page-node-id="yz68FEAcFbr55lqanjcuCO">隐患巡查测试数据</td><td class="ov-ell" data-page-node-id="ZX2maOST5WjWBMcNfzs2gt">X- test</td><td data-page-node-id="COQGQEvleBdx9iLWjFXDHe">四级隐患</td><td data-page-node-id="XfKPssI2HWxoroDvtLdPDk">综合管理</td><td data-page-node-id="nstPv2gkYAOFTevHGAWLaB">否</td><td data-page-node-id="35NgKoIHE4x0GSquY4CYdr">专项排查</td><td class="ov-ell" data-page-node-id="KNaWYUgSxyy51ANX7upg3C">日常排查/企业内部自查</td><td class="ov-ell" data-page-node-id="ekbx7O3FhySdslK3Hj0y0J">督查/安全健康督查</td><td class="ov-ell" data-page-node-id="EYCzxv0IjPWbXU4s0I3EMQ">企业及以下自查/企业内部自查</td><td data-page-node-id="3eSHBstIw14DPqBdCLHoyR"><span class="ov-detail" data-page-node-id="2DxfbDvGDhA03zh9sqJQBC">详情</span></td></tr>
+              <tr data-page-node-id="tpfqmL3R6lQhZcNSH8RnBJ"><td data-page-node-id="JhS92CNqUTJyhRQyP6ze7a">3</td><td class="ov-ell" data-page-node-id="FTiyzFNYZGHqUcTqG8SQHb">测试</td><td class="ov-ell" data-page-node-id="NHutBsMgt0LOkOL5d7sSZj">线上配置专用部门</td><td data-page-node-id="WoqLqsvFK9gFt8DkbZeXEr">四级隐患</td><td data-page-node-id="htM3lMTEKCRt8KIYgT3y6P">其他</td><td data-page-node-id="y23Mw1Cw8v63U4BwquhaqS">--</td><td data-page-node-id="7EZFPSBRLEAXoKM6l89TGt">巡检</td><td class="ov-ell" data-page-node-id="w7oiJB8wvI6Gele4e6wGc0">日常排查/巡检</td><td class="ov-ell" data-page-node-id="rktKII5dg88Vc7Y3AvpWiZ">其他检查</td><td class="ov-ell" data-page-node-id="GYBlCuvngTq87h0dfKIhCj">企业及以下自查</td><td data-page-node-id="L5E907CirEISI090p75o6y"><span class="ov-detail" data-page-node-id="7vy0T58Mzs8vU2kBTwzNW0">详情</span></td></tr>
+              <tr data-page-node-id="Cal0k6erss2oT1x4pCNFIY"><td data-page-node-id="lnJKJArWywCWuNwVHedUqL">4</td><td class="ov-ell" data-page-node-id="ps6cGAjhYk7o0TLMFsZZmw">法兰密封面泄漏隐患</td><td class="ov-ell" data-page-node-id="b1JbtuBQkvZEng7TueZNTJ">某装置部</td><td data-page-node-id="fh9lmaJFq8mB4ERPOOD9lO">三级隐患</td><td data-page-node-id="WrGJLmTkhmrAVKlrEriurG">设备</td><td data-page-node-id="f94wwIRtiEDhcOlyyyyycD">否</td><td data-page-node-id="IkYzD5VE3WHNCUtH58VilH">日常排查</td><td class="ov-ell" data-page-node-id="Ay0iZImQcPdJm52g9qouBx">日常排查/岗位巡查</td><td class="ov-ell" data-page-node-id="USe91gQmNfsgTI1BG5Oase">专项监督检查</td><td class="ov-ell" data-page-node-id="ZYeG9M48BfafjqFttoSzaf">企业及以下自查</td><td data-page-node-id="MvqkBk6KyrLA1FUgEin4y3"><span class="ov-detail" data-page-node-id="fG6cECfWmDkS5nRyz5Q9Dy">详情</span></td></tr>
+              <tr data-page-node-id="D8Vb3XXDpnqKA1g0ZMaMyJ"><td data-page-node-id="RDRh7BqH8rGCuq27cNtlRZ">5</td><td class="ov-ell" data-page-node-id="vrOMrpomoD6Kro9GqnO9I1">安全阀校验超期隐患</td><td class="ov-ell" data-page-node-id="R3vmvWVSkKjo0deAsgRVmo">某装置部</td><td data-page-node-id="A7l6hwl2MBpjBxsfsmGiix">四级隐患</td><td data-page-node-id="apLu2PtHAzQ6S8fzRAMCo2">设备</td><td data-page-node-id="5w8fuKRtvJ3iHskUQf3xIT">否</td><td data-page-node-id="tqIyxj26judne9kkDBDubN">专项排查</td><td class="ov-ell" data-page-node-id="RN1UJ6nxpuEmYI7V2vUGI5">专项排查/设备专项</td><td class="ov-ell" data-page-node-id="GsaAGuwIKVavOfm4GTttBQ">二级公司检查</td><td class="ov-ell" data-page-node-id="W6PkOwHRLTAkP3a5vbGGn6">企业及以下自查</td><td data-page-node-id="0O5exVeyJSFGxgy9k576FG"><span class="ov-detail" data-page-node-id="QUnDdI9htTRGZeN8f5eeDR">详情</span></td></tr>
+              <tr data-page-node-id="zDl5CqfBKmfBZBFNBDtNLI"><td data-page-node-id="lHRb5dUlUraw7zZlaovdXB">6</td><td class="ov-ell" data-page-node-id="0EuDmtnTvo2qMo8SIMkDwh">平台护栏腐蚀松动</td><td class="ov-ell" data-page-node-id="wLSD9tY7ECJ0BHWmIFJCjm">某作业部</td><td data-page-node-id="lbtsh4CvgZbD1jHOdCUco0">二级隐患</td><td data-page-node-id="xRTGtrLuCN4lzspK1hwqdH">设备</td><td data-page-node-id="SYY1bEJUo2Xqe7HwQmFxQq">否</td><td data-page-node-id="kqj1G1s8Ui9Fto5YsEr90u">巡检</td><td class="ov-ell" data-page-node-id="DW2CXEg5hvRcdw2Yab4tzA">日常排查/巡检</td><td class="ov-ell" data-page-node-id="A95QEtRx1isK4Xdy7duLWW">其他检查</td><td class="ov-ell" data-page-node-id="X0bGwQmHvUHT86IZLODiCw">企业及以下自查</td><td data-page-node-id="Mpe2gQMB8U48TpBK7kqoTa"><span class="ov-detail" data-page-node-id="fl5Cfffph8lGQ4KaAAxcf8">详情</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div></div>
   </main>
 </div>
 
@@ -1571,7 +1744,7 @@
       '<div class="modal" role="dialog" aria-label="催办回复">'
       + '<div class="modal-head"><div class="modal-title">催办回复</div><button class="modal-close" id="replyClose" type="button" title="关闭">✕</button></div>'
       + '<div class="modal-body">'
-      + '<div class="mitem"><label>隐患名称：</label><div class="mcontrol-wrap"><div class="mreadonly" id="replyHazard">—</div></div></div>'
+      + '<div class="mitem"><label>催办内容：</label><div class="mcontrol-wrap"><div class="mreadonly" id="replyUrgeContent">—</div></div></div>'
       + '<div class="mitem"><label>回复内容：</label><div class="mcontrol-wrap"><textarea class="mcontrol" id="replyContent" placeholder="请输入回复内容">收到催办，正在安排整改，预计近期完成并提交核查。</textarea></div></div>'
       + '</div>'
       + '<div class="modal-foot"><button class="btn btn-plain" id="replyCancel" type="button">取 消</button><button class="btn btn-primary" id="replyConfirm" type="button">提交回复</button></div>'
@@ -1599,8 +1772,7 @@
       var rec = (urgeData[curDetail.name] || [])[idx];
       if (!rec) return;
       curReply = { hazard: curDetail.name, idx: idx };
-      replyMask.querySelector('#replyHazard').textContent =
-        curDetail.name + '（催办对象：' + rec.object.split('（')[0] + '）';
+      replyMask.querySelector('#replyUrgeContent').textContent = rec.content || '—';
       replyMask.style.display = 'flex';
     }
 
@@ -2611,33 +2783,107 @@ const DEPTS = [
   (function(){
     var pageBody = document.querySelector('.page-body');
     var statsView = document.getElementById('statsView');
-    var statsLi = null, hlLi = null;
+    var overdueView = document.getElementById('overdueView');
+    var statsLi = null, odLi = null, hlLi = null;
     document.querySelectorAll('.submenu li').forEach(function(li){
       var t = li.textContent.trim();
       if (t === '隐患统计分析') statsLi = li;
+      if (t === '逾期隐患') odLi = li;
       if (t === '隐患治理') hlLi = li;
     });
-    var inited = false;
-    function showStats(){
-      if (statsView.parentElement !== pageBody) pageBody.appendChild(statsView);
-      statsView.style.display = '';
-      if (!inited) { initStatsView(); inited = true; }
-      pageBody.classList.remove('detail-mode');
+    var statsInited = false;
+    function switchTo(view, li){
+      if (view.parentElement !== pageBody) pageBody.appendChild(view);
+      view.style.display = '';
       var dv = document.getElementById('detailView');
       if (dv) dv.style.display = 'none';
-      pageBody.classList.add('stats-mode');
-      if (statsLi) statsLi.classList.add('active');
+      pageBody.classList.remove('detail-mode');
+      pageBody.classList.remove('stats-mode');
+      pageBody.classList.remove('overdue-mode');
+      pageBody.classList.add(view === statsView ? 'stats-mode' : 'overdue-mode');
+      [statsLi, odLi].forEach(function(x){ if (x) x.classList.remove('active'); });
+      if (li) li.classList.add('active');
       if (hlLi) hlLi.classList.remove('active');
       pageBody.scrollTop = 0;
     }
-    function hideStats(){
+    function hideAll(){
       pageBody.classList.remove('stats-mode');
+      pageBody.classList.remove('overdue-mode');
       statsView.style.display = 'none';
+      overdueView.style.display = 'none';
       if (statsLi) statsLi.classList.remove('active');
+      if (odLi) odLi.classList.remove('active');
       if (hlLi) hlLi.classList.add('active');
     }
-    if (statsLi) statsLi.addEventListener('click', showStats);
-    if (hlLi) hlLi.addEventListener('click', hideStats);
+    if (statsLi) statsLi.addEventListener('click', function(){
+      switchTo(statsView, statsLi);
+      overdueView.style.display = 'none';
+      if (!statsInited) { initStatsView(); statsInited = true; }
+    });
+    if (odLi) odLi.addEventListener('click', function(){
+      switchTo(overdueView, odLi);
+      statsView.style.display = 'none';
+    });
+    if (hlLi) hlLi.addEventListener('click', hideAll);
+
+    /* 逾期视图内轻交互：查询 / 重置 / 详情（Toast 样式复用主页面 .toast） */
+    if (overdueView) {
+      var odToastEl = null, odTimer = null;
+      function odToast(msg){
+        if (!odToastEl){
+          odToastEl = document.createElement('div');
+          odToastEl.className = 'toast';
+          odToastEl.innerHTML = '<span class="ticon">✓</span><span class="od-toast-text"></span>';
+          document.body.appendChild(odToastEl);
+        }
+        odToastEl.querySelector('.od-toast-text').textContent = msg;
+        odToastEl.style.opacity = '1';
+        odToastEl.style.transform = 'translateX(-50%)';
+        odToastEl.style.pointerEvents = 'auto';
+        clearTimeout(odTimer);
+        odTimer = setTimeout(function(){
+          odToastEl.style.opacity = '0';
+          odToastEl.style.transform = 'translateX(-50%) translateY(-8px)';
+          odToastEl.style.pointerEvents = 'none';
+        }, 2200);
+      }
+      var statusSel = document.getElementById('ovStatusSel');
+      function clearStatus(){
+        if (!statusSel) return;
+        statusSel.querySelector('.ov-sel-label').textContent = '请选择';
+        statusSel.classList.remove('selected', 'open');
+        statusSel.querySelectorAll('.ov-dd-item').forEach(function(it){ it.classList.remove('active'); });
+      }
+      overdueView.addEventListener('click', function(e){
+        if (e.target.closest('.ov-detail')) { odToast('原型演示：跳转隐患详情'); return; }
+        if (e.target.closest('.ov-btn-primary')) { odToast('查询成功（原型演示）'); return; }
+        if (e.target.closest('.ov-export')) { odToast('导出成功'); return; }
+        if (e.target.closest('.ov-btn-plain')) {
+          overdueView.querySelectorAll('.ov-input input').forEach(function(inp){ inp.value = ''; });
+          clearStatus();
+          odToast('已重置');
+          return;
+        }
+        /* 隐患状态下拉：清空按钮（不触发展开） */
+        if (e.target.closest('.ov-clear')) { clearStatus(); odToast('已清空隐患状态'); return; }
+        /* 选择枚举项 */
+        var opt = e.target.closest('.ov-dd-item');
+        if (opt && statusSel && statusSel.contains(opt)) {
+          statusSel.querySelector('.ov-sel-label').textContent = opt.textContent;
+          statusSel.classList.add('selected');
+          statusSel.querySelectorAll('.ov-dd-item').forEach(function(it){ it.classList.toggle('active', it === opt); });
+          statusSel.classList.remove('open');
+          return;
+        }
+        /* 点击控件本体：展开/收起 */
+        if (statusSel && e.target.closest('#ovStatusSel')) {
+          statusSel.classList.toggle('open');
+          return;
+        }
+        /* 点击其他区域：收起 */
+        if (statusSel && statusSel.classList.contains('open')) statusSel.classList.remove('open');
+      });
+    }
   })();
 </script>
-<div class="toast"><span class="ticon">✓</span><span id="urgeToastText">催办成功</span></div><div class="modal-mask"><div class="modal" role="dialog" aria-label="隐患催办"><div class="modal-head"><div class="modal-title">隐患催办</div><button class="modal-close" id="urgeClose" type="button" title="关闭">✕</button></div><div class="modal-body"><div class="mitem"><label>隐患名称：</label><div class="mcontrol-wrap"><div class="mreadonly" id="urgeHazardName">—</div></div></div><div class="mitem" id="urgeTargetItem"><label><span class="req">*</span>催办对象：</label><div class="mcontrol-wrap"><div class="combo" id="urgeTargetCombo"><input class="mcontrol combo-input" id="urgeTargetInput" placeholder="请选择，支持关键字搜索" autocomplete="off"><div class="combo-list" id="urgeTargetList"></div></div><div class="merr">请选择催办对象</div><div class="mhint">支持按姓名/角色/部门关键字模糊搜索</div></div></div><div class="mitem"><label><span class="req">*</span>催办方式：</label><div class="mcontrol-wrap"><div class="mchecks" id="urgeWays"><label><input type="checkbox" checked="">系统消息</label><label><input type="checkbox">短信</label><label><input type="checkbox">邮件</label><label><input type="checkbox" checked="">APP推送</label></div></div></div><div class="mitem"><label>催办内容：</label><div class="mcontrol-wrap"><textarea class="mcontrol" id="urgeContent" placeholder="请输入催办内容">您有一条隐患尚未完成整改，请尽快登录系统处理并反馈整改结果。</textarea><div class="mhint">催办内容将以站内信/短信/APP推送形式发送给催办对象</div></div></div></div><div class="modal-foot"><button class="btn btn-plain" id="urgeCancel" type="button">取 消</button><button class="btn btn-primary" id="urgeConfirm" type="button">确定催办</button></div></div></div><div class="modal-mask"><div class="modal" role="dialog" aria-label="催办回复"><div class="modal-head"><div class="modal-title">催办回复</div><button class="modal-close" id="replyClose" type="button" title="关闭">✕</button></div><div class="modal-body"><div class="mitem"><label>隐患名称：</label><div class="mcontrol-wrap"><div class="mreadonly" id="replyHazard">—</div></div></div><div class="mitem"><label>回复内容：</label><div class="mcontrol-wrap"><textarea class="mcontrol" id="replyContent" placeholder="请输入回复内容">收到催办，正在安排整改，预计近期完成并提交核查。</textarea></div></div></div><div class="modal-foot"><button class="btn btn-plain" id="replyCancel" type="button">取 消</button><button class="btn btn-primary" id="replyConfirm" type="button">提交回复</button></div></div></div></body></html>
+</body></html>
