@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="Bf5OuT2JSgIA34nnEMNkR4" data-dm-ref="1"><head data-page-node-id="hN0CqBaeHVxQ9CBv7qFwIc">
+<meta charset="UTF-8" data-page-node-id="UejCN38JNL82LbD7r7xsaO">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="Lv1XH5RLJP8lGEefQ3O3kb">
+<title>隐患治理 · 移动端原型（催办 / 催办回复）</title>
+<style>
+  :root {
+    --primary: #2b6de8;
+    --primary-light: #e8f1ff;
+    --text-main: #333;
+    --text-sub: #666;
+    --text-gray: #999;
+    --line: #ececec;
+    --bg: #f5f6f8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+    background: #e9ebef;
+    color: var(--text-main);
+    font-size: 15px;
+  }
+  .phone {
+    max-width: 420px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: var(--bg);
+    position: relative;
+    box-shadow: 0 0 24px rgba(0,0,0,.08);
+  }
+  .view { display: none; min-height: 100vh; padding-bottom: 76px; }
+  .view.active { display: block; }
+
+  /* ===== 顶部导航 ===== */
+  .nav {
+    position: sticky; top: 0; z-index: 20;
+    height: 48px;
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .nav-back {
+    position: absolute; left: 10px; top: 6px;
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0;
+  }
+  .nav-back svg { width: 22px; height: 22px; stroke: #222; }
+  .nav-title {
+    position: absolute; left: 50%; top: 0; transform: translateX(-50%);
+    height: 48px; line-height: 48px;
+    font-size: 17px; font-weight: 600; color: #222; white-space: nowrap;
+  }
+  .nav-right {
+    position: absolute; right: 12px; top: 11px;
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0;
+  }
+  .nav-right svg { width: 22px; height: 22px; }
+
+  /* ===== 门户页（应用中心） ===== */
+  .portal-view { background: linear-gradient(180deg, #d9e6fb 0%, #e8eefb 22%, #f5f6f8 55%, #f5f6f8 100%); }
+  .statusbar {
+    height: 36px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 18px; font-size: 14px; font-weight: 600; color: #1f2d3d;
+  }
+  .statusbar svg { height: 13px; width: 60px; }
+  .portal-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px 14px; }
+  .portal-title { font-size: 26px; font-weight: 700; color: #1f2d3d; }
+  .portal-bell {
+    position: relative; width: 38px; height: 38px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .portal-bell svg { width: 24px; height: 24px; stroke: #3a4453; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .bell-dot {
+    position: absolute; top: 4px; right: 5px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #e5483f; border: 1.5px solid #fff;
+  }
+  .app-card {
+    background: rgba(255,255,255,.72);
+    border-radius: 16px; margin: 0 12px 16px;
+    padding: 16px 6px 8px;
+    box-shadow: 0 2px 10px rgba(80,110,180,.06);
+  }
+  .app-card-title { font-size: 16px; font-weight: 700; color: #1f2d3d; padding: 0 12px; }
+  .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); row-gap: 18px; padding: 14px 0 10px; }
+  .app-item { text-align: center; cursor: pointer; user-select: none; }
+  .app-item:active .app-icon { transform: scale(.92); }
+  .app-icon {
+    width: 46px; height: 46px; border-radius: 12px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .12s;
+  }
+  .app-icon svg { width: 24px; height: 24px; stroke: #fff; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+  .app-name { margin-top: 7px; font-size: 12.5px; color: #333; }
+  .c1 { background: linear-gradient(135deg, #4f8bf7, #2b6de8); }
+  .c2 { background: linear-gradient(135deg, #ffc53d, #fa8c16); }
+  .c3 { background: linear-gradient(135deg, #8a8ff5, #5a5fe0); }
+  .c4 { background: linear-gradient(135deg, #2bc3a8, #0ea88e); }
+  .c5 { background: linear-gradient(135deg, #ff7a6e, #e5483f); }
+  .c6 { background: linear-gradient(135deg, #38b6ff, #1f8fe8); }
+  .c7 { background: linear-gradient(135deg, #ff8fb0, #f25d8e); }
+  .c8 { background: linear-gradient(135deg, #6a8dff, #4a6cf7); }
+
+  /* ===== 底部导航（门户页） ===== */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 420px; z-index: 30;
+    background: #fff; border-top: 1px solid var(--line);
+    display: flex; padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+  }
+  .bn-item {
+    flex: 1; text-align: center; cursor: pointer; user-select: none;
+    color: #8a919c; font-size: 11px; padding: 2px 0;
+  }
+  .bn-item svg { width: 22px; height: 22px; display: block; margin: 0 auto 2px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .bn-item.active { color: var(--primary); font-weight: 600; }
+
+  /* ===== 消息中心 ===== */
+  .msg-view {
+    background: linear-gradient(180deg, #d9e6fb 0%, #eef2fa 34%, #f5f6f8 60%, #f5f6f8 100%);
+  }
+  .nav-clear {
+    position: absolute; right: 14px; top: 0; height: 48px; line-height: 48px;
+    font-size: 14px; color: #3a4453; cursor: pointer; user-select: none;
+  }
+  .msg-tabs { display: flex; padding: 4px 0 2px; }
+  .msg-tab {
+    flex: 1; text-align: center; padding: 10px 0 8px;
+    font-size: 16px; font-weight: 600; color: #4a5568;
+    cursor: pointer; position: relative; user-select: none;
+  }
+  .msg-tab.active { color: #2456c4; }
+  .msg-tab.active::after {
+    content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+    bottom: 0; width: 26px; height: 3px; border-radius: 2px; background: #2456c4;
+  }
+  .msg-tools {
+    display: flex; justify-content: flex-end; gap: 10px;
+    padding: 10px 14px 6px;
+  }
+  .msg-tool {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,.75); border: 1px solid rgba(180,200,235,.5);
+    border-radius: 8px; padding: 6px 12px;
+    font-size: 13px; color: #3a4453; cursor: pointer; user-select: none;
+  }
+  .msg-tool svg { width: 15px; height: 15px; stroke: #5b6880; }
+  .msg-list { padding: 4px 0 20px; }
+  .msg-item {
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid rgba(160,185,225,.28);
+    cursor: pointer;
+  }
+  .msg-item:active { background: rgba(255,255,255,.4); }
+  .msg-item-head { display: flex; align-items: center; gap: 8px; }
+  .msg-dot { width: 7px; height: 7px; border-radius: 50%; background: #e5483f; flex-shrink: 0; }
+  .msg-dot.read { background: transparent; }
+  .msg-item-title { font-size: 16px; font-weight: 600; color: #1f2d3d; flex: 1; }
+  .msg-go-btn {
+    flex-shrink: 0; cursor: pointer; user-select: none;
+    font-size: 12px; color: #2b6de8;
+    background: rgba(255,255,255,.85);
+    border: 1px solid rgba(43,109,232,.45);
+    border-radius: 14px; padding: 3px 12px;
+  }
+  .msg-go-btn:active { background: #e8f1ff; }
+  .msg-item-body { margin: 9px 0 0 15px; font-size: 14px; color: #3f4a5c; line-height: 1.7; }
+  .msg-item-time { margin: 8px 15px 0 0; text-align: right; font-size: 13px; color: #8d99ad; }
+  .msg-empty { text-align: center; color: #8d99ad; font-size: 13px; padding: 46px 0 30px; }
+
+  /* ===== 页内 Tab（详情 / 记录）===== */
+  .page-tabs {
+    display: flex; background: #fff;
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 48px; z-index: 19;
+  }
+  .page-tab {
+    flex: 1; text-align: center; padding: 12px 0 10px;
+    font-size: 16px; font-weight: 600; color: #444;
+    cursor: pointer; position: relative;
+  }
+  .page-tab.active { color: var(--primary); }
+  .page-tab.active::after {
+    content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+    bottom: 4px; width: 28px; height: 3px; border-radius: 2px; background: var(--primary);
+  }
+
+  /* ===== 流程步骤条 ===== */
+  .steps { background: #fff; padding: 26px 18px 18px; }
+  .steps-row { display: flex; align-items: flex-start; }
+  .step { flex: 1; text-align: center; position: relative; }
+  .step .dot {
+    width: 26px; height: 26px; border-radius: 50%;
+    margin: 0 auto; display: flex; align-items: center; justify-content: center;
+    background: var(--primary); position: relative; z-index: 2;
+  }
+  .step .dot svg { width: 14px; height: 14px; stroke: #fff; stroke-width: 3; }
+  .step.current .dot {
+    background: #fff; border: 2px solid var(--primary);
+    box-shadow: 0 0 0 5px rgba(43,109,232,.14);
+  }
+  .step.current .dot i {
+    width: 10px; height: 10px; border-radius: 50%; background: var(--primary); display: block;
+  }
+  .step.pending .dot {
+    background: #fff; border: 2px solid #c9ced6;
+  }
+  .step.pending .step-name { color: #9aa1ab; }
+  .step.pending::before { background: #c9ced6; }
+
+  /* ===== 流程图（纵向节点图）===== */
+  .flowchart { background: #fff; padding: 34px 0 44px; }
+  .fc-node {
+    width: 62%; margin: 0 auto;
+    height: 54px; display: flex; align-items: center; justify-content: center;
+    background: #e9eefb; border: 1px solid #c6d4f0; border-radius: 6px;
+    font-size: 16px; color: #3a4a6b;
+  }
+  .fc-node.current {
+    background: #1c50d8; border-color: #1c50d8; color: #fff; font-weight: 500;
+    box-shadow: 0 4px 10px rgba(28,80,216,.28);
+  }
+  .fc-arrow {
+    width: 62%; margin: 0 auto; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .fc-arrow svg { height: 100%; }
+  .step::before {
+    content: ''; position: absolute; top: 12px; left: -50%; width: 100%; height: 3px;
+    background: var(--primary); z-index: 1;
+  }
+  .step:first-child::before { display: none; }
+  .step-name { margin-top: 10px; font-size: 15px; color: var(--primary); font-weight: 500; }
+
+  /* ===== 字段列表 ===== */
+  .fields { background: #fff; margin-top: 10px; }
+  .frow {
+    display: flex; padding: 14px 16px; border-bottom: 1px solid #f5f5f5;
+    align-items: flex-start;
+  }
+  .frow:last-child { border-bottom: none; }
+  .flabel { width: 96px; flex-shrink: 0; color: var(--text-main); line-height: 1.5; }
+  .fvalue { flex: 1; color: var(--text-main); line-height: 1.5; word-break: break-all; }
+  .fvalue.empty { color: var(--text-gray); }
+  .fcounter { text-align: right; color: #bbb; font-size: 12px; margin-top: 6px; }
+
+  /* ===== 卡片（催办记录）===== */
+  .card-block { background: #fff; margin-top: 10px; }
+  .card-title {
+    padding: 14px 16px 4px; font-size: 16px; font-weight: 600; color: #222;
+  }
+  .urge-item { padding: 12px 16px; border-bottom: 1px solid #f5f5f5; }
+  .urge-item:last-child { border-bottom: none; }
+  .urge-line { color: var(--text-sub); font-size: 13px; line-height: 1.7; }
+  .urge-line b { color: var(--text-main); font-weight: 500; }
+  .urge-reply-box {
+    margin-top: 6px; background: #f7f9fc; border-left: 3px solid var(--primary);
+    padding: 6px 10px; border-radius: 4px; font-size: 13px; color: var(--text-sub); line-height: 1.6;
+  }
+  .urge-actions { margin-top: 8px; text-align: right; }
+  .link-btn {
+    color: var(--primary); font-size: 14px; cursor: pointer; user-select: none;
+  }
+  .urge-empty { padding: 18px 16px 22px; color: var(--text-gray); font-size: 13px; text-align: center; }
+
+  /* ===== 底部操作栏 ===== */
+  .bottom-bar {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 420px;
+    background: #fff; border-top: 1px solid var(--line);
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    display: flex; gap: 12px; z-index: 30;
+  }
+  .btn {
+    flex: 1; height: 44px; border-radius: 22px; border: none;
+    font-size: 16px; font-weight: 500; cursor: pointer;
+  }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:active { opacity: .88; }
+  .btn-plain { background: #fff; color: var(--text-sub); border: 1px solid #d8dce3; }
+
+  /* ===== 隐患过程记录（时间线）===== */
+  .timeline { background: #fff; margin-top: 10px; padding: 6px 0 10px; }
+  .tl-item {
+    display: flex; padding: 13px 16px 13px 20px;
+    border-bottom: 1px solid #f5f5f5; position: relative;
+  }
+  .tl-item:last-child { border-bottom: none; }
+  .tl-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: #8a929e;
+    position: absolute; left: 8px; top: 21px; flex-shrink: 0;
+  }
+  .tl-body { flex: 1; margin-left: 8px; }
+  .tl-title { font-size: 15px; color: #3d4451; line-height: 1.5; }
+  .tl-title b { font-weight: 600; }
+  .tl-meta {
+    display: flex; align-items: center; gap: 18px;
+    margin-top: 7px; color: #b0b6bf; font-size: 13px; flex-wrap: wrap;
+  }
+  .tl-meta span { display: inline-flex; align-items: center; gap: 5px; }
+  .tl-meta svg { width: 15px; height: 15px; stroke: #b0b6bf; }
+  .tl-detail { margin-top: 7px; color: var(--text-sub); font-size: 13px; line-height: 1.7; }
+  .tl-detail b { color: var(--text-main); font-weight: 500; }
+  .tl-tag {
+    display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 3px;
+    font-size: 11px; background: var(--primary-light); color: var(--primary); vertical-align: 1px;
+  }
+
+  /* ===== 弹窗（底部抽屉式）===== */
+  .mask {
+    position: fixed; inset: 0; background: rgba(0,0,0,.45);
+    z-index: 100; display: none; align-items: flex-end; justify-content: center;
+  }
+  .mask.show { display: flex; }
+  .sheet {
+    width: 100%; max-width: 420px; background: #fff;
+    border-radius: 16px 16px 0 0;
+    max-height: 88vh; display: flex; flex-direction: column;
+    animation: slideUp .22s ease-out;
+  }
+  @keyframes slideUp { from { transform: translateY(40%); opacity: .4; } to { transform: none; opacity: 1; } }
+  .sheet-head {
+    padding: 16px 16px 10px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .sheet-title { font-size: 17px; font-weight: 600; }
+  .sheet-close {
+    width: 30px; height: 30px; border: none; background: #f2f3f5; border-radius: 50%;
+    color: #888; font-size: 15px; cursor: pointer; line-height: 1;
+  }
+  .sheet-body { padding: 2px 16px 8px; overflow-y: auto; }
+  .sitem { margin-bottom: 14px; }
+  .sitem label { display: block; font-size: 14px; color: var(--text-sub); margin-bottom: 7px; }
+  .sitem label .req { color: #e54d42; margin-right: 2px; }
+  .scontrol {
+    width: 100%; border: 1px solid #dfe3e8; border-radius: 8px;
+    padding: 11px 12px; font-size: 15px; color: var(--text-main);
+    background: #fff; outline: none; font-family: inherit;
+  }
+  .scontrol:focus { border-color: var(--primary); }
+  .scontrol[readonly] { background: #f7f8fa; color: var(--text-sub); }
+  textarea.scontrol { min-height: 88px; resize: none; line-height: 1.6; }
+  .serr { display: none; color: #e54d42; font-size: 12px; margin-top: 5px; }
+  .sitem.error .scontrol { border-color: #e54d42; }
+  .sitem.error .serr { display: block; }
+  .shint { font-size: 12px; color: #a2a8b0; margin-top: 6px; line-height: 1.5; }
+  .schecks { display: flex; flex-wrap: wrap; gap: 10px 18px; padding: 2px 0; }
+  .schecks label { display: inline-flex; align-items: center; gap: 6px; margin: 0; color: var(--text-main); font-size: 14px; }
+  .schecks input { width: 17px; height: 17px; accent-color: var(--primary); }
+  .combo { position: relative; }
+  .combo-list {
+    position: absolute; left: 0; right: 0; top: calc(100% + 4px);
+    background: #fff; border: 1px solid #dfe3e8; border-radius: 8px;
+    max-height: 190px; overflow-y: auto; z-index: 5; display: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,.1);
+  }
+  .combo-list.show { display: block; }
+  .combo-opt { padding: 10px 12px; font-size: 14px; cursor: pointer; border-bottom: 1px solid #f5f5f5; }
+  .combo-opt:last-child { border-bottom: none; }
+  .combo-opt:active, .combo-opt:hover { background: #f4f8ff; }
+  .combo-empty { padding: 14px; text-align: center; color: var(--text-gray); font-size: 13px; }
+  .sheet-foot { padding: 10px 16px calc(14px + env(safe-area-inset-bottom)); display: flex; gap: 12px; }
+  .sheet-foot .btn { height: 42px; border-radius: 21px; }
+
+  /* ===== Toast ===== */
+  .m-toast {
+    position: fixed; top: 18%; left: 50%; transform: translateX(-50%) translateY(-8px);
+    background: rgba(17,17,17,.82); color: #fff; padding: 10px 18px;
+    border-radius: 8px; font-size: 14px; z-index: 200;
+    opacity: 0; pointer-events: none; transition: all .25s;
+    max-width: 82%; text-align: center; line-height: 1.5;
+  }
+  .m-toast.show { opacity: 1; transform: translateX(-50%); }
+</style>
+<style id="__dm_no_drag_style__">* { -webkit-user-drag: none !important; }</style><style id="__dm_bindable_badge_style__">[data-sp-bindable="database"]{outline:1px dashed #0088ff;outline-offset:2px;border-radius:4px;}[data-sp-bindable="database"] *{pointer-events:none !important;transition:none !important;animation:none !important;}[data-sp-bindable="database"]{transition:none !important;animation:none !important;}</style></head>
+<body data-page-node-id="v4XHRUEuHKI1MuGZ7dAS1E" style="">
+<div class="phone" data-page-node-id="jHd08Tgl3qH8Cj9umSOHEv">
+
+  <!-- ================= 视图零：门户页（应用中心） ================= -->
+  <div class="view active portal-view" id="viewPortal">
+    <div class="statusbar">
+      <span>15:38</span>
+      <svg viewBox="0 0 60 14" fill="none" stroke="#1f2d3d" stroke-width="1.6" stroke-linecap="round">
+        <path d="M2 9.5v-3M5.5 10.5v-5M9 11.5v-7"/><rect x="14" y="4" width="8" height="7" rx="1.5"/><path d="M24 6.5c1.8-1.6 4.2-1.6 6 0M25.5 8.8c1-.9 2-.9 3 0" stroke-width="1.4"/>
+        <rect x="36" y="4.5" width="18" height="7" rx="2"/><rect x="38" y="6.5" width="11" height="3" rx="1" fill="#1f2d3d" stroke="none"/>
+      </svg>
+    </div>
+    <div class="portal-head">
+      <div class="portal-title">应用中心</div>
+      <div class="portal-bell" id="toMsgIcon" title="消息提醒">
+        <svg viewBox="0 0 24 24">
+          <path d="M6 10a6 6 0 0 1 12 0c0 4 1.6 5.4 2.4 6.2H3.6C4.4 15.4 6 14 6 10z"/>
+          <path d="M10 19.5a2.2 2.2 0 0 0 4 0"/>
+        </svg>
+        <span class="bell-dot" id="bellDot"></span>
+      </div>
+    </div>
+    <div class="app-card">
+      <div class="app-card-title">作业许可</div>
+      <div class="app-grid" id="gridPermit"></div>
+    </div>
+    <div class="app-card">
+      <div class="app-card-title">双重预防</div>
+      <div class="app-grid" id="gridPrevent"></div>
+    </div>
+    <div class="bottom-nav" id="bottomNav">
+      <div class="bn-item" data-bn="首页">
+        <svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7"/><path d="M6 9.5V20h12V9.5"/></svg>
+        首页
+      </div>
+      <div class="bn-item" data-bn="工作台">
+        <svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>
+        工作台
+      </div>
+      <div class="bn-item active" data-bn="应用中心">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>
+        应用中心
+      </div>
+      <div class="bn-item" data-bn="我的">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"/></svg>
+        我的
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 视图一：隐患详情 ================= -->
+  <div class="view" id="viewDetail" data-page-node-id="3PpjWrOJhFJTguLAfhGxhc">
+    <div class="nav" data-page-node-id="E0rVOvZHx4F01h5x6vp4xq">
+      <div class="nav-back" id="detailBack" data-page-node-id="bZdzAF1nQEIMDk7bpsonzH">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="dZ5I2ByBClkvs0Ki50hPxl"><path d="M15 5l-7 7 7 7" data-page-node-id="TGv1A2cYIWhzAXXJ4WYVJe"></path></svg>
+      </div>
+      <div class="nav-title" id="detailTitle" data-page-node-id="xUxelEUeC5EpLnpOfvuZMe">隐患详情</div>
+      <div class="nav-right" id="toFlowIcon" title="隐患流程" data-page-node-id="vlUhnacwgDKX5NDwtfGXwG">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#2b6de8" stroke-width="1.8" data-page-node-id="9T6BDhche458b3cdKjYpF1">
+          <circle cx="12" cy="12" r="9.2" data-page-node-id="iKdchBAzZCqihjpFYoba7p"></circle>
+          <circle cx="12" cy="7.6" r="1.7" data-page-node-id="bmYzBJ3klY12o3LCLQ41eu"></circle><circle cx="7.8" cy="14.6" r="1.7" data-page-node-id="5KSzLY1bE53MTjZXuXbBXp"></circle><circle cx="16.2" cy="14.6" r="1.7" data-page-node-id="0OI7a9NREgc1TIcx9b1uA4"></circle>
+          <path d="M12 9.3l-3.2 3.9M12 9.3l3.2 3.9M9.5 14.6h5" data-page-node-id="w4Uc5XVycG1jI7lXH4F3JP"></path>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 步骤条 -->
+    <div class="steps" id="detailSteps" data-page-node-id="cWhqcYmsRC932jPymJB0cc"><div class="steps-row"><div class="step"><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 8"></path></svg></div><div class="step-name">登记</div></div><div class="step"><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 8"></path></svg></div><div class="step-name">确认</div></div><div class="step current"><div class="dot"><i></i></div><div class="step-name">接收</div></div><div class="step pending"><div class="dot"></div><div class="step-name">整改</div></div><div class="step pending"><div class="dot"></div><div class="step-name">验收</div></div></div></div>
+
+    <!-- 字段 -->
+    <div class="fields" data-page-node-id="U7FjwNYypnYx3q4hH5uTkL">
+      <div class="frow" data-page-node-id="SeIIc6XmVXBs2KxvpDkEDv"><div class="flabel" data-page-node-id="OvWWSBuL0TgDQegJu7rbrO">隐患等级</div><div class="fvalue" data-page-node-id="rCRilU8zRH3kMvWGAgPJCm">一级隐患</div></div>
+      <div class="frow" data-page-node-id="mEgCPjtq1Hu7DRvshhYBqU"><div class="flabel" data-page-node-id="1yafUTHlHq4Exdy285aQfT">归口管理部门</div><div class="fvalue" data-page-node-id="qfz3jiWHfJqTNBMwiiqh89">有机车间2</div></div>
+      <div class="frow" data-page-node-id="gpcc7NXmhjssvESHJGwXFn"><div class="flabel" data-page-node-id="G06GlKLJNfn8fgmW6kQ8PR">隐患治理类型</div><div class="fvalue" data-page-node-id="SsoPmTAvhoGDB8eAiOzavQ">立即整改</div></div>
+      <div class="frow" data-page-node-id="xjrZaoZ6ejfXB1iNMC4cXU"><div class="flabel" data-page-node-id="qwJuekHaC1VK8QIgBDMtEl">整改责任人</div><div class="fvalue" data-page-node-id="t6caxz9zbgHEeXfDWbaDWC">杨威01</div></div>
+      <div class="frow" data-page-node-id="oJFM0yzQXmiI11wy78ne36"><div class="flabel" data-page-node-id="do0Kmf8yMnpv3WAtM3HNI0">整改验收人</div><div class="fvalue" data-page-node-id="SItEbPnRwUjNxAbmtK9euL">魏芝,杨威01</div></div>
+      <div class="frow" data-page-node-id="JcYMkiPdwOPygY5vs1WIex"><div class="flabel" data-page-node-id="N52o8l0szsf0qe7hzn3sRr">整改期限</div><div class="fvalue" data-page-node-id="SmNyGEvU2JgbNIj6GwqX6M">2025-12-31</div></div>
+      <div class="frow" data-page-node-id="jLpTzC2iLfSBEO7WVVfTj3">
+        <div class="flabel" data-page-node-id="JoI2ILlU0Ydy8U1GNkycC5">整改措施</div>
+        <div class="fvalue" data-page-node-id="NBIgL4PzbygJS0ZLpblg9F">按要求整改<div class="fcounter" data-page-node-id="Y1cs61H2dpyokqAA2XQNnr">5/500</div></div>
+      </div>
+      <div class="frow" data-page-node-id="vLXY4DJj1FEieKaub4u0B9">
+        <div class="flabel" data-page-node-id="elmqDGp61wJA0gdigyZMIf">控制措施</div>
+        <div class="fvalue empty" data-page-node-id="zFcM0Pd6bThcfMgiipdR5s">--<div class="fcounter" data-page-node-id="4Md7rtwjkG362xWaIWbFXA">0/500</div></div>
+      </div>
+    </div>
+
+    <!-- 催办记录 -->
+    <div class="card-block" data-page-node-id="jBt4lGaPlfTbI34PRyY0sk">
+      <div class="card-title" data-page-node-id="BgYrRk4rjoGYkn1CyaHpu6">催办记录</div>
+      <div id="detailUrgeList" data-page-node-id="0D9jIbfrpkP1squcvOFdru"><div class="urge-item"><div class="urge-line"><b>2025-12-31 21:30</b>　由 HSE专员 熊辰婷 发起催办</div><div class="urge-line">催办对象：<b>杨威01（整改责任人 · 有机车间2）</b></div><div class="urge-line">通知方式：系统消息、APP推送</div><div class="urge-line">催办内容：您有一条隐患尚未完成整改，请尽快登录系统处理并反馈整改结果。</div><div class="urge-reply-box"><b>杨威01（被催办人）</b>（2025-12-31 21:48）回复：收到，正在采购配件，预计 9 月 25 日前完成整改并提交核查。</div><div class="urge-actions"><span class="link-btn" data-reply="0">回复催办</span></div></div></div>
+    </div>
+
+    <div class="bottom-bar" data-page-node-id="UlbglODxFFJNQhA31OaoTK">
+      <button class="btn btn-primary" id="btnUrge" type="button" data-page-node-id="wBht5PW8bu1UHedmhTZHSN">催办</button>
+    </div>
+  </div>
+
+  <!-- ================= 视图二：隐患流程 ================= -->
+  <div class="view" id="viewFlow" data-page-node-id="VWhmCWz0dPbkoK8luRpJi5">
+    <div class="nav" data-page-node-id="GyPjz7r6vFMjMpVfkIojF9">
+      <div class="nav-back" id="flowBack" data-page-node-id="K5Uu442xGiHDVHiqalozgc">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="rppAZjCieMPCfwsqWhGIJd"><path d="M15 5l-7 7 7 7" data-page-node-id="7klB95CBItayNzoCectNGm"></path></svg>
+      </div>
+      <div class="nav-title" data-page-node-id="afs582IzFYgDDPhf08e2Eh">隐患流程</div>
+    </div>
+    <div class="page-tabs" data-page-node-id="1NWBtS4ocvpQ3DthaORG2I">
+      <div class="page-tab" id="tabFlowChart" data-page-node-id="ltNi17DFo0jDjWttMQNZ2t">流程图</div>
+      <div class="page-tab active" id="tabFlowRecord" data-page-node-id="BHBe1hPG6lz5JAkHynFyDD">隐患过程记录</div>
+    </div>
+
+    <div id="flowChartPane" style="display:none;" data-page-node-id="xpJW4qVwGg9ZVSkwlRM6tP">
+      <div class="flowchart" id="flowChartBox" data-page-node-id="3glqS0KgnVW2nrQlo4zbw8"><div class="fc-node">提交</div><div class="fc-arrow"><svg viewBox="0 0 16 40" fill="none"><path d="M8 0v32" stroke="#b9c6e2" stroke-width="2"></path><path d="M2.5 30L8 38l5.5-8z" fill="#b9c6e2"></path></svg></div><div class="fc-node">确认</div><div class="fc-arrow"><svg viewBox="0 0 16 40" fill="none"><path d="M8 0v32" stroke="#b9c6e2" stroke-width="2"></path><path d="M2.5 30L8 38l5.5-8z" fill="#b9c6e2"></path></svg></div><div class="fc-node current">接收</div><div class="fc-arrow"><svg viewBox="0 0 16 40" fill="none"><path d="M8 0v32" stroke="#b9c6e2" stroke-width="2"></path><path d="M2.5 30L8 38l5.5-8z" fill="#b9c6e2"></path></svg></div><div class="fc-node">整改</div><div class="fc-arrow"><svg viewBox="0 0 16 40" fill="none"><path d="M8 0v32" stroke="#b9c6e2" stroke-width="2"></path><path d="M2.5 30L8 38l5.5-8z" fill="#b9c6e2"></path></svg></div><div class="fc-node">验收</div></div>
+    </div>
+    <div id="flowRecordPane" data-page-node-id="13nYU6pUst8AZkWcJbiWz9">
+      <div class="timeline" id="processTimeline" data-page-node-id="uH4CPhRaJvoI3xzwPH7ABt"><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患登记 - 提交</b></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>魏芝</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 20:52:10</span></div></div></div><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患确认 - 审批通过</b></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>魏芝</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 20:52:17</span></div></div></div><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患接收 - 接收-整改</b></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>杨威01</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 20:53:14</span></div></div></div><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患整改 - 整改完成</b></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>杨威01</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 20:53:26</span></div></div></div><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患验收 - 验收完成</b></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>杨威01</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 20:53:51</span></div></div></div><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患催办 - 发起催办</b><span class="tl-tag">催办</span></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>熊辰婷（HSE专员）</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 21:30</span></div><div class="tl-detail">催办对象：<b>杨威01（整改责任人 · 有机车间2）</b>；通知方式：系统消息、APP推送<br>催办内容：您有一条隐患尚未完成整改，请尽快登录系统处理并反馈整改结果。　<span class="link-btn" data-reply="0">回复</span></div></div></div><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患催办 - 催办回复</b><span class="tl-tag">回复</span></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>杨威01（被催办人）</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 21:48</span></div><div class="tl-detail">回复内容：收到，正在采购配件，预计 9 月 25 日前完成整改并提交核查。</div></div></div></div>
+    </div>
+  </div>
+
+  <!-- ================= 视图三：消息提醒 ================= -->
+  <div class="view msg-view" id="viewMsg">
+    <div class="nav msg-nav">
+      <div class="nav-back" id="msgBack">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </div>
+      <div class="nav-title">消息中心</div>
+      <div class="nav-clear" id="clearUnread">清除未读</div>
+    </div>
+    <div class="msg-tabs">
+      <div class="msg-tab active" id="msgTabUnread">未读</div>
+      <div class="msg-tab" id="msgTabRead">已读</div>
+    </div>
+    <div class="msg-tools">
+      <span class="msg-tool" id="toolTime">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></svg>
+        创建时间
+      </span>
+      <span class="msg-tool" id="toolFilter">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16l-6.2 7.2V19l-3.6-2v-4.8z"/></svg>
+        筛选
+      </span>
+    </div>
+    <div class="msg-list" id="msgList"></div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ================= 公共 ================= */
+  function esc(s){
+    return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function nowStr(){
+    var d = new Date(); function p(n){ return (n < 10 ? '0' : '') + n; }
+    return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+  var ICON_USER = '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"/></svg>';
+  var ICON_DATE = '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></svg>';
+
+  /* ================= 数据（与 PC 端 urgeData 口径一致） ================= */
+  var HAZARD_NAME = '演示数据01';
+  var urgeData = [
+    {
+      object: '杨威01（整改责任人 · 有机车间2）',
+      ways: '系统消息、APP推送',
+      content: '您有一条隐患尚未完成整改，请尽快登录系统处理并反馈整改结果。',
+      time: '2025-12-31 21:30',
+      replies: [
+        { by: '杨威01（被催办人）', time: '2025-12-31 21:48', content: '收到，正在采购配件，预计 9 月 25 日前完成整改并提交核查。' }
+      ]
+    }
+  ];
+
+  var processRecords = [
+    { step: '隐患登记', action: '提交',   by: '魏芝',   time: '2025-12-31 20:52:10' },
+    { step: '隐患确认', action: '审批通过', by: '魏芝',   time: '2025-12-31 20:52:17' },
+    { step: '隐患接收', action: '接收-整改', by: '杨威01', time: '2025-12-31 20:53:14' },
+    { step: '隐患整改', action: '整改完成', by: '杨威01', time: '2025-12-31 20:53:26' },
+    { step: '隐患验收', action: '验收完成', by: '杨威01', time: '2025-12-31 20:53:51' }
+  ];
+
+  var steps = ['登记', '确认', '接收', '整改', '验收'];
+
+  /* ================= Toast（动态创建） ================= */
+  var toast = document.createElement('div');
+  toast.className = 'm-toast';
+  document.body.appendChild(toast);
+  var toastTimer = null;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2400);
+  }
+
+  /* ================= 步骤条渲染 ================= */
+  function renderSteps(el){
+    var done = 2; // 当前节点停留在接收环节：登记、确认已完成，接收为当前节点，整改/验收未到达
+    var html = '<div class="steps-row">';
+    steps.forEach(function(name, i){
+      var isCur = i === done;
+      var isPending = i > done;
+      html += '<div class="step' + (isCur ? ' current' : '') + (isPending ? ' pending' : '') + '">';
+      if (i < done) {
+        html += '<div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 8"/></svg></div>';
+      } else if (isCur) {
+        html += '<div class="dot"><i></i></div>';
+      } else {
+        html += '<div class="dot"></div>';
+      }
+      html += '<div class="step-name">' + name + '</div></div>';
+    });
+    el.innerHTML = html + '</div>';
+  }
+  renderSteps(document.getElementById('detailSteps'));
+
+  /* ================= 流程图（纵向节点图，当前节点高亮） ================= */
+  var flowNodes = ['提交', '确认', '接收', '整改', '验收'];
+  var FLOW_CURRENT = 2; // 当前停留在接收环节
+  function renderFlowChart(el){
+    var html = '';
+    flowNodes.forEach(function(name, i){
+      if (i > 0) {
+        html += '<div class="fc-arrow"><svg viewBox="0 0 16 40" fill="none">'
+          + '<path d="M8 0v32" stroke="#b9c6e2" stroke-width="2"/>'
+          + '<path d="M2.5 30L8 38l5.5-8z" fill="#b9c6e2"/></svg></div>';
+      }
+      html += '<div class="fc-node' + (i === FLOW_CURRENT ? ' current' : '') + '">' + name + '</div>';
+    });
+    el.innerHTML = html;
+  }
+  renderFlowChart(document.getElementById('flowChartBox'));
+
+  /* ================= 催办记录渲染（详情页） ================= */
+  function renderDetailUrge(){
+    var box = document.getElementById('detailUrgeList');
+    if (!urgeData.length) {
+      box.innerHTML = '<div class="urge-empty">暂无催办记录，可点击下方「催办」发起催办</div>';
+      return;
+    }
+    var html = '';
+    urgeData.forEach(function(r, i){
+      html += '<div class="urge-item">'
+        + '<div class="urge-line"><b>' + esc(r.time) + '</b>　由 HSE专员 熊辰婷 发起催办</div>'
+        + '<div class="urge-line">催办对象：<b>' + esc(r.object) + '</b></div>'
+        + '<div class="urge-line">通知方式：' + esc(r.ways) + '</div>'
+        + '<div class="urge-line">催办内容：' + esc(r.content) + '</div>';
+      (r.replies || []).forEach(function(rp){
+        html += '<div class="urge-reply-box"><b>' + esc(rp.by) + '</b>（' + esc(rp.time) + '）回复：' + esc(rp.content) + '</div>';
+      });
+      html += '<div class="urge-actions"><span class="link-btn" data-reply="' + i + '">回复催办</span></div>'
+        + '</div>';
+    });
+    box.innerHTML = html;
+  }
+  renderDetailUrge();
+
+  /* ================= 隐患过程记录渲染（流程页，含催办记录） ================= */
+  function buildTimeline(){
+    var items = [];
+    processRecords.forEach(function(p){
+      items.push({ time: p.time, html:
+        '<div class="tl-title"><b>' + esc(p.step) + ' - ' + esc(p.action) + '</b></div>'
+        + '<div class="tl-meta"><span>' + ICON_USER + esc(p.by) + '</span><span>' + ICON_DATE + esc(p.time) + '</span></div>'
+      });
+    });
+    urgeData.forEach(function(r, i){
+      var html = '<div class="tl-title"><b>隐患催办 - 发起催办</b><span class="tl-tag">催办</span></div>'
+        + '<div class="tl-meta"><span>' + ICON_USER + '熊辰婷（HSE专员）</span><span>' + ICON_DATE + esc(r.time) + '</span></div>'
+        + '<div class="tl-detail">催办对象：<b>' + esc(r.object) + '</b>；通知方式：' + esc(r.ways) + '<br>催办内容：' + esc(r.content)
+        + '　<span class="link-btn" data-reply="' + i + '">回复</span></div>';
+      items.push({ time: r.time, html: html });
+      (r.replies || []).forEach(function(rp){
+        items.push({ time: rp.time, html:
+          '<div class="tl-title"><b>隐患催办 - 催办回复</b><span class="tl-tag">回复</span></div>'
+          + '<div class="tl-meta"><span>' + ICON_USER + esc(rp.by) + '</span><span>' + ICON_DATE + esc(rp.time) + '</span></div>'
+          + '<div class="tl-detail">回复内容：' + esc(rp.content) + '</div>'
+        });
+      });
+    });
+    items.sort(function(a, b){ return a.time < b.time ? -1 : 1; });
+    var box = document.getElementById('processTimeline');
+    box.innerHTML = items.map(function(it){
+      return '<div class="tl-item"><span class="tl-dot"></span><div class="tl-body">' + it.html + '</div></div>';
+    }).join('');
+  }
+  buildTimeline();
+
+  /* ================= 视图切换 ================= */
+  var viewPortal = document.getElementById('viewPortal');
+  var viewDetail = document.getElementById('viewDetail');
+  var viewFlow = document.getElementById('viewFlow');
+  var viewMsg = document.getElementById('viewMsg');
+  function showView(v){
+    viewPortal.classList.toggle('active', v === 'portal');
+    viewDetail.classList.toggle('active', v === 'detail');
+    viewFlow.classList.toggle('active', v === 'flow');
+    viewMsg.classList.toggle('active', v === 'msg');
+    window.scrollTo(0, 0);
+  }
+  document.getElementById('toFlowIcon').addEventListener('click', function(){ showView('flow'); switchFlowTab('chart'); });
+  document.getElementById('flowBack').addEventListener('click', function(){ showView('detail'); });
+  document.getElementById('detailBack').addEventListener('click', function(){ showView('portal'); });
+  document.getElementById('toMsgIcon').addEventListener('click', function(){ showView('msg'); });
+  document.getElementById('msgBack').addEventListener('click', function(){ showView('portal'); });
+
+  /* ================= 门户页（应用中心） ================= */
+  var G_DOC     = '<rect x="5" y="4" width="14" height="16" rx="2"/><path d="M9 9h6M9 13h6"/>';
+  var G_CLOCK   = '<circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/>';
+  var G_SEARCH  = '<circle cx="11" cy="11" r="6"/><path d="M15.5 15.5L20 20"/>';
+  var G_WARN    = '<path d="M12 4L3.5 19h17z"/><path d="M12 10v4M12 16.6v.3"/>';
+  var G_CHECK   = '<rect x="5" y="4" width="14" height="16" rx="2"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/>';
+  var G_CAL     = '<rect x="4" y="6" width="16" height="14" rx="2"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>';
+  var G_CHART   = '<path d="M5 20v-8M12 20V6M19 20v-5"/>';
+  var G_BELL    = '<path d="M6 10a6 6 0 0 1 12 0c0 4 1.6 5.4 2.4 6.2H3.6C4.4 15.4 6 14 6 10z"/><path d="M10 19.5a2.2 2.2 0 0 0 4 0"/>';
+  var G_VALVE   = '<rect x="4" y="9" width="10" height="6" rx="1.5"/><path d="M14 12h6M9 9V6h5"/>';
+  var G_EYE     = '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/>';
+  var G_UPLOAD  = '<path d="M12 16V5M7.5 9.5L12 5l4.5 4.5"/><path d="M5 19h14"/>';
+  var G_SHIELD  = '<path d="M12 4l7 2.5V12c0 4.5-3 7.5-7 8.5-4-1-7-4-7-8.5V6.5z"/><path d="M8.5 12h2l1.2-2.6 1.6 4.2 1.2-1.6h1"/>';
+  var G_PERSON  = '<circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"/>';
+  var G_BLIND   = '<rect x="4" y="8" width="16" height="8" rx="2"/><path d="M8 8v8M16 8v8"/>';
+
+  var APPS_PERMIT = [
+    { n: '作业任务管理',   g: G_CHECK,  c: 'c1' },
+    { n: '作业预约',       g: G_CLOCK,  c: 'c2' },
+    { n: '作业票办理',     g: G_DOC,    c: 'c1' },
+    { n: '作业监督检查',   g: G_SEARCH, c: 'c4' },
+    { n: '作业问题处理',   g: G_WARN,   c: 'c5' },
+    { n: '作业任务台账',   g: G_CAL,    c: 'c6' },
+    { n: '作业预约台账',   g: G_CAL,    c: 'c2' },
+    { n: '作业票台账',     g: G_DOC,    c: 'c8' },
+    { n: '监督检查记录',   g: G_EYE,    c: 'c3' },
+    { n: '作业问题台账',   g: G_WARN,   c: 'c5' },
+    { n: '盲板管理',       g: G_VALVE,  c: 'c6' },
+    { n: '盲板抽堵台账',   g: G_BLIND,  c: 'c2' },
+    { n: '气体检测记录',   g: G_DOC,    c: 'c2' },
+    { n: '统计分析',       g: G_CHART,  c: 'c1' },
+    { n: '作业预警反馈',   g: G_BELL,   c: 'c2' },
+    { n: '异常预警记录',   g: G_WARN,   c: 'c1' }
+  ];
+  var APPS_PREVENT = [
+    { n: '隐患上报',       g: G_UPLOAD, c: 'c4' },
+    { n: '隐患治理',       g: G_WARN,   c: 'c2' },
+    { n: '风险事件',       g: G_SHIELD, c: 'c5' },
+    { n: '包保责任履职',   g: G_PERSON, c: 'c1' }
+  ];
+  function renderApps(boxId, apps){
+    var box = document.getElementById(boxId);
+    box.innerHTML = apps.map(function(a){
+      return '<div class="app-item" data-app="' + a.n + '">'
+        + '<div class="app-icon ' + a.c + '"><svg viewBox="0 0 24 24">' + a.g + '</svg></div>'
+        + '<div class="app-name">' + a.n + '</div>'
+        + '</div>';
+    }).join('');
+  }
+  renderApps('gridPermit', APPS_PERMIT);
+  renderApps('gridPrevent', APPS_PREVENT);
+
+  document.getElementById('gridPermit').addEventListener('click', function(e){
+    var it = e.target.closest('.app-item');
+    if (!it) return;
+    showToast('「' + it.getAttribute('data-app') + '」模块建设中（演示）');
+  });
+  document.getElementById('gridPrevent').addEventListener('click', function(e){
+    var it = e.target.closest('.app-item');
+    if (!it) return;
+    if (it.getAttribute('data-app') === '隐患治理') {
+      showView('detail');
+      showToast('已进入隐患治理详情');
+    } else {
+      showToast('「' + it.getAttribute('data-app') + '」模块建设中（演示）');
+    }
+  });
+
+  document.getElementById('bottomNav').addEventListener('click', function(e){
+    var it = e.target.closest('.bn-item');
+    if (!it || it.classList.contains('active')) return;
+    showToast('「' + it.getAttribute('data-bn') + '」建设中（演示）');
+  });
+
+  /* ================= 消息提醒（隐患催办相关） ================= */
+  var messages = [
+    { title: '隐患催办通知', content: '您有一条隐患催办待处理：陈伟霆对「某装置法兰泄漏」隐患发起了催办，请及时处理。', time: '2026-09-21 08:00:02', read: false },
+    { title: '催办回复提醒', content: '整改责任人杨威01已回复您的催办：配件已到货，预计9月25日前完成整改并提交验收，请及时查看并跟进。', time: '2026-09-20 16:42:18', read: false },
+    { title: '隐患催办通知', content: '您有一条隐患催办待处理：陈伟霆对「某装置法兰泄漏」隐患发起了催办，请及时处理。', time: '2026-09-20 09:00:05', read: false },
+    { title: '隐患催办通知', content: '您有一条隐患催办待处理：陈伟霆对「某装置法兰泄漏」隐患发起了催办，请及时处理。', time: '2026-09-19 17:25:44', read: false },
+    { title: '催办回复提醒', content: '陈伟霆已回复您的催办：已完成现场整改，请及时查看并确认整改结果。', time: '2026-09-19 10:12:31', read: false },
+    { title: '隐患催办通知', content: '您有一条隐患催办待处理：陈伟霆对「某装置法兰泄漏」隐患发起了催办，请及时处理。', time: '2026-09-18 14:08:57', read: false },
+    { title: '整改完成通知', content: '您催办的隐患「仓库应急照明故障」已完成整改并通过验收，感谢您的跟进。', time: '2026-09-17 18:40:11', read: true }
+  ];
+  var msgTab = 'unread';
+  function updateBellDot(){
+    document.getElementById('bellDot').style.display =
+      messages.some(function(m){ return !m.read; }) ? '' : 'none';
+  }
+  function renderMsg(){
+    var list = messages.filter(function(m){ return msgTab === 'unread' ? !m.read : m.read; });
+    var box = document.getElementById('msgList');
+    if (!list.length) {
+      box.innerHTML = '<div class="msg-empty">' + (msgTab === 'unread' ? '暂无未读消息' : '暂无已读消息') + '</div>';
+      return;
+    }
+    box.innerHTML = list.map(function(m){
+      return '<div class="msg-item" data-idx="' + messages.indexOf(m) + '">'
+        + '<div class="msg-item-head"><span class="msg-dot' + (m.read ? ' read' : '') + '"></span>'
+        + '<span class="msg-item-title">' + esc(m.title) + '</span>'
+        + '<button type="button" class="msg-go-btn" data-go="1">点击前往</button>'
+        + '</div>'
+        + '<div class="msg-item-body">' + esc(m.content) + '</div>'
+        + '<div class="msg-item-time">' + esc(m.time) + '</div>'
+        + '</div>';
+    }).join('');
+  }
+  renderMsg();
+  updateBellDot();
+
+  document.getElementById('msgTabUnread').addEventListener('click', function(){
+    msgTab = 'unread';
+    this.classList.add('active');
+    document.getElementById('msgTabRead').classList.remove('active');
+    renderMsg();
+  });
+  document.getElementById('msgTabRead').addEventListener('click', function(){
+    msgTab = 'read';
+    this.classList.add('active');
+    document.getElementById('msgTabUnread').classList.remove('active');
+    renderMsg();
+  });
+  document.getElementById('clearUnread').addEventListener('click', function(){
+    var hasUnread = messages.some(function(m){ return !m.read; });
+    messages.forEach(function(m){ m.read = true; });
+    renderMsg();
+    updateBellDot();
+    showToast(hasUnread ? '已清除全部未读消息' : '当前没有未读消息');
+  });
+  document.getElementById('msgList').addEventListener('click', function(e){
+    var item = e.target.closest('.msg-item');
+    if (!item) return;
+    var m = messages[Number(item.getAttribute('data-idx'))];
+    if (!m) return;
+    m.read = true;
+    if (e.target.closest('.msg-go-btn')) {
+      /* 点击「点击前往」按钮：跳转隐患详情页 */
+      renderMsg();
+      updateBellDot();
+      showView('detail');
+      showToast('已为您定位到催办的隐患详情');
+    } else {
+      renderMsg();
+      updateBellDot();
+      showToast('消息已标记为已读');
+    }
+  });
+  document.getElementById('toolTime').addEventListener('click', function(){
+    showToast('按创建时间排序（演示）');
+  });
+  document.getElementById('toolFilter').addEventListener('click', function(){
+    showToast('消息筛选（演示）');
+  });
+
+  /* 流程页内 Tab */
+  var tabFlowChart = document.getElementById('tabFlowChart');
+  var tabFlowRecord = document.getElementById('tabFlowRecord');
+  var flowChartPane = document.getElementById('flowChartPane');
+  var flowRecordPane = document.getElementById('flowRecordPane');
+  function switchFlowTab(t){
+    tabFlowChart.classList.toggle('active', t === 'chart');
+    tabFlowRecord.classList.toggle('active', t === 'record');
+    flowChartPane.style.display = t === 'chart' ? '' : 'none';
+    flowRecordPane.style.display = t === 'record' ? '' : 'none';
+  }
+  tabFlowChart.addEventListener('click', function(){ switchFlowTab('chart'); });
+  tabFlowRecord.addEventListener('click', function(){ switchFlowTab('record'); });
+
+  /* ================= 催办对象（模糊搜索选项，与 PC 端一致口径） ================= */
+  var targetOptions = [
+    { value: '杨威01', label: '杨威01（整改责任人 · 有机车间2）' },
+    { value: '张伟',   label: '张伟（整改责任人 · HSE部）' },
+    { value: '魏芝',   label: '魏芝（安全员 · 安全环保部）' },
+    { value: '李娜',   label: '李娜（车间主任 · 有机车间2）' },
+    { value: '王强',   label: '王强（设备管理员 · 设备部）' }
+  ];
+
+  /* ================= 底部抽屉通用 ================= */
+  function buildMask(innerHTML){
+    var mask = document.createElement('div');
+    mask.className = 'mask';
+    mask.innerHTML = '<div class="sheet">' + innerHTML + '</div>';
+    document.body.appendChild(mask);
+    return mask;
+  }
+  function openMask(m){ m.classList.add('show'); }
+  function closeMask(m){ m.classList.remove('show'); }
+
+  /* ================= 催办弹窗 ================= */
+  var urgeMask = buildMask(
+      '<div class="sheet-head"><div class="sheet-title">隐患催办</div><button class="sheet-close" data-close type="button">✕</button></div>'
+    + '<div class="sheet-body">'
+    +   '<div class="sitem"><label>隐患名称</label><input class="scontrol" id="mUrgeName" readonly value="' + esc(HAZARD_NAME) + '"></div>'
+    +   '<div class="sitem" id="mUrgeTargetItem"><label><span class="req">*</span>催办对象</label>'
+    +     '<div class="combo"><input class="scontrol" id="mUrgeTargetInput" placeholder="请选择，支持关键字搜索" autocomplete="off">'
+    +     '<div class="combo-list" id="mUrgeTargetList"></div></div>'
+    +     '<div class="serr">请选择催办对象</div>'
+    +     '<div class="shint">支持按姓名 / 角色 / 部门关键字模糊搜索</div></div>'
+    +   '<div class="sitem"><label><span class="req">*</span>催办方式</label>'
+    +     '<div class="schecks" id="mUrgeWays">'
+    +       '<label><input type="checkbox" checked>系统消息</label>'
+    +       '<label><input type="checkbox">短信</label>'
+    +       '<label><input type="checkbox">邮件</label>'
+    +       '<label><input type="checkbox" checked>APP推送</label>'
+    +     '</div></div>'
+    +   '<div class="sitem"><label>催办内容</label>'
+    +     '<textarea class="scontrol" id="mUrgeContent">您有一条隐患尚未完成整改，请尽快登录系统处理并反馈整改结果。</textarea>'
+    +     '<div class="shint">催办内容将以站内信 / 短信 / APP 推送形式发送给催办对象</div></div>'
+    + '</div>'
+    + '<div class="sheet-foot"><button class="btn btn-plain" data-close type="button">取 消</button>'
+    +   '<button class="btn btn-primary" id="mUrgeConfirm" type="button">确定催办</button></div>'
+  );
+  urgeMask.addEventListener('click', function(e){
+    if (e.target === urgeMask || e.target.closest('[data-close]')) closeMask(urgeMask);
+  });
+
+  var urgeTargetInput = urgeMask.querySelector('#mUrgeTargetInput');
+  var urgeTargetList = urgeMask.querySelector('#mUrgeTargetList');
+  var urgeTargetItem = urgeMask.querySelector('#mUrgeTargetItem');
+  var urgeSelected = { value: '', label: '' };
+
+  function fuzzyMatch(kw, text){
+    kw = String(kw || '').toLowerCase().trim();
+    if (!kw) return true;
+    text = String(text).toLowerCase();
+    var chars = kw.split('');
+    var idx = -1;
+    return chars.every(function(c){
+      idx = text.indexOf(c, idx + 1);
+      return idx > -1;
+    });
+  }
+  function renderTargetList(){
+    var items = targetOptions.filter(function(o){ return fuzzyMatch(urgeTargetInput.value, o.label); });
+    if (!items.length) {
+      urgeTargetList.innerHTML = '<div class="combo-empty">未找到匹配的催办对象</div>';
+    } else {
+      urgeTargetList.innerHTML = items.map(function(o){
+        return '<div class="combo-opt" data-value="' + esc(o.value) + '" data-label="' + esc(o.label) + '">' + esc(o.label) + '</div>';
+      }).join('');
+    }
+    urgeTargetList.classList.add('show');
+  }
+  urgeTargetInput.addEventListener('focus', renderTargetList);
+  urgeTargetInput.addEventListener('input', function(){
+    urgeSelected = { value: '', label: '' };
+    urgeTargetItem.classList.remove('error');
+    renderTargetList();
+  });
+  urgeTargetList.addEventListener('click', function(e){
+    var opt = e.target.closest('.combo-opt');
+    if (!opt) return;
+    urgeSelected = { value: opt.getAttribute('data-value'), label: opt.getAttribute('data-label') };
+    urgeTargetInput.value = urgeSelected.label;
+    urgeTargetItem.classList.remove('error');
+    urgeTargetList.classList.remove('show');
+  });
+  document.addEventListener('click', function(e){
+    if (!e.target.closest || !e.target.closest('.combo')) urgeTargetList.classList.remove('show');
+  });
+
+  urgeMask.querySelector('#mUrgeConfirm').addEventListener('click', function(){
+    if (!urgeSelected.value) { urgeTargetItem.classList.add('error'); urgeTargetInput.focus(); return; }
+    var ways = Array.prototype.slice.call(urgeMask.querySelectorAll('#mUrgeWays input:checked'))
+      .map(function(cb){ return cb.parentElement.textContent.trim(); }).join('、');
+    if (!ways) { showToast('请至少选择一种催办方式'); return; }
+    var targetName = urgeSelected.value;
+    urgeData.push({
+      object: urgeSelected.label,
+      ways: ways,
+      content: urgeMask.querySelector('#mUrgeContent').value.trim() || '请尽快完成整改。',
+      time: nowStr(),
+      replies: []
+    });
+    closeMask(urgeMask);
+    urgeTargetInput.value = '';
+    urgeSelected = { value: '', label: '' };
+    renderDetailUrge();
+    buildTimeline();
+    showToast('催办成功：已通过' + ways + '通知「' + targetName + '」');
+  });
+
+  /* ================= 回复催办弹窗 ================= */
+  var curReplyIdx = -1;
+  var replyMask = buildMask(
+      '<div class="sheet-head"><div class="sheet-title">催办回复</div><button class="sheet-close" data-close type="button">✕</button></div>'
+    + '<div class="sheet-body">'
+    +   '<div class="sitem"><label>催办内容</label><div class="scontrol" id="mReplyQuote" style="background:#f7f8fa;color:#666;"></div></div>'
+    +   '<div class="sitem" id="mReplyItem"><label><span class="req">*</span>回复内容</label>'
+    +     '<textarea class="scontrol" id="mReplyContent" placeholder="请输入回复内容"></textarea>'
+    +     '<div class="serr">请输入回复内容</div>'
+    +     '<div class="shint">回复结果将同步至隐患过程记录，并推送催办发起人</div></div>'
+    + '</div>'
+    + '<div class="sheet-foot"><button class="btn btn-plain" data-close type="button">取 消</button>'
+    +   '<button class="btn btn-primary" id="mReplyConfirm" type="button">确定回复</button></div>'
+  );
+  replyMask.addEventListener('click', function(e){
+    if (e.target === replyMask || e.target.closest('[data-close]')) closeMask(replyMask);
+  });
+  replyMask.querySelector('#mReplyConfirm').addEventListener('click', function(){
+    var ta = replyMask.querySelector('#mReplyContent');
+    var content = ta.value.trim();
+    if (!content) { replyMask.querySelector('#mReplyItem').classList.add('error'); ta.focus(); return; }
+    replyMask.querySelector('#mReplyItem').classList.remove('error');
+    var rec = urgeData[curReplyIdx];
+    if (rec) {
+      rec.replies = rec.replies || [];
+      rec.replies.push({ by: '杨威01（被催办人）', time: nowStr(), content: content });
+    }
+    closeMask(replyMask);
+    ta.value = '';
+    renderDetailUrge();
+    buildTimeline();
+    showToast('回复成功：已通知催办发起人');
+  });
+
+  /* 回复入口（事件委托：详情页催办记录 + 流程页时间线共用） */
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest && e.target.closest('[data-reply]');
+    if (!btn) return;
+    curReplyIdx = parseInt(btn.getAttribute('data-reply'), 10);
+    var rec = urgeData[curReplyIdx];
+    if (!rec) return;
+    replyMask.querySelector('#mReplyQuote').textContent = rec.content;
+    replyMask.querySelector('#mReplyContent').value = '';
+    replyMask.querySelector('#mReplyItem').classList.remove('error');
+    openMask(replyMask);
+  });
+
+  /* ================= 入口 ================= */
+  document.getElementById('btnUrge').addEventListener('click', function(){
+    urgeTargetItem.classList.remove('error');
+    openMask(urgeMask);
+  });
+})();
+</script><div class="m-toast"></div><div class="mask"><div class="sheet"><div class="sheet-head"><div class="sheet-title">隐患催办</div><button class="sheet-close" data-close="" type="button">✕</button></div><div class="sheet-body"><div class="sitem"><label>隐患名称</label><input class="scontrol" id="mUrgeName" readonly="" value="演示数据01"></div><div class="sitem" id="mUrgeTargetItem"><label><span class="req">*</span>催办对象</label><div class="combo"><input class="scontrol" id="mUrgeTargetInput" placeholder="请选择，支持关键字搜索" autocomplete="off"><div class="combo-list" id="mUrgeTargetList"></div></div><div class="serr">请选择催办对象</div><div class="shint">支持按姓名 / 角色 / 部门关键字模糊搜索</div></div><div class="sitem"><label><span class="req">*</span>催办方式</label><div class="schecks" id="mUrgeWays"><label><input type="checkbox" checked="">系统消息</label><label><input type="checkbox">短信</label><label><input type="checkbox">邮件</label><label><input type="checkbox" checked="">APP推送</label></div></div><div class="sitem"><label>催办内容</label><textarea class="scontrol" id="mUrgeContent">您有一条隐患尚未完成整改，请尽快登录系统处理并反馈整改结果。</textarea><div class="shint">催办内容将以站内信 / 短信 / APP 推送形式发送给催办对象</div></div></div><div class="sheet-foot"><button class="btn btn-plain" data-close="" type="button">取 消</button><button class="btn btn-primary" id="mUrgeConfirm" type="button">确定催办</button></div></div></div><div class="mask"><div class="sheet"><div class="sheet-head"><div class="sheet-title">催办回复</div><button class="sheet-close" data-close="" type="button">✕</button></div><div class="sheet-body"><div class="sitem"><label>催办内容</label><div class="scontrol" id="mReplyQuote" style="background:#f7f8fa;color:#666;"></div></div><div class="sitem" id="mReplyItem"><label><span class="req">*</span>回复内容</label><textarea class="scontrol" id="mReplyContent" placeholder="请输入回复内容"></textarea><div class="serr">请输入回复内容</div><div class="shint">回复结果将同步至隐患过程记录，并推送催办发起人</div></div></div><div class="sheet-foot"><button class="btn btn-plain" data-close="" type="button">取 消</button><button class="btn btn-primary" id="mReplyConfirm" type="button">确定回复</button></div></div></div>
+
+
+</body></html>
