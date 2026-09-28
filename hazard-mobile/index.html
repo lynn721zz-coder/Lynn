@@ -363,6 +363,17 @@
   .combo-opt:last-child { border-bottom: none; }
   .combo-opt:active, .combo-opt:hover { background: #f4f8ff; }
   .combo-empty { padding: 14px; text-align: center; color: var(--text-gray); font-size: 13px; }
+  /* 催办对象多选：已选标签 + 选项勾选态 */
+  .combo-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .combo-tags:empty { display: none; }
+  .combo-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #f0f6ff; border: 1px solid #bcd4f7; color: #2b6de8;
+    font-size: 12px; padding: 3px 8px; border-radius: 4px; line-height: 18px;
+  }
+  .combo-tag .tag-x { cursor: pointer; font-size: 13px; line-height: 1; color: #7ea4e0; }
+  .combo-opt.sel { background: #f0f6ff; color: #2b6de8; }
+  .combo-opt .ck { float: right; font-weight: 700; }
   .sheet-foot { padding: 10px 16px calc(14px + env(safe-area-inset-bottom)); display: flex; gap: 12px; }
   .sheet-foot .btn { height: 42px; border-radius: 21px; }
 
@@ -880,10 +891,11 @@
     + '<div class="sheet-body">'
     +   '<div class="sitem"><label>隐患名称</label><input class="scontrol" id="mUrgeName" readonly value="' + esc(HAZARD_NAME) + '"></div>'
     +   '<div class="sitem" id="mUrgeTargetItem"><label><span class="req">*</span>催办对象</label>'
-    +     '<div class="combo"><input class="scontrol" id="mUrgeTargetInput" placeholder="请选择，支持关键字搜索" autocomplete="off">'
+    +     '<div class="combo"><input class="scontrol" id="mUrgeTargetInput" placeholder="请选择，支持关键字搜索（可多选）" autocomplete="off">'
+    +     '<div class="combo-tags" id="mUrgeTargetTags"></div>'
     +     '<div class="combo-list" id="mUrgeTargetList"></div></div>'
     +     '<div class="serr">请选择催办对象</div>'
-    +     '<div class="shint">支持按姓名 / 角色 / 部门关键字模糊搜索</div></div>'
+    +     '<div class="shint">支持按姓名 / 角色 / 部门关键字模糊搜索，可多选</div></div>'
     +   '<div class="sitem"><label><span class="req">*</span>催办方式</label>'
     +     '<div class="schecks" id="mUrgeWays">'
     +       '<label><input type="checkbox" checked>系统消息</label>'
@@ -905,7 +917,8 @@
   var urgeTargetInput = urgeMask.querySelector('#mUrgeTargetInput');
   var urgeTargetList = urgeMask.querySelector('#mUrgeTargetList');
   var urgeTargetItem = urgeMask.querySelector('#mUrgeTargetItem');
-  var urgeSelected = { value: '', label: '' };
+  var urgeTargetTags = urgeMask.querySelector('#mUrgeTargetTags');
+  var urgePicked = [];   // 多选：[{ value, label }]
 
   function fuzzyMatch(kw, text){
     kw = String(kw || '').toLowerCase().trim();
@@ -918,54 +931,88 @@
       return idx > -1;
     });
   }
+  function isPicked(val){
+    return urgePicked.some(function(p){ return p.value === val; });
+  }
+  function renderUrgeTags(){
+    urgeTargetTags.innerHTML = urgePicked.map(function(p){
+      return '<span class="combo-tag">' + esc(p.label)
+        + '<span class="tag-x" data-value="' + esc(p.value) + '" title="移除">✕</span></span>';
+    }).join('');
+  }
+  function resetUrgeTarget(){
+    urgePicked = [];
+    urgeTargetInput.value = '';
+    renderUrgeTags();
+  }
   function renderTargetList(){
     var items = targetOptions.filter(function(o){ return fuzzyMatch(urgeTargetInput.value, o.label); });
     if (!items.length) {
       urgeTargetList.innerHTML = '<div class="combo-empty">未找到匹配的催办对象</div>';
     } else {
       urgeTargetList.innerHTML = items.map(function(o){
-        return '<div class="combo-opt" data-value="' + esc(o.value) + '" data-label="' + esc(o.label) + '">' + esc(o.label) + '</div>';
+        var sel = isPicked(o.value);
+        return '<div class="combo-opt' + (sel ? ' sel' : '') + '" data-value="' + esc(o.value) + '" data-label="' + esc(o.label) + '">'
+          + esc(o.label) + (sel ? '<span class="ck">✓</span>' : '') + '</div>';
       }).join('');
     }
     urgeTargetList.classList.add('show');
   }
   urgeTargetInput.addEventListener('focus', renderTargetList);
   urgeTargetInput.addEventListener('input', function(){
-    urgeSelected = { value: '', label: '' };
     urgeTargetItem.classList.remove('error');
     renderTargetList();
   });
+  // 多选：点击切换选中，面板保持展开（stopPropagation 防止重渲染后节点脱离 DOM 被误判为外部点击）
   urgeTargetList.addEventListener('click', function(e){
     var opt = e.target.closest('.combo-opt');
     if (!opt) return;
-    urgeSelected = { value: opt.getAttribute('data-value'), label: opt.getAttribute('data-label') };
-    urgeTargetInput.value = urgeSelected.label;
+    e.stopPropagation();
+    var val = opt.getAttribute('data-value');
+    var lab = opt.getAttribute('data-label');
+    if (isPicked(val)) {
+      urgePicked = urgePicked.filter(function(p){ return p.value !== val; });
+    } else {
+      urgePicked.push({ value: val, label: lab });
+    }
     urgeTargetItem.classList.remove('error');
-    urgeTargetList.classList.remove('show');
+    renderUrgeTags();
+    renderTargetList();
+  });
+  // 标签 ✕ 移除
+  urgeTargetTags.addEventListener('click', function(e){
+    var x = e.target.closest('.tag-x');
+    if (!x) return;
+    e.stopPropagation();
+    var val = x.getAttribute('data-value');
+    urgePicked = urgePicked.filter(function(p){ return p.value !== val; });
+    renderUrgeTags();
+    renderTargetList();
   });
   document.addEventListener('click', function(e){
     if (!e.target.closest || !e.target.closest('.combo')) urgeTargetList.classList.remove('show');
   });
 
   urgeMask.querySelector('#mUrgeConfirm').addEventListener('click', function(){
-    if (!urgeSelected.value) { urgeTargetItem.classList.add('error'); urgeTargetInput.focus(); return; }
+    if (!urgePicked.length) { urgeTargetItem.classList.add('error'); urgeTargetInput.focus(); return; }
     var ways = Array.prototype.slice.call(urgeMask.querySelectorAll('#mUrgeWays input:checked'))
       .map(function(cb){ return cb.parentElement.textContent.trim(); }).join('、');
     if (!ways) { showToast('请至少选择一种催办方式'); return; }
-    var targetName = urgeSelected.value;
+    var labels = urgePicked.map(function(p){ return p.label; }).join('、');
+    var names = urgePicked.map(function(p){ return p.value; }).join('、');
     urgeData.push({
-      object: urgeSelected.label,
+      object: labels,
       ways: ways,
       content: urgeMask.querySelector('#mUrgeContent').value.trim() || '请尽快完成整改。',
       time: nowStr(),
       replies: []
     });
     closeMask(urgeMask);
-    urgeTargetInput.value = '';
-    urgeSelected = { value: '', label: '' };
+    resetUrgeTarget();
+    urgeTargetList.classList.remove('show');
     renderDetailUrge();
     buildTimeline();
-    showToast('催办成功：已通过' + ways + '通知「' + targetName + '」');
+    showToast('催办成功：已通过' + ways + '通知「' + names + '」');
   });
 
   /* ================= 回复催办弹窗 ================= */

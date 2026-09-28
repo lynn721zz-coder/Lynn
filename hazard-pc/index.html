@@ -332,6 +332,18 @@
   .combo-item { padding: 7px 10px; font-size: 13px; color: #333; cursor: pointer; }
   .combo-item:hover { background: #f0f6ff; color: #2b6de8; }
   .combo-empty { padding: 12px 10px; font-size: 12px; color: #999; text-align: center; }
+  /* 催办对象多选：已选标签 + 选项勾选态 */
+  .combo-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .combo-tags:empty { display: none; }
+  .combo-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #f0f6ff; border: 1px solid #bcd4f7; color: #2b6de8;
+    font-size: 12px; padding: 2px 8px; border-radius: 3px; line-height: 18px;
+  }
+  .combo-tag .tag-x { cursor: pointer; font-size: 13px; line-height: 1; color: #7ea4e0; }
+  .combo-tag .tag-x:hover { color: #e02020; }
+  .combo-item.sel { background: #f0f6ff; color: #2b6de8; }
+  .combo-item .ck { float: right; font-weight: 700; }
 
   /* ========== 轻提示 ========== */
   .toast {
@@ -995,7 +1007,7 @@
           <div class="stat-label" data-page-node-id="qd9IOmOSXyzfeXlD0CHD12">隐患整改及时率</div>
           <div class="stat-value blue" data-page-node-id="WHvac5XeMW3SwJixREg7jQ">93.9<span class="unit" data-page-node-id="soqkOysh9ZIfo9O3uYUvoa">%</span></div>
           <div class="stat-breakdown" data-page-node-id="8VWCFSmYBZu15UnWET988F">
-            <div class="bd-item" data-page-node-id="7ST7aV5x8uiqUHujzHBw74">按时完成整改的隐患占比（未逾期且未延期）</div>
+            <div class="bd-item" data-page-node-id="7ST7aV5x8uiqUHujzHBw74">未逾期整改数 <b data-page-node-id="7ST7aV5x8uiqUHujzHBw75">1,687</b> / 隐患总数 <b data-page-node-id="7ST7aV5x8uiqUHujzHBw76">1,894</b></div>
           </div>
         </div>
       </div>
@@ -1510,11 +1522,12 @@
       + '<div class="mitem"><label>隐患名称：</label><div class="mcontrol-wrap"><div class="mreadonly" id="urgeHazardName">—</div></div></div>'
       + '<div class="mitem" id="urgeTargetItem"><label><span class="req">*</span>催办对象：</label>'
       + '<div class="mcontrol-wrap"><div class="combo" id="urgeTargetCombo">'
-      + '<input class="mcontrol combo-input" id="urgeTargetInput" placeholder="请选择，支持关键字搜索" autocomplete="off">'
+      + '<input class="mcontrol combo-input" id="urgeTargetInput" placeholder="请选择，支持关键字搜索（可多选）" autocomplete="off">'
+      + '<div class="combo-tags" id="urgeTargetTags"></div>'
       + '<div class="combo-list" id="urgeTargetList"></div>'
       + '</div>'
       + '<div class="merr">请选择催办对象</div>'
-      + '<div class="mhint">支持按姓名/角色/部门关键字模糊搜索</div></div></div>'
+      + '<div class="mhint">支持按姓名/角色/部门关键字模糊搜索，可多选</div></div></div>'
       + '<div class="mitem"><label><span class="req">*</span>催办方式：</label>'
       + '<div class="mcontrol-wrap"><div class="mchecks" id="urgeWays">'
       + '<label><input type="checkbox" checked>系统消息</label>'
@@ -1532,13 +1545,14 @@
     var urgeTargetItem = urgeMask.querySelector('#urgeTargetItem');
     var comboInput = urgeMask.querySelector('#urgeTargetInput');
     var comboList = urgeMask.querySelector('#urgeTargetList');
+    var comboTags = urgeMask.querySelector('#urgeTargetTags');
     var urgeTargetOptions = [
       { value: '整改责任人', label: '张伟（整改责任人 · HSE部）' },
       { value: '部门负责人', label: '刘敏（部门负责人 · 线上配置专用部）' },
       { value: '隐患发现人', label: '熊辰婷（隐患发现人）' },
       { value: '安全员', label: '王强（安全员 · X-test）' }
     ];
-    var urgeTargetSelected = { value: '', label: '' };
+    var urgeTargetPicked = [];   // 多选：[{ value, label }]
 
     // 模糊匹配：查询串按字符子序列匹配选项文本（忽略大小写与空格）
     function fuzzyMatch(q, text){
@@ -1553,6 +1567,15 @@
       }
       return true;
     }
+    function isPicked(val){
+      return urgeTargetPicked.some(function(p){ return p.value === val; });
+    }
+    function renderUrgeTags(){
+      comboTags.innerHTML = urgeTargetPicked.map(function(p){
+        return '<span class="combo-tag">' + esc(p.label)
+          + '<span class="tag-x" data-value="' + esc(p.value) + '" title="移除">✕</span></span>';
+      }).join('');
+    }
     function renderComboList(){
       var items = urgeTargetOptions.filter(function(o){ return fuzzyMatch(comboInput.value, o.label); });
       if (!items.length) {
@@ -1560,30 +1583,48 @@
         return;
       }
       comboList.innerHTML = items.map(function(o){
-        return '<div class="combo-item" data-value="' + esc(o.value) + '" data-label="' + esc(o.label) + '">' + esc(o.label) + '</div>';
+        var sel = isPicked(o.value);
+        return '<div class="combo-item' + (sel ? ' sel' : '') + '" data-value="' + esc(o.value) + '" data-label="' + esc(o.label) + '">'
+          + esc(o.label) + (sel ? '<span class="ck">✓</span>' : '') + '</div>';
       }).join('');
     }
     function openCombo(){ renderComboList(); comboList.classList.add('open'); }
     function closeCombo(){ comboList.classList.remove('open'); }
     function resetUrgeTarget(){
-      urgeTargetSelected = { value: '', label: '' };
+      urgeTargetPicked = [];
       comboInput.value = '';
+      renderUrgeTags();
     }
     comboInput.addEventListener('focus', openCombo);
     comboInput.addEventListener('input', function(){
-      urgeTargetSelected = { value: '', label: '' };
       urgeTargetItem.classList.remove('error');
       openCombo();
     });
-    // mousedown 早于 input 失焦，保证选项可点中
+    // mousedown 早于 input 失焦，保证选项可点中；多选：点击切换选中，不收起面板
     comboList.addEventListener('mousedown', function(e){
       var item = e.target.closest('.combo-item');
       if (!item) return;
       e.preventDefault();
-      urgeTargetSelected = { value: item.getAttribute('data-value'), label: item.getAttribute('data-label') };
-      comboInput.value = urgeTargetSelected.label;
+      var val = item.getAttribute('data-value');
+      var lab = item.getAttribute('data-label');
+      if (isPicked(val)) {
+        urgeTargetPicked = urgeTargetPicked.filter(function(p){ return p.value !== val; });
+      } else {
+        urgeTargetPicked.push({ value: val, label: lab });
+      }
       urgeTargetItem.classList.remove('error');
-      closeCombo();
+      renderUrgeTags();
+      renderComboList();
+    });
+    // 标签 ✕ 移除（列表若开着同步勾选态；stopPropagation 防止节点重渲染脱离 DOM 被误判为外部点击而收起）
+    comboTags.addEventListener('click', function(e){
+      var x = e.target.closest('.tag-x');
+      if (!x) return;
+      e.stopPropagation();
+      var val = x.getAttribute('data-value');
+      urgeTargetPicked = urgeTargetPicked.filter(function(p){ return p.value !== val; });
+      renderUrgeTags();
+      renderComboList();
     });
     document.addEventListener('click', function(e){
       if (!e.target.closest || !e.target.closest('#urgeTargetCombo')) closeCombo();
@@ -1602,13 +1643,15 @@
     urgeMask.querySelector('#urgeCancel').addEventListener('click', closeUrgeModal);
     urgeMask.addEventListener('click', function(e){ if (e.target === urgeMask) closeUrgeModal(); });
     urgeMask.querySelector('#urgeConfirm').addEventListener('click', function(){
-      if (!urgeTargetSelected.value) { urgeTargetItem.classList.add('error'); comboInput.focus(); return; }
+      if (!urgeTargetPicked.length) { urgeTargetItem.classList.add('error'); comboInput.focus(); return; }
       var ways = Array.prototype.slice.call(urgeMask.querySelectorAll('.mchecks input:checked'))
         .map(function(cb){ return cb.parentElement.textContent.trim(); }).join('、');
       if (!ways) { showToast('请至少选择一种催办方式'); return; }
+      var labels = urgeTargetPicked.map(function(p){ return p.label; }).join('、');
+      var names = urgeTargetPicked.map(function(p){ return p.value; }).join('、');
       var rec = {
         by: '熊辰婷',
-        object: urgeTargetSelected.label,
+        object: labels,
         ways: ways,
         content: urgeMask.querySelector('#urgeContent').value.trim() || '请尽快完成整改。',
         time: nowStr(), replies: []
@@ -1616,7 +1659,7 @@
       if (!urgeData[currentUrgeHazard]) urgeData[currentUrgeHazard] = [];
       urgeData[currentUrgeHazard].push(rec);
       closeUrgeModal();
-      showToast('催办成功：已通过' + ways + '通知「' + urgeTargetSelected.value + '」');
+      showToast('催办成功：已通过' + ways + '通知「' + names + '」');
     });
 
     /* ---------- 详情视图容器 ---------- */
