@@ -198,9 +198,9 @@
   .seg-tab.active .cnt { color: #2b6de8; }
 
   /* 筛选表单 */
-  .filters { padding: 18px 20px 6px; }
-  .filter-row { display: flex; flex-wrap: wrap; margin-bottom: 14px; }
-  .fitem { display: flex; align-items: center; width: 25%; min-width: 260px; margin-bottom: 12px; padding-right: 20px; }
+  .filters { padding: 12px 20px 2px; }
+  .filter-row { display: flex; flex-wrap: wrap; margin-bottom: 6px; }
+  .fitem { display: flex; align-items: center; width: 25%; min-width: 260px; margin-bottom: 8px; padding-right: 20px; }
   .fitem label { width: 106px; text-align: right; color: #666; font-size: 13px; flex-shrink: 0; padding-right: 10px; white-space: nowrap; }
   .fcontrol {
     flex: 1; height: 30px; min-width: 0;
@@ -220,7 +220,7 @@
   }
   .daterange svg { width: 13px; height: 13px; fill: #9aa3b0; flex-shrink: 0; }
   .daterange span { flex: 1; text-align: left; padding-left: 4px; }
-  .filter-btns { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .filter-btns { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
   .btn {
     height: 30px; padding: 0 16px; border-radius: 4px; font-size: 13px;
     border: 1px solid transparent;
@@ -539,11 +539,290 @@
   #detailView table.d2-table td { color: #555; line-height: 1.7; }
   #detailView table.d2-table td.t-time { white-space: nowrap; }
 
-  /* ========== 隐患统计分析 / 逾期隐患 视图开关 ========== */
+  /* ========== 隐患统计分析 / 逾期隐患 / 提醒配置 视图开关 ========== */
   .page-body.stats-mode { padding: 0; }
-  .page-body.stats-mode > :not(#statsView):not(#overdueView) { display: none !important; }
+  .page-body.stats-mode > :not(#statsView):not(#overdueView):not(#remindView):not(#remindAddView) { display: none !important; }
   .page-body.overdue-mode { padding: 0; }
-  .page-body.overdue-mode > :not(#statsView):not(#overdueView) { display: none !important; }
+  .page-body.overdue-mode > :not(#statsView):not(#overdueView):not(#remindView):not(#remindAddView) { display: none !important; }
+  .page-body.remind-mode { padding: 0; }
+  .page-body.remind-mode > :not(#statsView):not(#overdueView):not(#remindView):not(#remindAddView) { display: none !important; }
+  .page-body.remind-add-mode { padding: 0; }
+  .page-body.remind-add-mode > :not(#remindAddView) { display: none !important; }
+  .page-body.remind-detail-mode { padding: 0; }
+  .page-body.remind-detail-mode > :not(#remindDetailView) { display: none !important; }
+
+  /* ========== 提醒配置视图（命名空间 #remindView） ========== */
+  #remindView{
+    font-family: "Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+    display:flex; flex-direction:column; gap:16px; padding:16px 20px 20px; min-height:100%;
+  }
+  #remindView *{ margin:0; padding:0; box-sizing:border-box; }
+  #remindView .rm-filter-card{ background:#FFFFFF; border-radius:8px; padding:20px 22px 6px; }
+  #remindView .rm-fgrid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px 28px; }
+  #remindView .rm-fi{ display:flex; align-items:center; gap:8px; min-width:0; }
+  #remindView .rm-fi > label{ font-size:13px; color:#4E5969; white-space:nowrap; flex-shrink:0; }
+  #remindView .rm-input,#remindView .rm-select{ flex:1; min-width:0; height:32px; border:1px solid #E0E3E8; border-radius:4px; padding:0 10px; display:flex; align-items:center; gap:6px; background:#FFFFFF; font-size:13px; color:#A9AEB8; }
+  #remindView .rm-input:hover,#remindView .rm-select:hover{ border-color:#366EF4; }
+  #remindView .rm-input input{ border:none; outline:none; flex:1; min-width:0; font-size:13px; font-family:inherit; background:transparent; color:#1D2129; }
+  #remindView .rm-input input::placeholder{ color:#A9AEB8; }
+  #remindView .rm-select{ position:relative; cursor:pointer; }
+  #remindView .rm-select > span{ flex:1; overflow:hidden; white-space:nowrap; }
+  #remindView .rm-select.selected > span{ color:#1D2129; }
+  #remindView .rm-arrow{ flex-shrink:0; transition:transform .2s; }
+  #remindView .rm-select.open .rm-arrow{ transform:rotate(180deg); }
+  #remindView .rm-dd{ display:none; position:absolute; top:calc(100% + 4px); left:0; right:0; background:#FFFFFF; border:1px solid #E0E3E8; border-radius:4px; box-shadow:0 8px 20px rgba(29,33,41,0.10); z-index:30; max-height:244px; overflow-y:auto; padding:4px 0; }
+  #remindView .rm-select.open .rm-dd{ display:block; }
+  #remindView .rm-dd-item{ padding:7px 12px; font-size:13px; color:#1D2129; cursor:pointer; white-space:nowrap; }
+  #remindView .rm-dd-item:hover{ background:#F2F3F5; }
+  #remindView .rm-dd-item.active{ color:#366EF4; background:#ECF2FE; }
+  #remindView .rm-filter-card{ overflow:visible; }
+  #remindView .rm-btns{ grid-column:3 / 5; display:flex; justify-content:flex-end; align-items:center; gap:10px; padding:6px 0 14px; }
+  #remindView .rm-btn{ height:32px; padding:0 24px; border-radius:4px; font-size:13px; cursor:pointer; border:none; font-family:inherit; }
+  #remindView .rm-btn-primary{ background:#366EF4; color:#FFFFFF; }
+  #remindView .rm-btn-primary:hover{ background:#5B87F5; }
+  #remindView .rm-btn-plain{ background:#FFFFFF; border:1px solid #E0E3E8; color:#4E5969; }
+  #remindView .rm-btn-plain:hover{ border-color:#366EF4; color:#366EF4; }
+  #remindView .rm-table-card{ background:#FFFFFF; border-radius:8px; padding:18px 22px 22px; flex:1; }
+  #remindView .rm-table-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  #remindView .rm-table-title{ font-size:15px; font-weight:600; color:#1D2129; }
+  #remindView .rm-add{ height:32px; padding:0 16px; border-radius:4px; background:#366EF4; color:#FFFFFF; font-size:13px; border:none; cursor:pointer; font-family:inherit; display:flex; align-items:center; gap:5px; }
+  #remindView .rm-add:hover{ background:#5B87F5; }
+  #remindView table{ width:100%; border-collapse:collapse; font-size:13px; }
+  #remindView thead th{ background:#F2F3F5; color:#4E5969; font-weight:500; text-align:left; padding:11px 12px; white-space:nowrap; }
+  #remindView tbody td{ padding:12px; border-bottom:1px solid #F0F1F3; color:#1D2129; white-space:nowrap; }
+  #remindView tbody tr:last-child td{ border-bottom:none; }
+  #remindView tbody tr:hover td{ background:#F7F9FC; }
+  #remindView .rm-ell{ max-width:132px; overflow:hidden; text-overflow:ellipsis; display:inline-block; vertical-align:middle; }
+  #remindView .rm-switch{ width:36px; height:20px; border-radius:10px; background:#C9CDD4; position:relative; cursor:pointer; display:inline-block; vertical-align:middle; transition:background .2s; flex-shrink:0; }
+  #remindView .rm-switch .rm-knob{ position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:50%; background:#FFFFFF; box-shadow:0 1px 3px rgba(0,0,0,.2); transition:left .2s; }
+  #remindView .rm-switch.on{ background:#23B862; }
+  #remindView .rm-switch.on .rm-knob{ left:18px; }
+  #remindView .rm-act{ color:#366EF4; cursor:pointer; }
+  #remindView .rm-act:hover{ text-decoration:underline; }
+  #remindView .rm-act + .rm-act{ margin-left:10px; }
+
+  /* ========== 新增提醒配置视图（命名空间 #remindAddView） ========== */
+  #remindAddView{ display:flex; flex-direction:column; gap:16px; min-height:100%; padding:16px 20px 20px; }
+  #remindAddView *{ margin:0; padding:0; box-sizing:border-box; }
+  #remindAddView .ra-head{ display:flex; align-items:center; justify-content:space-between; background:#FFFFFF; border-radius:8px; padding:14px 22px; flex-shrink:0; }
+  #remindAddView .ra-title{ font-size:16px; font-weight:600; color:#1D2129; }
+  #remindAddView .ra-actions{ display:flex; gap:10px; }
+  #remindAddView .ra-btn{ height:32px; padding:0 24px; border-radius:4px; font-size:13px; cursor:pointer; border:none; font-family:inherit; }
+  #remindAddView .ra-btn-primary{ background:#366EF4; color:#FFFFFF; }
+  #remindAddView .ra-btn-primary:hover{ background:#5B87F5; }
+  #remindAddView .ra-btn-plain{ background:#FFFFFF; border:1px solid #E0E3E8; color:#4E5969; }
+  #remindAddView .ra-btn-plain:hover{ border-color:#366EF4; color:#366EF4; }
+  #remindAddView .ra-form-card{ background:#FFFFFF; border-radius:8px; padding:44px 40px 56px; flex:1; }
+  #remindAddView .ra-grid{ display:grid; grid-template-columns:1fr 1fr; gap:30px 56px; max-width:1120px; margin:0 auto; }
+  #remindAddView .ra-fi{ display:flex; align-items:center; gap:8px; min-width:0; }
+  #remindAddView .ra-fi > label{ font-size:13px; color:#4E5969; white-space:nowrap; width:7.5em; text-align:right; flex-shrink:0; }
+  #remindAddView .ra-fi > label i{ color:#F53F3F; font-style:normal; margin-right:2px; }
+  #remindAddView .ra-input{ flex:1; min-width:0; height:32px; border:1px solid #E0E3E8; border-radius:4px; padding:0 10px; display:flex; align-items:center; gap:8px; background:#FFFFFF; font-size:13px; color:#A9AEB8; }
+  #remindAddView .ra-input:hover{ border-color:#366EF4; }
+  #remindAddView .ra-input input{ border:none; outline:none; flex:1; min-width:0; font-size:13px; font-family:inherit; background:transparent; color:#1D2129; }
+  #remindAddView .ra-input input::placeholder{ color:#A9AEB8; }
+  #remindAddView .ra-input.filled{ color:#1D2129; cursor:default; }
+  #remindAddView .ra-input.filled:hover{ border-color:#E0E3E8; }
+  #remindAddView .ra-count{ color:#A9AEB8; font-size:12px; flex-shrink:0; }
+  #remindAddView .ra-select{ flex:1; min-width:0; height:32px; border:1px solid #E0E3E8; border-radius:4px; padding:0 10px; display:flex; align-items:center; gap:6px; background:#FFFFFF; font-size:13px; color:#A9AEB8; position:relative; cursor:pointer; }
+  #remindAddView .ra-select:hover{ border-color:#366EF4; }
+  #remindAddView .ra-select > span{ flex:1; overflow:hidden; white-space:nowrap; }
+  #remindAddView .ra-select.selected > span{ color:#1D2129; }
+  #remindAddView .ra-arrow{ flex-shrink:0; transition:transform .2s; }
+  #remindAddView .ra-select.open .ra-arrow{ transform:rotate(180deg); }
+  #remindAddView .ra-dd{ display:none; position:absolute; top:calc(100% + 4px); left:0; right:0; background:#FFFFFF; border:1px solid #E0E3E8; border-radius:4px; box-shadow:0 8px 20px rgba(29,33,41,0.10); z-index:40; max-height:244px; overflow-y:auto; padding:4px 0; }
+  #remindAddView .ra-select.open .ra-dd{ display:block; }
+  #remindAddView .ra-dd-item{ padding:7px 12px; font-size:13px; color:#1D2129; cursor:pointer; white-space:nowrap; }
+  #remindAddView .ra-dd-item:hover{ background:#F2F3F5; }
+  #remindAddView .ra-dd-item.active{ color:#366EF4; background:#ECF2FE; }
+  #remindAddView .ra-radio-group{ display:flex; align-items:center; gap:26px; flex:1; min-width:0; }
+  #remindAddView .ra-radio{ display:flex; align-items:center; gap:6px; font-size:13px; color:#1D2129; cursor:pointer; }
+  #remindAddView .ra-dot{ width:14px; height:14px; border-radius:50%; border:1px solid #C9CDD4; background:#FFFFFF; position:relative; flex-shrink:0; }
+  #remindAddView .ra-radio.checked .ra-dot{ border-color:#366EF4; }
+  #remindAddView .ra-radio.checked .ra-dot::after{ content:''; position:absolute; top:3px; left:3px; width:6px; height:6px; border-radius:50%; background:#366EF4; }
+  #remindAddView .ra-check-group{ display:flex; align-items:center; gap:24px; flex:1; min-width:0; flex-wrap:wrap; }
+  #remindAddView .ra-check{ display:flex; align-items:center; gap:6px; font-size:13px; color:#1D2129; cursor:pointer; }
+  #remindAddView .ra-box{ width:14px; height:14px; border-radius:2px; border:1px solid #C9CDD4; background:#FFFFFF; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:10px; color:#FFFFFF; }
+  #remindAddView .ra-check.checked .ra-box{ background:#366EF4; border-color:#366EF4; }
+  #remindAddView .ra-check.checked .ra-box::after{ content:'✓'; }
+  #remindAddView .ra-switch{ width:40px; height:22px; border-radius:11px; background:#C9CDD4; position:relative; cursor:pointer; display:inline-block; transition:background .2s; flex-shrink:0; }
+  #remindAddView .ra-switch .ra-knob{ position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#FFFFFF; box-shadow:0 1px 3px rgba(0,0,0,.2); transition:left .2s; }
+  #remindAddView .ra-switch.on{ background:#23B862; }
+  #remindAddView .ra-switch.on .ra-knob{ left:20px; }
+  #remindAddView .ra-time{ display:flex; align-items:center; gap:8px; flex:1; min-width:0; }
+  #remindAddView .ra-time .ra-select{ flex:0 0 88px; }
+  #remindAddView .ra-time .ra-input{ flex:1; }
+  #remindAddView .ra-ts-ctrl{ display:contents; }
+  #remindAddView .ra-time .ra-multisel{ flex:1; min-width:0; }
+  #remindAddView .ra-time .ra-unit{ font-size:13px; color:#1D2129; flex-shrink:0; }
+  #remindAddView .ra-tip-cell{ grid-column:1 / -1; font-size:12px; color:#86909C; line-height:1.5; padding-left:calc(7.5em + 8px); margin-top:-16px; display:flex; align-items:center; gap:6px; }
+  #remindAddView .ra-tip-cell .ra-tip-icon{ width:14px; height:14px; border-radius:50%; background:#E8F3FF; color:#366EF4; display:inline-flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; flex-shrink:0; }
+  #remindAddView .ra-target{ display:flex; align-items:center; gap:8px; flex:1; min-width:0; }
+  #remindAddView .ra-target .ra-select{ flex:1; }
+  #remindAddView .ra-tlabel{ font-size:13px; color:#4E5969; flex-shrink:0; }
+
+  /* 通知对象——待办事项模式（只读） */
+  #remindAddView .ra-target-fi{ }
+  #remindAddView .ra-target-fi.msg-mode{ grid-column:1 / -1; }
+  #remindAddView .ra-target-todo{ display:flex; flex-direction:column; gap:6px; flex:1; min-width:0; }
+  #remindAddView .ra-target-todo .ra-input{ flex:0 0 32px; }
+  #remindAddView .ra-target-hint{ font-size:12px; color:#86909C; line-height:1.5; display:flex; align-items:center; gap:6px; }
+  /* 通知对象——系统消息模式（三维度多选，一行展示） */
+  #remindAddView .ra-target-msg{ display:none; flex-direction:row; align-items:flex-start; gap:8px; flex:1; min-width:0; }
+  #remindAddView .ra-target-msg.show{ display:flex; }
+  #remindAddView .ra-ms-row{ display:flex; align-items:flex-start; gap:8px; flex:1; min-width:0; }
+  #remindAddView .ra-ms-row > .ra-tlabel{ width:auto; text-align:right; flex-shrink:0; padding-top:7px; }
+  #remindAddView .ra-ms-ph{ font-size:13px; color:#A9AEB8; white-space:nowrap; }
+  #remindAddView .ra-multisel{ flex:1; min-width:0; position:relative; }
+  #remindAddView .ra-ms-box{ min-height:32px; border:1px solid #E0E3E8; border-radius:4px; padding:4px 10px 4px 8px; display:flex; align-items:center; flex-wrap:wrap; gap:4px; background:#FFFFFF; cursor:pointer; }
+  #remindAddView .ra-ms-box:hover{ border-color:#366EF4; }
+  #remindAddView .ra-ms-box.open{ border-color:#366EF4; }
+  #remindAddView .ra-ms-tags{ display:flex; flex-wrap:wrap; gap:4px; }
+  #remindAddView .ra-ms-tag{ display:inline-flex; align-items:center; gap:4px; height:22px; padding:0 4px 0 8px; background:#ECF2FE; color:#366EF4; border-radius:3px; font-size:12px; line-height:22px; }
+  #remindAddView .ra-ms-tag .ra-ms-tag-x{ cursor:pointer; font-size:14px; line-height:1; display:inline-flex; align-items:center; }
+  #remindAddView .ra-ms-tag .ra-ms-tag-x:hover{ color:#F53F3F; }
+  #remindAddView .ra-ms-ph{ font-size:13px; color:#A9AEB8; }
+  #remindAddView .ra-ms-arrow{ flex-shrink:0; transition:transform .2s; margin-left:auto; }
+  #remindAddView .ra-ms-box.open .ra-ms-arrow{ transform:rotate(180deg); }
+  #remindAddView .ra-ms-dd{ display:none; position:absolute; top:calc(100% + 4px); left:0; right:0; background:#FFFFFF; border:1px solid #E0E3E8; border-radius:4px; box-shadow:0 8px 20px rgba(29,33,41,0.10); z-index:40; }
+  #remindAddView .ra-ms-box.open .ra-ms-dd{ display:block; }
+  #remindAddView .ra-ms-search{ padding:8px 10px; border-bottom:1px solid #F2F3F5; }
+  #remindAddView .ra-ms-search input{ width:100%; height:28px; border:1px solid #E0E3E8; border-radius:4px; padding:0 8px; font-size:13px; outline:none; font-family:inherit; color:#1D2129; }
+  #remindAddView .ra-ms-search input:focus{ border-color:#366EF4; }
+  #remindAddView .ra-ms-list{ max-height:200px; overflow-y:auto; padding:4px 0; }
+  #remindAddView .ra-ms-opt{ display:flex; align-items:center; gap:8px; padding:7px 12px; font-size:13px; color:#1D2129; cursor:pointer; white-space:nowrap; }
+  #remindAddView .ra-ms-opt:hover{ background:#F2F3F5; }
+  #remindAddView .ra-ms-opt .ra-ms-cb{ width:14px; height:14px; border-radius:2px; border:1px solid #C9CDD4; background:#FFFFFF; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:10px; color:#FFFFFF; }
+  #remindAddView .ra-ms-opt.checked .ra-ms-cb{ background:#366EF4; border-color:#366EF4; }
+  #remindAddView .ra-ms-opt.checked .ra-ms-cb::after{ content:'✓'; }
+  #remindAddView .ra-ms-opt .ra-ms-opt-main{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; }
+  #remindAddView .ra-ms-opt .ra-ms-opt-sub{ color:#86909C; font-size:12px; margin-left:8px; flex-shrink:0; }
+
+  /* ========== 提醒配置详情视图（命名空间 #remindDetailView） ========== */
+  #remindDetailView{
+    font-family: "Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+    display:flex; flex-direction:column; gap:16px; min-height:100%;
+    padding:16px 20px 20px;
+    background:#EEEEEE;
+  }
+  #remindDetailView *{ margin:0; padding:0; box-sizing:border-box; }
+  #remindDetailView .rd-head{ display:flex; align-items:center; justify-content:space-between; background:#FFFFFF; border-radius:8px; padding:14px 22px; flex-shrink:0; }
+  #remindDetailView .rd-title{ font-size:16px; font-weight:600; color:#1D2129; display:flex; align-items:center; gap:8px; }
+  #remindDetailView .rd-title .rd-status{ font-size:12px; font-weight:400; color:#23B862; background:#E8FFEA; border-radius:3px; padding:2px 8px; }
+  #remindDetailView .rd-actions{ display:flex; gap:10px; }
+  #remindDetailView .rd-btn{ height:32px; padding:0 24px; border-radius:4px; font-size:13px; cursor:pointer; border:none; font-family:inherit; }
+  #remindDetailView .rd-btn-plain{ background:#FFFFFF; border:1px solid #E0E3E8; color:#4E5969; }
+  #remindDetailView .rd-btn-plain:hover{ border-color:#366EF4; color:#366EF4; }
+  #remindDetailView .rd-card{ background:#FFFFFF; border-radius:8px; padding:20px 24px 24px; }
+  #remindDetailView .rd-card-title{ font-size:15px; font-weight:600; color:#1D2129; margin-bottom:18px; display:flex; align-items:center; gap:8px; }
+  #remindDetailView .rd-card-title::before{ content:''; width:3px; height:14px; background:#366EF4; border-radius:2px; }
+  #remindDetailView .rd-card-sub{ margin-left:auto; font-size:12px; font-weight:400; color:#86909C; }
+  #remindDetailView .rd-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px 56px; }
+  #remindDetailView .rd-fi{ display:flex; align-items:baseline; gap:8px; min-width:0; font-size:13px; }
+  #remindDetailView .rd-fi > label{ color:#86909C; white-space:nowrap; width:7.5em; text-align:right; flex-shrink:0; }
+  #remindDetailView .rd-fi > .rd-val{ color:#1D2129; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  #remindDetailView .rd-fi > .rd-val.wrap{ white-space:normal; }
+  #remindDetailView .rd-time-tip{ grid-column:1 / -1; display:flex; align-items:center; gap:6px; font-size:12px; color:#86909C; padding-left:calc(7.5em + 8px); margin-top:-6px; }
+  #remindDetailView .rd-time-tip .rd-tip-icon{ width:14px; height:14px; border-radius:50%; background:#E8F3FF; color:#366EF4; display:inline-flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; flex-shrink:0; }
+  #remindDetailView .rd-fi-full{ grid-column:1 / -1; }
+  #remindDetailView table{ width:100%; border-collapse:collapse; font-size:13px; }
+  #remindDetailView thead th{ background:#F2F3F5; color:#4E5969; font-weight:500; text-align:left; padding:11px 12px; white-space:nowrap; }
+  #remindDetailView tbody td{ padding:12px; border-bottom:1px solid #F0F1F3; color:#1D2129; white-space:nowrap; }
+  #remindDetailView tbody tr:last-child td{ border-bottom:none; }
+  #remindDetailView tbody tr:hover td{ background:#F7F9FC; }
+  #remindDetailView .rd-ell{ max-width:180px; overflow:hidden; text-overflow:ellipsis; display:inline-block; vertical-align:middle; }
+  #remindDetailView .rd-tag{ display:inline-block; font-size:12px; border-radius:3px; padding:2px 8px; }
+  #remindDetailView .rd-tag-node{ color:#366EF4; background:#ECF2FE; }
+
+  /* ========== 隐患新增视图（命名空间 #hazardAddView） ========== */
+  .page-body.hazard-add-mode{ padding:0; }
+  .page-body.hazard-add-mode > :not(#hazardAddView){ display:none !important; }
+  #hazardAddView{
+    font-family: "Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+    display:flex; flex-direction:column; gap:16px; min-height:100%;
+    padding:16px 20px 20px; background:#EEEEEE;
+  }
+  #hazardAddView *{ margin:0; padding:0; box-sizing:border-box; }
+  #hazardAddView .ha-head{ display:flex; align-items:center; justify-content:space-between; background:#FFFFFF; border-radius:8px; padding:14px 22px; flex-shrink:0; }
+  #hazardAddView .ha-title{ font-size:16px; font-weight:600; color:#1D2129; }
+  #hazardAddView .ha-actions{ display:flex; gap:10px; }
+  #hazardAddView .ha-btn{ height:32px; padding:0 24px; border-radius:4px; font-size:13px; cursor:pointer; border:none; font-family:inherit; }
+  #hazardAddView .ha-btn-primary{ background:#366EF4; color:#FFFFFF; }
+  #hazardAddView .ha-btn-primary:hover{ background:#5B87F5; }
+  #hazardAddView .ha-btn-plain{ background:#FFFFFF; border:1px solid #E0E3E8; color:#4E5969; }
+  #hazardAddView .ha-btn-plain:hover{ border-color:#366EF4; color:#366EF4; }
+  #hazardAddView .ha-form-card{ background:#FFFFFF; border-radius:8px; padding:40px 40px 48px; flex:1; }
+  #hazardAddView .ha-form-inner{ max-width:1160px; margin:0 auto; }
+  #hazardAddView .ha-grid{ display:grid; grid-template-columns:1fr 1fr; gap:26px 72px; }
+  #hazardAddView .ha-fi-full{ grid-column:1 / -1; }
+  #hazardAddView .ha-fi{ display:flex; align-items:flex-start; gap:8px; min-width:0; }
+  #hazardAddView .ha-fi > label{ font-size:13px; color:#4E5969; white-space:nowrap; width:7.5em; text-align:right; flex-shrink:0; padding-top:7px; }
+  #hazardAddView .ha-fi > label i{ color:#F53F3F; font-style:normal; margin-right:2px; }
+  #hazardAddView .ha-ctrl{ flex:1; min-width:0; position:relative; }
+  #hazardAddView .ha-input{ width:100%; height:32px; border:1px solid #E0E3E8; border-radius:4px; padding:0 10px; display:flex; align-items:center; background:#FFFFFF; font-size:13px; }
+  #hazardAddView .ha-input input{ border:none; outline:none; width:100%; font-size:13px; font-family:inherit; background:transparent; color:#1D2129; }
+  #hazardAddView .ha-input input::placeholder{ color:#A9AEB8; }
+  #hazardAddView .ha-input:hover, #hazardAddView .ha-select:hover, #hazardAddView .ha-ta:hover{ border-color:#366EF4; }
+  #hazardAddView .ha-input.error, #hazardAddView .ha-select.error{ border-color:#F53F3F; }
+  #hazardAddView .ha-err{ display:none; font-size:12px; color:#F53F3F; line-height:1.5; margin-top:4px; }
+  #hazardAddView .ha-err.show{ display:block; }
+  #hazardAddView .ha-select{ width:100%; height:32px; border:1px solid #E0E3E8; border-radius:4px; padding:0 10px; display:flex; align-items:center; gap:6px; background:#FFFFFF; font-size:13px; color:#A9AEB8; position:relative; cursor:pointer; }
+  #hazardAddView .ha-select > span{ flex:1; overflow:hidden; white-space:nowrap; }
+  #hazardAddView .ha-select.selected > span{ color:#1D2129; }
+  #hazardAddView .ha-arrow{ flex-shrink:0; transition:transform .2s; }
+  #hazardAddView .ha-select.open .ha-arrow{ transform:rotate(180deg); }
+  #hazardAddView .ha-dd{ display:none; position:absolute; top:calc(100% + 4px); left:0; right:0; background:#FFFFFF; border:1px solid #E0E3E8; border-radius:4px; box-shadow:0 8px 20px rgba(29,33,41,0.10); z-index:40; max-height:244px; overflow-y:auto; padding:4px 0; }
+  #hazardAddView .ha-select.open .ha-dd{ display:block; }
+  #hazardAddView .ha-dd-item{ padding:7px 12px; font-size:13px; color:#1D2129; cursor:pointer; white-space:nowrap; }
+  #hazardAddView .ha-dd-item:hover{ background:#F2F3F5; }
+  #hazardAddView .ha-dd-item.active{ color:#366EF4; background:#ECF2FE; }
+  #hazardAddView .ha-radio-group{ display:flex; align-items:center; gap:26px; flex-wrap:wrap; flex:1; min-width:0; padding-top:7px; }
+  #hazardAddView .ha-radio{ display:flex; align-items:center; gap:6px; font-size:13px; color:#1D2129; cursor:pointer; }
+  #hazardAddView .ha-dot{ width:14px; height:14px; border-radius:50%; border:1px solid #C9CDD4; background:#FFFFFF; position:relative; flex-shrink:0; }
+  #hazardAddView .ha-radio.checked .ha-dot{ border-color:#366EF4; }
+  #hazardAddView .ha-radio.checked .ha-dot::after{ content:''; position:absolute; top:3px; left:3px; width:6px; height:6px; border-radius:50%; background:#366EF4; }
+  #hazardAddView .ha-radio-blue .ha-radio.checked{ color:#366EF4; }
+  #hazardAddView .ha-date{ width:100%; height:32px; border:1px solid #E0E3E8; border-radius:4px; padding:0 10px; display:flex; align-items:center; gap:8px; background:#FFFFFF; font-size:13px; color:#1D2129; cursor:pointer; position:relative; }
+  #hazardAddView .ha-date:hover{ border-color:#366EF4; }
+  #hazardAddView .ha-date span.ph{ color:#A9AEB8; }
+  /* Element 风格日期面板 */
+  #hazardAddView .ha-date-panel{ position:absolute; top:36px; left:0; width:322px; background:#FFFFFF; border:1px solid #E4E7ED; border-radius:4px; box-shadow:0 4px 12px rgba(0,0,0,0.12); padding:14px 16px 12px; z-index:1300; display:none; cursor:default; }
+  #hazardAddView .ha-date-panel.show{ display:block; }
+  #hazardAddView .ha-dp-head{ display:flex; align-items:center; }
+  #hazardAddView .ha-dp-ico{ width:26px; height:26px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:4px; color:#606266; flex-shrink:0; }
+  #hazardAddView .ha-dp-ico:hover{ color:#366EF4; background:#F2F6FC; }
+  #hazardAddView .ha-dp-title{ flex:1; text-align:center; font-size:14px; color:#606266; font-weight:500; }
+  #hazardAddView .ha-dp-tbl{ width:100%; border-collapse:collapse; margin-top:8px; table-layout:fixed; }
+  #hazardAddView .ha-dp-tbl th{ font-size:12px; color:#909399; font-weight:400; padding:5px 0; text-align:center; }
+  #hazardAddView .ha-dp-tbl td{ height:34px; text-align:center; font-size:13px; color:#606266; cursor:pointer; }
+  #hazardAddView .ha-dp-tbl td.prev, #hazardAddView .ha-dp-tbl td.next{ color:#C0C4CC; }
+  #hazardAddView .ha-dp-tbl td.today{ color:#366EF4; font-weight:600; }
+  #hazardAddView .ha-dp-tbl td.sel{ background:#366EF4; color:#FFFFFF; border-radius:4px; font-weight:600; }
+  #hazardAddView .ha-dp-tbl td:not(.sel):hover{ background:#F2F6FC; border-radius:4px; color:#366EF4; }
+  #hazardAddView .ha-other-input{ height:28px; border:1px solid #E0E3E8; border-radius:4px; padding:0 10px; font-size:13px; font-family:inherit; outline:none; color:#1D2129; width:180px; }
+  #hazardAddView .ha-other-input::placeholder{ color:#A9AEB8; }
+  #hazardAddView .ha-other-input:focus{ border-color:#366EF4; }
+  #hazardAddView .ha-datetime{ width:100%; height:32px; border:1px solid #E0E3E8; border-radius:4px; padding:0 10px; display:flex; align-items:center; gap:8px; background:#FFFFFF; font-size:13px; color:#1D2129; cursor:pointer; }
+  #hazardAddView .ha-upload{ width:84px; height:84px; border:1px solid #E0E3E8; border-radius:4px; background:#FAFBFC; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  #hazardAddView .ha-upload:hover{ border-color:#366EF4; }
+  #hazardAddView .ha-upload svg{ stroke:#86909C; }
+  #hazardAddView .ha-upload-hint{ font-size:12px; color:#86909C; line-height:1.5; margin-top:8px; }
+  #hazardAddView .ha-ta{ width:100%; min-height:60px; border:1px solid #E0E3E8; border-radius:4px; padding:8px 10px 22px; font-size:13px; font-family:inherit; color:#1D2129; resize:vertical; outline:none; line-height:1.6; }
+  #hazardAddView .ha-ta::placeholder{ color:#A9AEB8; }
+  #hazardAddView .ha-ta:focus{ border-color:#366EF4; }
+  #hazardAddView .ha-ta-count{ position:absolute; right:10px; bottom:6px; font-size:12px; color:#A9AEB8; }
+  #hazardAddView .ha-file-btn{ height:32px; padding:0 14px; border:1px solid #E0E3E8; border-radius:4px; background:#FFFFFF; font-size:13px; color:#4E5969; display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-family:inherit; }
+  #hazardAddView .ha-file-btn:hover{ border-color:#366EF4; color:#366EF4; }
+  #hazardAddView .ha-file-hint{ font-size:12px; color:#86909C; margin-left:10px; }
+  #hazardAddView .ha-ro-val{ font-size:13px; color:#86909C; padding-top:7px; }
+  #hazardAddView .ha-section{ grid-column:1 / -1; font-size:15px; font-weight:600; color:#1D2129; display:flex; align-items:center; gap:8px; margin-top:10px; }
+  #hazardAddView .ha-section::before{ content:''; width:3px; height:14px; background:#366EF4; border-radius:2px; }
+  #hazardAddView .ha-tbl-wrap{ grid-column:1 / -1; }
+  #hazardAddView table{ width:100%; border-collapse:collapse; font-size:13px; }
+  #hazardAddView thead th{ background:#F2F3F5; color:#4E5969; font-weight:500; text-align:left; padding:11px 12px; white-space:nowrap; }
+  #hazardAddView tbody td{ padding:12px; border-bottom:1px solid #F0F1F3; color:#1D2129; white-space:nowrap; }
+  #hazardAddView tbody tr:hover td{ background:#F7F9FC; }
+  #hazardAddView .ha-empty-row td{ text-align:center; color:#86909C; padding:30px 12px; }
 
   /* ========== 逾期隐患视图（命名空间 #overdueView） ========== */
   #overdueView{
@@ -861,11 +1140,15 @@
         <svg viewBox="0 0 16 16" data-page-node-id="ttRENPCyRC3Wo0Ib1wYFRi"><path d="M3.5 1.5h6L12.5 5v9.5h-9z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="LG4fURYZdBELJzNCezxYrc"></path><path d="M5.5 8h5M5.5 10.5h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" data-page-node-id="xfhKuMsmHex1xmALpmWWae"></path></svg>
         包保责任履职管理
       </li>
-      <li class="side-item" data-page-node-id="LD3L9zuGNgeDaNTfTvoqsP">
+      <li class="side-item open" data-page-node-id="LD3L9zuGNgeDaNTfTvoqsP">
         <svg viewBox="0 0 16 16" data-page-node-id="2qSYRTRrWTxY9vP8kAcbjS"><circle cx="8" cy="6" r="3.5" fill="none" stroke="currentColor" stroke-width="1.2" data-page-node-id="KkvZpj6BsYCFOMLl0IB4zp"></circle><path d="M4 13c.8-2 2.3-3 4-3s3.2 1 4 3" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" data-page-node-id="hrWb5Rgps2fX9xGhFCE8Yw"></path></svg>
         HSE积分管理
+        <span class="arrow"></span>
       </li>
-      
+      <ul class="submenu">
+        <li>提醒配置</li>
+      </ul>
+
     </ul>
   </aside>
 
@@ -1273,7 +1556,7 @@
                 
                 
                 
-              <td class="idx col-freeze-l" data-page-node-id="OurDFEfBs19Q1eHPF6QjQ9" data-ci="0">1</td><td data-page-node-id="vAMRra3h8CCxE9fkuxGe1F" data-ci="1" class="col-freeze-name">演示数据01</td><td data-page-node-id="GzAvgiQVaZQufH4lRZCVuV" data-ci="2"><span class="dept" data-page-node-id="DO8xAcoAoa9ody3C0MiFCw"><svg viewBox="0 0 16 16" data-page-node-id="sGuPGXg9X7BI6thnhv2LD9"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="sUpVWpMRVwA3TeXNCKiIB2"></path></svg>HSE部</span></td><td data-page-node-id="8linYxZG3xl07KDwIbcn46" data-ci="3">0512风险分析单元</td><td data-page-node-id="Ck2PfmGRGmEzA7tIVSwVxt" data-ci="4">四级隐患</td><td data-page-node-id="83vq5m3JhzOMbj9pCEKHAZ" data-ci="5">综合管理</td><td data-page-node-id="4T8LXQo2RDjDd7fjX28Els" data-ci="6">否</td><td data-page-node-id="qjUFpC2R6qnsPj4oL4CCpk" data-ci="7">随手拍</td><td data-page-node-id="Wh4GTUBIsODGMMRNr2NQGV" data-ci="8">2026-09-18 10:23</td><td data-page-node-id="oVY2SiKHeYUMQHeamcjUmy" data-ci="9" style="display: none;">随手拍</td><td data-page-node-id="dHytkcCMEeBtizoCu18jYl" data-ci="10" style="display: none;">企业级及以下自查</td><td data-page-node-id="E9osIIyKJcgXi7tPPFPbVv" data-ci="11" style="display: none;">熊辰婷</td><td data-page-node-id="7QMh7gOl3vSwIyLG1JXptx" data-ci="12" style="display: none;">整改中</td><td data-page-node-id="Hq3sf5hczmtY9DBc79T4Kw" data-ci="13" style="display: none;">否</td><td data-page-node-id="dWdsCUmIl0SduqCsmK3F8O" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="o49i7fUxjBkHajEJwDmolp"><a data-page-node-id="t8zdsmtQ1dyPcvgiKyBU6k">详情</a><a data-page-node-id="VrW2YRzwlelT0TkxnGFhFi" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a class="disabled" data-page-node-id="uUqPxR12BEe9hZGlh0gX09">删除</a></div></td></tr>
+              <td class="idx col-freeze-l" data-page-node-id="OurDFEfBs19Q1eHPF6QjQ9" data-ci="0">1</td><td data-page-node-id="vAMRra3h8CCxE9fkuxGe1F" data-ci="1" class="col-freeze-name">演示数据01</td><td data-page-node-id="GzAvgiQVaZQufH4lRZCVuV" data-ci="2"><span class="dept" data-page-node-id="DO8xAcoAoa9ody3C0MiFCw"><svg viewBox="0 0 16 16" data-page-node-id="sGuPGXg9X7BI6thnhv2LD9"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="sUpVWpMRVwA3TeXNCKiIB2"></path></svg>HSE部</span></td><td data-page-node-id="8linYxZG3xl07KDwIbcn46" data-ci="3">0512风险分析单元</td><td data-page-node-id="Ck2PfmGRGmEzA7tIVSwVxt" data-ci="4">一般B级隐患</td><td data-page-node-id="83vq5m3JhzOMbj9pCEKHAZ" data-ci="5">综合管理</td><td data-page-node-id="4T8LXQo2RDjDd7fjX28Els" data-ci="6">否</td><td data-page-node-id="qjUFpC2R6qnsPj4oL4CCpk" data-ci="7">随手拍</td><td data-page-node-id="Wh4GTUBIsODGMMRNr2NQGV" data-ci="8">2026-09-18 10:23</td><td data-page-node-id="oVY2SiKHeYUMQHeamcjUmy" data-ci="9" style="display: none;">随手拍</td><td data-page-node-id="dHytkcCMEeBtizoCu18jYl" data-ci="10" style="display: none;">企业级及以下自查</td><td data-page-node-id="E9osIIyKJcgXi7tPPFPbVv" data-ci="11" style="display: none;">熊辰婷</td><td data-page-node-id="7QMh7gOl3vSwIyLG1JXptx" data-ci="12" style="display: none;">整改中</td><td data-page-node-id="Hq3sf5hczmtY9DBc79T4Kw" data-ci="13" style="display: none;">否</td><td data-page-node-id="dWdsCUmIl0SduqCsmK3F8O" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="o49i7fUxjBkHajEJwDmolp"><a data-page-node-id="t8zdsmtQ1dyPcvgiKyBU6k">详情</a><a data-page-node-id="VrW2YRzwlelT0TkxnGFhFi" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a class="disabled" data-page-node-id="uUqPxR12BEe9hZGlh0gX09">删除</a></div></td></tr>
               <tr data-page-node-id="KZX0PoNXGPc1ZAKTKQT3Pz">
                 
                 
@@ -1285,7 +1568,7 @@
                 
                 
                 
-              <td class="idx col-freeze-l" data-page-node-id="8V8XrQqbVOPBA9UNXcUgAA" data-ci="0">2</td><td data-page-node-id="cK32DteiH6CGk9B9H3T3u0" data-ci="1" class="col-freeze-name">导入的内部隐患01</td><td data-page-node-id="843HrOaCiVnoDTWmpphvoB" data-ci="2"><span class="dept" data-page-node-id="hVxgNmltBeUTU1m5bAuHm9"><svg viewBox="0 0 16 16" data-page-node-id="qzYWalCebmL6BFCh0okVGl"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="TMyMvY7qmPUf2OWl7EAfrh"></path></svg>X-test</span></td><td data-page-node-id="T2Kh6K69XHU5Cw6vQF0Pkt" data-ci="3">测试代发发送问题</td><td data-page-node-id="1l9KUNBpAS9g7JN1cstogK" data-ci="4">三级隐患</td><td data-page-node-id="GzwOcP0fgcqgJoDjIfBHsZ" data-ci="5">电子防范</td><td data-page-node-id="70JqKxzvL1o08zTbzVWclX" data-ci="6">否</td><td data-page-node-id="bFU0gzGYBuPxMA1Nv5sd2h" data-ci="7">专项排查</td><td data-page-node-id="e7WovOy7yJhHZMBHUuTBOk" data-ci="8">2026-09-17 16:40</td><td data-page-node-id="yGLlePe80vUmSjAVh40EIg" data-ci="9" style="display: none;">专项检查</td><td data-page-node-id="T7Kz788gcKRX7cerhlBDBq" data-ci="10" style="display: none;">部门级排查</td><td data-page-node-id="PqZu5Ed5J2fgHXAGQUqWKw" data-ci="11" style="display: none;">常假设</td><td data-page-node-id="rKbcQZjaTZzFCMEA4I03JC" data-ci="12" style="display: none;">整改中</td><td data-page-node-id="2B5GtvGj6gMJOK0V5s5CA7" data-ci="13" style="display: none;">否</td><td data-page-node-id="75SmjJqInHHbKSCx19fRRZ" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="faWsfOJCMk17H3e6y90hh6"><a data-page-node-id="dskGTnK8U1RrqD3YHgHMtD">详情</a><a data-page-node-id="ib4YWPhHRpECQmIkr9huBb" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a data-page-node-id="Noo8wp0hGqVzfpBNIdVSdk">删除</a></div></td></tr>
+              <td class="idx col-freeze-l" data-page-node-id="8V8XrQqbVOPBA9UNXcUgAA" data-ci="0">2</td><td data-page-node-id="cK32DteiH6CGk9B9H3T3u0" data-ci="1" class="col-freeze-name">导入的内部隐患01</td><td data-page-node-id="843HrOaCiVnoDTWmpphvoB" data-ci="2"><span class="dept" data-page-node-id="hVxgNmltBeUTU1m5bAuHm9"><svg viewBox="0 0 16 16" data-page-node-id="qzYWalCebmL6BFCh0okVGl"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="TMyMvY7qmPUf2OWl7EAfrh"></path></svg>X-test</span></td><td data-page-node-id="T2Kh6K69XHU5Cw6vQF0Pkt" data-ci="3">测试代发发送问题</td><td data-page-node-id="1l9KUNBpAS9g7JN1cstogK" data-ci="4">一般B级隐患</td><td data-page-node-id="GzwOcP0fgcqgJoDjIfBHsZ" data-ci="5">电子防范</td><td data-page-node-id="70JqKxzvL1o08zTbzVWclX" data-ci="6">否</td><td data-page-node-id="bFU0gzGYBuPxMA1Nv5sd2h" data-ci="7">专项排查</td><td data-page-node-id="e7WovOy7yJhHZMBHUuTBOk" data-ci="8">2026-09-17 16:40</td><td data-page-node-id="yGLlePe80vUmSjAVh40EIg" data-ci="9" style="display: none;">专项检查</td><td data-page-node-id="T7Kz788gcKRX7cerhlBDBq" data-ci="10" style="display: none;">部门级排查</td><td data-page-node-id="PqZu5Ed5J2fgHXAGQUqWKw" data-ci="11" style="display: none;">常假设</td><td data-page-node-id="rKbcQZjaTZzFCMEA4I03JC" data-ci="12" style="display: none;">整改中</td><td data-page-node-id="2B5GtvGj6gMJOK0V5s5CA7" data-ci="13" style="display: none;">否</td><td data-page-node-id="75SmjJqInHHbKSCx19fRRZ" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="faWsfOJCMk17H3e6y90hh6"><a data-page-node-id="dskGTnK8U1RrqD3YHgHMtD">详情</a><a data-page-node-id="ib4YWPhHRpECQmIkr9huBb" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a data-page-node-id="Noo8wp0hGqVzfpBNIdVSdk">删除</a></div></td></tr>
               <tr data-page-node-id="EUbEkzZCk9VLz2jFn2A9bf">
                 
                 
@@ -1297,7 +1580,7 @@
                 
                 
                 
-              <td class="idx col-freeze-l" data-page-node-id="LBbhxIllLKkY1vC3hHG0to" data-ci="0">3</td><td data-page-node-id="cfVY5AhDqEpPesGoXa1lTn" data-ci="1" class="col-freeze-name">导入的内部隐患01</td><td data-page-node-id="CprQbptViQvo88nsovQRU7" data-ci="2"><span class="dept" data-page-node-id="H5t3u5HecrCJNuukG9pwLa"><svg viewBox="0 0 16 16" data-page-node-id="WmObvCJLD0o4MYkZtuXQTH"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="JRTdCZQtOrao6zE4IDPfFb"></path></svg>线上配置专用...</span></td><td data-page-node-id="sgbpPT3t7REgteUZZsLGNf" data-ci="3">测试代发发送问题</td><td data-page-node-id="HqOV8igVRmIPomGdrv5XA0" data-ci="4">三级隐患</td><td data-page-node-id="nVV1bSYpRJS4eHPmTmLCTX" data-ci="5">综合管理</td><td data-page-node-id="er69uG0IZwHzBjVFHw4BNT" data-ci="6">否</td><td data-page-node-id="caGxW9P3VhvWBnIEC3YTXL" data-ci="7">专项排查</td><td data-page-node-id="nDlsPlBdviE0e4sPx6WUtC" data-ci="8">2026-09-17 15:02</td><td data-page-node-id="hzknzOMIu3yfges3stFZQa" data-ci="9" style="display: none;">日常排查</td><td data-page-node-id="n8wX1FXpID3oAwwBkCFF3q" data-ci="10" style="display: none;">企业级及以下自查</td><td data-page-node-id="DmkQlEUG1ceHRexY5h7TSV" data-ci="11" style="display: none;">熊辰婷</td><td data-page-node-id="eNmYzU0DXFLUDWy8cqfGBu" data-ci="12" style="display: none;">已整改</td><td data-page-node-id="sGWGZYKktTveFbhw9SfFcd" data-ci="13" style="display: none;">否</td><td data-page-node-id="6kBbP696lDXtojG2EDBWBA" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="qARvbpb1suGAD7nEDlIvyE"><a data-page-node-id="fdfc7pY1zEpTVLEMTuxgP2">详情</a><a data-page-node-id="nHiOVctUxWupQ4ouHiKHuo" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a class="disabled" data-page-node-id="e5lJzcgs6FYQoSlEGYNfOp">删除</a></div></td></tr>
+              <td class="idx col-freeze-l" data-page-node-id="LBbhxIllLKkY1vC3hHG0to" data-ci="0">3</td><td data-page-node-id="cfVY5AhDqEpPesGoXa1lTn" data-ci="1" class="col-freeze-name">导入的内部隐患01</td><td data-page-node-id="CprQbptViQvo88nsovQRU7" data-ci="2"><span class="dept" data-page-node-id="H5t3u5HecrCJNuukG9pwLa"><svg viewBox="0 0 16 16" data-page-node-id="WmObvCJLD0o4MYkZtuXQTH"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="JRTdCZQtOrao6zE4IDPfFb"></path></svg>线上配置专用...</span></td><td data-page-node-id="sgbpPT3t7REgteUZZsLGNf" data-ci="3">测试代发发送问题</td><td data-page-node-id="HqOV8igVRmIPomGdrv5XA0" data-ci="4">一般B级隐患</td><td data-page-node-id="nVV1bSYpRJS4eHPmTmLCTX" data-ci="5">综合管理</td><td data-page-node-id="er69uG0IZwHzBjVFHw4BNT" data-ci="6">否</td><td data-page-node-id="caGxW9P3VhvWBnIEC3YTXL" data-ci="7">专项排查</td><td data-page-node-id="nDlsPlBdviE0e4sPx6WUtC" data-ci="8">2026-09-17 15:02</td><td data-page-node-id="hzknzOMIu3yfges3stFZQa" data-ci="9" style="display: none;">日常排查</td><td data-page-node-id="n8wX1FXpID3oAwwBkCFF3q" data-ci="10" style="display: none;">企业级及以下自查</td><td data-page-node-id="DmkQlEUG1ceHRexY5h7TSV" data-ci="11" style="display: none;">熊辰婷</td><td data-page-node-id="eNmYzU0DXFLUDWy8cqfGBu" data-ci="12" style="display: none;">已整改</td><td data-page-node-id="sGWGZYKktTveFbhw9SfFcd" data-ci="13" style="display: none;">否</td><td data-page-node-id="6kBbP696lDXtojG2EDBWBA" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="qARvbpb1suGAD7nEDlIvyE"><a data-page-node-id="fdfc7pY1zEpTVLEMTuxgP2">详情</a><a data-page-node-id="nHiOVctUxWupQ4ouHiKHuo" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a class="disabled" data-page-node-id="e5lJzcgs6FYQoSlEGYNfOp">删除</a></div></td></tr>
               <tr data-page-node-id="ywJDHHXm8mZ6FSJelW3rAD">
                 
                 
@@ -1309,7 +1592,7 @@
                 
                 
                 
-              <td class="idx col-freeze-l" data-page-node-id="QEQBDv4SOd410C34iLjdfz" data-ci="0">4</td><td data-page-node-id="TrikDsXJYvxjrSZh3uP9Hg" data-ci="1" class="col-freeze-name">导入的外部隐患01</td><td data-page-node-id="o9NRufw74DvoieB0g6Dwmg" data-ci="2"><span class="dept" data-page-node-id="jpvUADBz8XxE5l5ak2bvHf"><svg viewBox="0 0 16 16" data-page-node-id="dtwPpugaMxIDEmXkZAokDb"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="CeMkbeaN1IEDfOyCZNu9WO"></path></svg>线上配置专用...</span></td><td data-page-node-id="ZhphlGdBou0ot4V0sIqZQg" data-ci="3">3.603单元</td><td data-page-node-id="swdrihlkhhhDEtiPbHA74D" data-ci="4">三级隐患</td><td data-page-node-id="14n7kvqrjRxEpZhLhhZfMY" data-ci="5">综合管理</td><td data-page-node-id="zIOJrU8l6piqzLgURLyVkQ" data-ci="6">否</td><td data-page-node-id="vjGq71E4GmvRzKrFbyBNrH" data-ci="7">专项排查</td><td data-page-node-id="ukguHXMcV0WPCRRQrtcSrT" data-ci="8">2026-09-16 11:35</td><td data-page-node-id="NJregXG7C5mX0jm6U2z8Bc" data-ci="9" style="display: none;">综合检查</td><td data-page-node-id="QXbYmnZVPUCF4KqsIBVlu5" data-ci="10" style="display: none;">公司级排查</td><td data-page-node-id="paNbZGtVwMhjmlC8D2hFN1" data-ci="11" style="display: none;">王强</td><td data-page-node-id="kEmubbIXyyC5Vq6GkVHUpo" data-ci="12" style="display: none;">整改中</td><td data-page-node-id="xmQ2KskoNCykawk2D59fHu" data-ci="13" style="display: none;">是</td><td data-page-node-id="KrAjomAHPjiMB2SSzbjuGH" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="Jg5fjoekWShgFZr1l1ZdU5"><a data-page-node-id="gf7VYhRlM78QLtfyVFJHN1">详情</a><a data-page-node-id="BP5UHoVubMmsZZM4QkITtX" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a class="disabled" data-page-node-id="ZFiHpyCsqR3h7BrdpObHTz">删除</a></div></td></tr>
+              <td class="idx col-freeze-l" data-page-node-id="QEQBDv4SOd410C34iLjdfz" data-ci="0">4</td><td data-page-node-id="TrikDsXJYvxjrSZh3uP9Hg" data-ci="1" class="col-freeze-name">导入的外部隐患01</td><td data-page-node-id="o9NRufw74DvoieB0g6Dwmg" data-ci="2"><span class="dept" data-page-node-id="jpvUADBz8XxE5l5ak2bvHf"><svg viewBox="0 0 16 16" data-page-node-id="dtwPpugaMxIDEmXkZAokDb"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="CeMkbeaN1IEDfOyCZNu9WO"></path></svg>线上配置专用...</span></td><td data-page-node-id="ZhphlGdBou0ot4V0sIqZQg" data-ci="3">3.603单元</td><td data-page-node-id="swdrihlkhhhDEtiPbHA74D" data-ci="4">一般B级隐患</td><td data-page-node-id="14n7kvqrjRxEpZhLhhZfMY" data-ci="5">综合管理</td><td data-page-node-id="zIOJrU8l6piqzLgURLyVkQ" data-ci="6">否</td><td data-page-node-id="vjGq71E4GmvRzKrFbyBNrH" data-ci="7">专项排查</td><td data-page-node-id="ukguHXMcV0WPCRRQrtcSrT" data-ci="8">2026-09-16 11:35</td><td data-page-node-id="NJregXG7C5mX0jm6U2z8Bc" data-ci="9" style="display: none;">综合检查</td><td data-page-node-id="QXbYmnZVPUCF4KqsIBVlu5" data-ci="10" style="display: none;">公司级排查</td><td data-page-node-id="paNbZGtVwMhjmlC8D2hFN1" data-ci="11" style="display: none;">王强</td><td data-page-node-id="kEmubbIXyyC5Vq6GkVHUpo" data-ci="12" style="display: none;">整改中</td><td data-page-node-id="xmQ2KskoNCykawk2D59fHu" data-ci="13" style="display: none;">是</td><td data-page-node-id="KrAjomAHPjiMB2SSzbjuGH" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="Jg5fjoekWShgFZr1l1ZdU5"><a data-page-node-id="gf7VYhRlM78QLtfyVFJHN1">详情</a><a data-page-node-id="BP5UHoVubMmsZZM4QkITtX" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a class="disabled" data-page-node-id="ZFiHpyCsqR3h7BrdpObHTz">删除</a></div></td></tr>
               <tr data-page-node-id="9L6EZmCGEhxwtvYxVDeVDX">
                 
                 
@@ -1321,7 +1604,7 @@
                 
                 
                 
-              <td class="idx col-freeze-l" data-page-node-id="47VWYdHtlexdgcC6L3avLn" data-ci="0">5</td><td data-page-node-id="ztu2bFss7eF3rV3RJE54tI" data-ci="1" class="col-freeze-name">导入的内部隐患03</td><td data-page-node-id="fElrpzZcyyomFgDrJFbqap" data-ci="2"><span class="dept" data-page-node-id="zNfdlkgvSrCqrIPXAGAavL"><svg viewBox="0 0 16 16" data-page-node-id="bLlJZ0AcvvjHRzjyeReelg"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="ua2E6b7Umn0d3vVH242ItN"></path></svg>线上配置专用...</span></td><td data-page-node-id="nA5tiO7OYH7JtZfeGgNJi5" data-ci="3">分析单元hx</td><td data-page-node-id="AiDRvVNgLCgLkBe49HUpQw" data-ci="4">四级隐患</td><td data-page-node-id="PKpZwhBMDa81fNiQc7mquS" data-ci="5">综合管理</td><td data-page-node-id="bvutpdh6UKGAXrcBHVn2LX" data-ci="6">否</td><td data-page-node-id="ujLAXyyTVIhpGJlXHJ3pbP" data-ci="7">专项排查</td><td data-page-node-id="1vOOGCAGtjHp8ve0U5TPAZ" data-ci="8">2026-09-15 09:47</td><td data-page-node-id="U32uJFSoCjBYiFqILe3Xc2" data-ci="9" style="display: none;">专项检查</td><td data-page-node-id="WHYsBcpVQACggbw491XxI5" data-ci="10" style="display: none;">部门级排查</td><td data-page-node-id="E1awdtH1RwvSsLvnVyGCeM" data-ci="11" style="display: none;">常假设</td><td data-page-node-id="2DVTXTkJ4S3mZNVcMPHFh7" data-ci="12" style="display: none;">整改中</td><td data-page-node-id="Rs4v7vNRjeX6vzvifuHyTz" data-ci="13" style="display: none;">否</td><td data-page-node-id="VdyjRwgrqDVdbUoA8uRLmG" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="kNbwl940EFG5ygEdyWxCIb"><a data-page-node-id="DLvemwP1B08CMkikxEMI7A">详情</a><a data-page-node-id="rEpBq7ZS2L31gVjVzShoUh" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a data-page-node-id="Znjo26UV4iyfwfXm06gtDP">删除</a></div></td></tr>
+              <td class="idx col-freeze-l" data-page-node-id="47VWYdHtlexdgcC6L3avLn" data-ci="0">5</td><td data-page-node-id="ztu2bFss7eF3rV3RJE54tI" data-ci="1" class="col-freeze-name">导入的内部隐患03</td><td data-page-node-id="fElrpzZcyyomFgDrJFbqap" data-ci="2"><span class="dept" data-page-node-id="zNfdlkgvSrCqrIPXAGAavL"><svg viewBox="0 0 16 16" data-page-node-id="bLlJZ0AcvvjHRzjyeReelg"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="ua2E6b7Umn0d3vVH242ItN"></path></svg>线上配置专用...</span></td><td data-page-node-id="nA5tiO7OYH7JtZfeGgNJi5" data-ci="3">分析单元hx</td><td data-page-node-id="AiDRvVNgLCgLkBe49HUpQw" data-ci="4">一般B级隐患</td><td data-page-node-id="PKpZwhBMDa81fNiQc7mquS" data-ci="5">综合管理</td><td data-page-node-id="bvutpdh6UKGAXrcBHVn2LX" data-ci="6">否</td><td data-page-node-id="ujLAXyyTVIhpGJlXHJ3pbP" data-ci="7">专项排查</td><td data-page-node-id="1vOOGCAGtjHp8ve0U5TPAZ" data-ci="8">2026-09-15 09:47</td><td data-page-node-id="U32uJFSoCjBYiFqILe3Xc2" data-ci="9" style="display: none;">专项检查</td><td data-page-node-id="WHYsBcpVQACggbw491XxI5" data-ci="10" style="display: none;">部门级排查</td><td data-page-node-id="E1awdtH1RwvSsLvnVyGCeM" data-ci="11" style="display: none;">常假设</td><td data-page-node-id="2DVTXTkJ4S3mZNVcMPHFh7" data-ci="12" style="display: none;">整改中</td><td data-page-node-id="Rs4v7vNRjeX6vzvifuHyTz" data-ci="13" style="display: none;">否</td><td data-page-node-id="VdyjRwgrqDVdbUoA8uRLmG" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="kNbwl940EFG5ygEdyWxCIb"><a data-page-node-id="DLvemwP1B08CMkikxEMI7A">详情</a><a data-page-node-id="rEpBq7ZS2L31gVjVzShoUh" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a data-page-node-id="Znjo26UV4iyfwfXm06gtDP">删除</a></div></td></tr>
               <tr data-page-node-id="V3J2NilELu4SQa0BfOhLHH">
                 
                 
@@ -1333,7 +1616,7 @@
                 
                 
                 
-              <td class="idx col-freeze-l" data-page-node-id="cDUOC3aob8p1GJ0HDpXKHl" data-ci="0">6</td><td data-page-node-id="GLh9ouFvAhlZIgvwIzJHBX" data-ci="1" class="col-freeze-name">导入的内部隐患02</td><td data-page-node-id="3HJy3IJjfprIvTGkUGAuqe" data-ci="2"><span class="dept" data-page-node-id="8CVM9pFzd8PBJuqq8Gc7DS"><svg viewBox="0 0 16 16" data-page-node-id="UcWLq8DxGmQG9fv1rszx14"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="23aDHkqLIVgmZooALvcmXk"></path></svg>X-test</span></td><td data-page-node-id="I7cRXdwoxMniGRx5E89P5v" data-ci="3">导入的分析单元04</td><td data-page-node-id="cy18a33gnR2Hd5wodBn0AD" data-ci="4">三级隐患</td><td data-page-node-id="ILAorPk840tC2FghEXA3Us" data-ci="5">其他</td><td data-page-node-id="fOfXnw6kTnSafsSs6T5GPd" data-ci="6">否</td><td data-page-node-id="ZH38yTv4dBJqyNkzbdibcu" data-ci="7">专项排查</td><td data-page-node-id="bhrJzxd6AsGBkR1vt8GqdH" data-ci="8">2026-09-14 14:18</td><td data-page-node-id="vb9PYdmrZG0kjN3niwh19t" data-ci="9" style="display: none;">日常排查</td><td data-page-node-id="Ou0tR6nyWwLT2SZ3iJeDxa" data-ci="10" style="display: none;">企业级及以下自查</td><td data-page-node-id="bXPoajVMsQdldFI60UH3JS" data-ci="11" style="display: none;">熊辰婷</td><td data-page-node-id="vvKF7Ql08lFBuzpW2SP3My" data-ci="12" style="display: none;">已验收</td><td data-page-node-id="keRVW409wiFXo1uY25OKma" data-ci="13" style="display: none;">否</td><td data-page-node-id="HYHvSG3Na3LNUn2KCsEpzD" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="pzGJuw77S6dW5AXRnQTuFr"><a data-page-node-id="HZgDod2fvU7CMGAK5KXauG">详情</a><a data-page-node-id="DlUlqMBO78golFrqITOizm" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a data-page-node-id="UZ1NCEM4PzNCvS8u3SG7zR">删除</a></div></td></tr>
+              <td class="idx col-freeze-l" data-page-node-id="cDUOC3aob8p1GJ0HDpXKHl" data-ci="0">6</td><td data-page-node-id="GLh9ouFvAhlZIgvwIzJHBX" data-ci="1" class="col-freeze-name">导入的内部隐患02</td><td data-page-node-id="3HJy3IJjfprIvTGkUGAuqe" data-ci="2"><span class="dept" data-page-node-id="8CVM9pFzd8PBJuqq8Gc7DS"><svg viewBox="0 0 16 16" data-page-node-id="UcWLq8DxGmQG9fv1rszx14"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="23aDHkqLIVgmZooALvcmXk"></path></svg>X-test</span></td><td data-page-node-id="I7cRXdwoxMniGRx5E89P5v" data-ci="3">导入的分析单元04</td><td data-page-node-id="cy18a33gnR2Hd5wodBn0AD" data-ci="4">一般B级隐患</td><td data-page-node-id="ILAorPk840tC2FghEXA3Us" data-ci="5">其他</td><td data-page-node-id="fOfXnw6kTnSafsSs6T5GPd" data-ci="6">否</td><td data-page-node-id="ZH38yTv4dBJqyNkzbdibcu" data-ci="7">专项排查</td><td data-page-node-id="bhrJzxd6AsGBkR1vt8GqdH" data-ci="8">2026-09-14 14:18</td><td data-page-node-id="vb9PYdmrZG0kjN3niwh19t" data-ci="9" style="display: none;">日常排查</td><td data-page-node-id="Ou0tR6nyWwLT2SZ3iJeDxa" data-ci="10" style="display: none;">企业级及以下自查</td><td data-page-node-id="bXPoajVMsQdldFI60UH3JS" data-ci="11" style="display: none;">熊辰婷</td><td data-page-node-id="vvKF7Ql08lFBuzpW2SP3My" data-ci="12" style="display: none;">已验收</td><td data-page-node-id="keRVW409wiFXo1uY25OKma" data-ci="13" style="display: none;">否</td><td data-page-node-id="HYHvSG3Na3LNUn2KCsEpzD" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="pzGJuw77S6dW5AXRnQTuFr"><a data-page-node-id="HZgDod2fvU7CMGAK5KXauG">详情</a><a data-page-node-id="DlUlqMBO78golFrqITOizm" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a data-page-node-id="UZ1NCEM4PzNCvS8u3SG7zR">删除</a></div></td></tr>
             </tbody>
           </table>
         </div>
@@ -1352,7 +1635,162 @@
         </div>
       </div>
 
-    <div id="detailView" style="display: none;" data-page-node-id="OD2yAB7lVkKRN6iQvpXWWy"></div><div id="overdueView" style="" data-page-node-id="z1UwejuOB5DkrDpiimfto9">
+    <div id="detailView" style="display: none;" data-page-node-id="OD2yAB7lVkKRN6iQvpXWWy"></div><div id="remindView" style="display:none">
+      <div class="rm-filter-card">
+        <div class="rm-fgrid">
+          <div class="rm-fi"><label>提醒事项名称：</label><div class="rm-input"><input placeholder="请输入提醒事项名称"></div></div>
+          <div class="rm-fi"><label>隐患等级：</label><div class="rm-select"><span data-ph="请选择隐患等级">请选择隐患等级</span><svg class="rm-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="rm-dd"><div class="rm-dd-item">重大事故隐患</div><div class="rm-dd-item">一般A级隐患</div><div class="rm-dd-item">一般B级隐患</div></div></div></div>
+          <div class="rm-fi"><label>适用部门：</label><div class="rm-select"><span data-ph="请选择适用部门">请选择适用部门</span><svg class="rm-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="rm-dd"><div class="rm-dd-item">X-test</div><div class="rm-dd-item">08部门</div><div class="rm-dd-item">线上配置专用组织</div><div class="rm-dd-item">A李方雷测试专用部门</div><div class="rm-dd-item">gpk测试斑驳车间</div></div></div></div>
+          <div class="rm-fi"><label>所属场景：</label><div class="rm-select"><span data-ph="请选择所属场景">请选择所属场景</span><svg class="rm-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="rm-dd"><div class="rm-dd-item">整改逾期提醒</div><div class="rm-dd-item">新增隐患提醒</div><div class="rm-dd-item">隐患自动催办提醒</div></div></div></div>
+          <div class="rm-fi"><label>通知形式：</label><div class="rm-select"><span data-ph="请选择通知形式">请选择通知形式</span><svg class="rm-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="rm-dd"><div class="rm-dd-item">待办事项</div><div class="rm-dd-item">系统消息</div></div></div></div>
+          <div class="rm-fi"><label>启停状态：</label><div class="rm-select"><span data-ph="请选择启停状态">请选择启停状态</span><svg class="rm-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="rm-dd"><div class="rm-dd-item">启用</div><div class="rm-dd-item">停用</div></div></div></div>
+          <div class="rm-btns"><button class="rm-btn rm-btn-primary" type="button">查询</button><button class="rm-btn rm-btn-plain" type="button">重置</button></div>
+        </div>
+      </div>
+      <div class="rm-table-card">
+        <div class="rm-table-head"><div class="rm-table-title">提醒配置</div><button class="rm-add" type="button">+ 新增</button></div>
+        <table>
+          <thead><tr><th>序号</th><th>提醒事项名称</th><th>所属业务</th><th>所属场景</th><th>通知形式</th><th>隐患等级</th><th>适用部门</th><th>启停状态</th><th>更新时间</th><th>更新人</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><span class="rm-ell">隐患自动催办提醒-待整改超期</span></td><td>隐患治理</td><td>隐患自动催办提醒</td><td>待办事项</td><td><span class="rm-ell">重大事故隐患,一般A级隐患</span></td><td><span class="rm-ell">X-test、08部门</span></td><td><span class="rm-switch on"><span class="rm-knob"></span></span></td><td><span class="rm-ell">2026-10-08 14:30</span></td><td>胡伟玲 -01</td><td><span class="rm-act">详情</span><span class="rm-act">编辑</span><span class="rm-act">删除</span></td></tr>
+            <tr><td>2</td><td><span class="rm-ell">整改逾期提醒-待...</span></td><td>隐患治理</td><td>整改逾期提醒</td><td>待办事项</td><td><span class="rm-ell">重大事故隐患,一般A级隐患...</span></td><td><span class="rm-ell">X-test</span></td><td><span class="rm-switch on"><span class="rm-knob"></span></span></td><td><span class="rm-ell">2026-08-26 10:0...</span></td><td>胡伟玲 -01</td><td><span class="rm-act">详情</span><span class="rm-act">编辑</span><span class="rm-act">删除</span></td></tr>
+            <tr><td>3</td><td><span class="rm-ell">整改逾期提醒-系...</span></td><td>隐患治理</td><td>整改逾期提醒</td><td>系统消息</td><td><span class="rm-ell">重大事故隐患,一般A级隐患...</span></td><td><span class="rm-ell">X-test</span></td><td><span class="rm-switch on"><span class="rm-knob"></span></span></td><td><span class="rm-ell">2026-08-25 19:5...</span></td><td>胡伟玲 -01</td><td><span class="rm-act">详情</span><span class="rm-act">编辑</span><span class="rm-act">删除</span></td></tr>
+            <tr><td>4</td><td><span class="rm-ell">专业培训</span></td><td>隐患治理</td><td>新增隐患提醒</td><td>待办事项</td><td><span class="rm-ell">一般B级隐患,一般B级隐患</span></td><td><span class="rm-ell">线上配置专用组织...</span></td><td><span class="rm-switch on"><span class="rm-knob"></span></span></td><td><span class="rm-ell">2026-05-22 08:...</span></td><td>潘龙</td><td><span class="rm-act">详情</span><span class="rm-act">编辑</span><span class="rm-act">删除</span></td></tr>
+            <tr><td>5</td><td><span class="rm-ell">专业培训</span></td><td>隐患治理</td><td>整改逾期提醒</td><td>系统消息</td><td><span class="rm-ell">一般B级隐患,一般B级隐患</span></td><td><span class="rm-ell">线上配置专用组织...</span></td><td><span class="rm-switch on"><span class="rm-knob"></span></span></td><td><span class="rm-ell">2026-05-22 08:...</span></td><td>潘龙</td><td><span class="rm-act">详情</span><span class="rm-act">编辑</span><span class="rm-act">删除</span></td></tr>
+            <tr><td>6</td><td><span class="rm-ell">090088080</span></td><td>隐患治理</td><td>新增隐患提醒</td><td>系统消息</td><td><span class="rm-ell">重大事故隐患,一般A级隐患...</span></td><td><span class="rm-ell">08部门</span></td><td><span class="rm-switch on"><span class="rm-knob"></span></span></td><td><span class="rm-ell">2026-04-03 11:0...</span></td><td>六华悦</td><td><span class="rm-act">详情</span><span class="rm-act">编辑</span><span class="rm-act">删除</span></td></tr>
+            <tr><td>7</td><td><span class="rm-ell">隐患即将到期提醒</span></td><td>隐患治理</td><td>整改逾期提醒</td><td>系统消息</td><td><span class="rm-ell">一般A级隐患,一般B级隐患</span></td><td><span class="rm-ell">A李方雷测试专用...</span></td><td><span class="rm-switch on"><span class="rm-knob"></span></span></td><td><span class="rm-ell">2026-02-28 08:...</span></td><td>李方雷</td><td><span class="rm-act">详情</span><span class="rm-act">编辑</span><span class="rm-act">删除</span></td></tr>
+            <tr><td>8</td><td><span class="rm-ell">待办-临期整改</span></td><td>隐患治理</td><td>整改逾期提醒</td><td>待办事项</td><td><span class="rm-ell">重大事故隐患,一般A级隐患...</span></td><td><span class="rm-ell">X-test</span></td><td><span class="rm-switch on"><span class="rm-knob"></span></span></td><td><span class="rm-ell">2026-02-05 19:3...</span></td><td>胡伟玲</td><td><span class="rm-act">详情</span><span class="rm-act">编辑</span><span class="rm-act">删除</span></td></tr>
+            <tr><td>9</td><td><span class="rm-ell">系统-临期整改</span></td><td>隐患治理</td><td>整改逾期提醒</td><td>系统消息</td><td><span class="rm-ell">重大事故隐患,一般A级隐患...</span></td><td><span class="rm-ell">X-test</span></td><td><span class="rm-switch on"><span class="rm-knob"></span></span></td><td><span class="rm-ell">2026-02-05 19:3...</span></td><td>胡伟玲</td><td><span class="rm-act">详情</span><span class="rm-act">编辑</span><span class="rm-act">删除</span></td></tr>
+            <tr><td>10</td><td><span class="rm-ell">系统-新增隐患</span></td><td>隐患治理</td><td>新增隐患提醒</td><td>系统消息</td><td><span class="rm-ell">重大事故隐患,一般A级隐患...</span></td><td><span class="rm-ell">X-test</span></td><td><span class="rm-switch on"><span class="rm-knob"></span></span></td><td><span class="rm-ell">2026-02-05 19:2...</span></td><td>胡伟玲</td><td><span class="rm-act">详情</span><span class="rm-act">编辑</span><span class="rm-act">删除</span></td></tr>
+            <tr><td>11</td><td><span class="rm-ell">待办-新增隐患</span></td><td>隐患治理</td><td>新增隐患提醒</td><td>待办事项</td><td><span class="rm-ell">重大事故隐患,一般A级隐患...</span></td><td><span class="rm-ell">X-test</span></td><td><span class="rm-switch on"><span class="rm-knob"></span></span></td><td><span class="rm-ell">2026-02-05 19:2...</span></td><td>胡伟玲</td><td><span class="rm-act">详情</span><span class="rm-act">编辑</span><span class="rm-act">删除</span></td></tr>
+            <tr><td>12</td><td><span class="rm-ell">待办-临期整改01</span></td><td>隐患治理</td><td>整改逾期提醒</td><td>待办事项</td><td><span class="rm-ell">重大事故隐患,一般A级隐患...</span></td><td><span class="rm-ell">X-test</span></td><td><span class="rm-switch on"><span class="rm-knob"></span></span></td><td><span class="rm-ell">2026-02-05 19:2...</span></td><td>胡伟玲</td><td><span class="rm-act">详情</span><span class="rm-act">编辑</span><span class="rm-act">删除</span></td></tr>
+            <tr><td>13</td><td><span class="rm-ell">测试07</span></td><td>隐患治理</td><td>新增隐患提醒</td><td>系统消息</td><td><span class="rm-ell">一般B级隐患</span></td><td><span class="rm-ell">gpk测试斑驳车间</span></td><td><span class="rm-switch on"><span class="rm-knob"></span></span></td><td><span class="rm-ell">2026-02-05 10:1...</span></td><td>胡伟玲 -01</td><td><span class="rm-act">详情</span><span class="rm-act">编辑</span><span class="rm-act">删除</span></td></tr>
+            <tr><td>14</td><td><span class="rm-ell">测试06</span></td><td>隐患治理</td><td>新增隐患提醒</td><td>系统消息</td><td><span class="rm-ell">重大事故隐患</span></td><td><span class="rm-ell">A李方雷测试专用...</span></td><td><span class="rm-switch on"><span class="rm-knob"></span></span></td><td><span class="rm-ell">2026-02-05 10:0...</span></td><td>胡伟玲 -01</td><td><span class="rm-act">详情</span><span class="rm-act">编辑</span><span class="rm-act">删除</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><div id="remindAddView" style="display:none">
+      <div class="ra-head">
+        <div class="ra-title">新增提醒配置</div>
+        <div class="ra-actions"><button class="ra-btn ra-btn-primary ra-save" type="button">保存</button><button class="ra-btn ra-btn-plain ra-back" type="button">返回</button></div>
+      </div>
+      <div class="ra-form-card">
+        <div class="ra-grid">
+          <div class="ra-fi"><label><i>*</i>提醒事项名称：</label><div class="ra-input"><input id="raNameInput" placeholder="请输入提醒事项名称" maxlength="200"><span class="ra-count">0/200</span></div></div>
+          <div class="ra-fi"><label><i>*</i>通知形式：</label><div class="ra-radio-group"><label class="ra-radio checked"><span class="ra-dot"></span>待办事项</label><label class="ra-radio"><span class="ra-dot"></span>系统消息</label></div></div>
+          <div class="ra-fi"><label><i>*</i>适用部门：</label><div class="ra-select"><span data-ph="请选择适用部门">请选择适用部门</span><svg class="ra-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ra-dd"><div class="ra-dd-item">X-test</div><div class="ra-dd-item">08部门</div><div class="ra-dd-item">线上配置专用组织</div><div class="ra-dd-item">A李方雷测试专用部门</div><div class="ra-dd-item">gpk测试斑驳车间</div></div></div></div>
+          <div class="ra-fi"><label><i>*</i>启停状态：</label><span class="ra-switch on"><span class="ra-knob"></span></span></div>
+          <div class="ra-fi"><label><i>*</i>所属业务：</label><div class="ra-input filled"><span>隐患治理</span></div></div>
+          <div class="ra-fi"><label><i>*</i>隐患等级：</label><div class="ra-select"><span data-ph="请选择隐患等级">请选择隐患等级</span><svg class="ra-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ra-dd"><div class="ra-dd-item">重大事故隐患</div><div class="ra-dd-item">一般A级隐患</div><div class="ra-dd-item">一般B级隐患</div></div></div></div>
+          <div class="ra-fi"><label><i>*</i>所属场景：</label><div class="ra-select selected" id="raSceneSel"><span data-ph="请选择所属场景">隐患自动催办提醒</span><svg class="ra-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ra-dd"><div class="ra-dd-item">整改逾期提醒</div><div class="ra-dd-item">新增隐患提醒</div><div class="ra-dd-item active">隐患自动催办提醒</div></div></div></div>
+          <div class="ra-fi"><label><i>*</i>通知频率：</label><div class="ra-select"><span data-ph="请选择通知频率">请选择通知频率</span><svg class="ra-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ra-dd"><div class="ra-dd-item">每日提醒</div><div class="ra-dd-item">每周提醒</div><div class="ra-dd-item">仅提醒一次</div></div></div></div>
+          <div class="ra-fi"><label><i>*</i>通知时间：</label><div class="ra-time"><div class="ra-ts-ctrl" id="raTimeCtrl"></div><div class="ra-input"><input id="raDaysInput" type="number" min="1" step="1" placeholder="请输入"></div><span class="ra-unit">天</span></div></div>
+          <div class="ra-fi ra-empty"></div>
+          <div class="ra-tip-cell" id="raTimeTip"></div>
+          <div class="ra-fi"><label><i>*</i>通知方式：</label><div class="ra-check-group"><label class="ra-check checked"><span class="ra-box"></span>站内通知</label><label class="ra-check"><span class="ra-box"></span>短信</label><label class="ra-check"><span class="ra-box"></span>APP推送</label><label class="ra-check"><span class="ra-box"></span>邮件</label></div></div>
+          <div class="ra-fi ra-empty"></div>
+          <div class="ra-fi ra-target-fi" id="raTargetFi"><label><i>*</i>通知对象：</label>
+            <div class="ra-target-todo" id="raTargetTodo">
+              <div class="ra-input filled"><span>当前隐患处置节点处理人</span></div>
+              <div class="ra-target-hint">待办事项默认推送给当前隐患处置节点的处理人，不可修改</div>
+            </div>
+            <div class="ra-target-msg" id="raTargetMsg">
+              <div class="ra-ms-row"><span class="ra-tlabel">隐患处置节点</span><div class="ra-multisel" data-ms="role" data-ph="请选择隐患处置节点"></div></div>
+              <div class="ra-ms-row"><span class="ra-tlabel">岗位</span><div class="ra-multisel" data-ms="post" data-ph="请选择岗位"></div></div>
+              <div class="ra-ms-row"><span class="ra-tlabel">人员</span><div class="ra-multisel" data-ms="person" data-ph="请选择人员"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><div id="remindDetailView" style="display:none">
+      <div class="rd-head">
+        <div class="rd-title">提醒配置详情<span class="rd-status">启用中</span></div>
+        <div class="rd-actions"><button class="rd-btn rd-btn-plain rd-back" type="button">返回</button></div>
+      </div>
+      <div class="rd-card">
+        <div class="rd-card-title">基本信息</div>
+        <div class="rd-grid">
+          <div class="rd-fi"><label>提醒事项名称：</label><span class="rd-val">隐患自动催办提醒-待整改超期</span></div>
+          <div class="rd-fi"><label>所属业务：</label><span class="rd-val">隐患治理</span></div>
+          <div class="rd-fi"><label>所属场景：</label><span class="rd-val">隐患自动催办提醒</span></div>
+          <div class="rd-fi"><label>通知形式：</label><span class="rd-val">待办事项</span></div>
+          <div class="rd-fi"><label>通知时间：</label><span class="rd-val">待整改 · 3天</span></div>
+          <div class="rd-fi"><label>通知频率：</label><span class="rd-val">每日提醒</span></div>
+          <div class="rd-time-tip"><span class="rd-tip-icon">i</span>生效逻辑：隐患数据处于待整改3天后仍未流转，自动向处置节点处理人推送催办消息</div>
+          <div class="rd-fi"><label>通知方式：</label><span class="rd-val">站内通知、短信</span></div>
+          <div class="rd-fi"><label>启停状态：</label><span class="rd-val">启用</span></div>
+          <div class="rd-fi"><label>隐患等级：</label><span class="rd-val">重大事故隐患、一般A级隐患</span></div>
+          <div class="rd-fi"><label>更新人：</label><span class="rd-val">胡伟玲 -01</span></div>
+          <div class="rd-fi"><label>适用部门：</label><span class="rd-val">X-test、08部门</span></div>
+          <div class="rd-fi"><label>更新时间：</label><span class="rd-val">2026-10-08 14:30</span></div>
+          <div class="rd-fi rd-fi-full"><label>通知对象：</label><span class="rd-val">当前隐患处置节点处理人</span></div>
+        </div>
+      </div>
+      <div class="rd-card">
+        <div class="rd-card-title">催办消息推送记录<span class="rd-card-sub">累计推送 26 条 · 今日推送 6 条</span></div>
+        <table>
+          <thead><tr><th>序号</th><th>隐患名称</th><th>隐患等级</th><th>处置节点</th><th>滞留天数</th><th>推送对象</th><th>推送方式</th><th>推送时间</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><span class="rd-ell">化学品储罐区阀门渗漏</span></td><td>重大事故隐患</td><td><span class="rd-tag rd-tag-node">待整改</span></td><td>5</td><td>张伟（13800138001）</td><td>待办、短信</td><td>2026-10-09 09:00:12</td></tr>
+            <tr><td>2</td><td><span class="rd-ell">车间配电箱未上锁</span></td><td>一般A级隐患</td><td><span class="rd-tag rd-tag-node">待整改</span></td><td>4</td><td>李娜（13600136004）</td><td>待办</td><td>2026-10-09 09:00:10</td></tr>
+            <tr><td>3</td><td><span class="rd-ell">反应釜压力表超期未检</span></td><td>一般A级隐患</td><td><span class="rd-tag rd-tag-node">待整改</span></td><td>3</td><td>陈刚（13500135005）</td><td>待办、短信</td><td>2026-10-08 09:00:15</td></tr>
+            <tr><td>4</td><td><span class="rd-ell">仓库消防通道堵塞</span></td><td>一般B级隐患</td><td><span class="rd-tag rd-tag-node">待提交</span></td><td>3</td><td>王强（13700137003）</td><td>待办</td><td>2026-10-08 09:00:13</td></tr>
+            <tr><td>5</td><td><span class="rd-ell">动火作业票证不全</span></td><td>一般A级隐患</td><td><span class="rd-tag rd-tag-node">待验收</span></td><td>3</td><td>刘敏（13900139002）</td><td>待办、短信</td><td>2026-10-07 09:00:11</td></tr>
+            <tr><td>6</td><td><span class="rd-ell">有限空间警示标识缺失</span></td><td>一般B级隐患</td><td><span class="rd-tag rd-tag-node">待复查</span></td><td>3</td><td>赵芳（13400134006）</td><td>待办</td><td>2026-10-07 09:00:08</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><div id="hazardAddView" style="display:none">
+      <div class="ha-head">
+        <div class="ha-title">新增</div>
+        <div class="ha-actions">
+          <button class="ha-btn ha-btn-primary" type="button" data-ha-act="submit">提 交</button>
+          <button class="ha-btn ha-btn-primary" type="button" data-ha-act="save">保 存</button>
+          <button class="ha-btn ha-btn-plain" type="button" data-ha-act="cancel">取 消</button>
+        </div>
+      </div>
+      <div class="ha-form-card">
+        <div class="ha-form-inner">
+          <div class="ha-grid">
+            <div class="ha-fi"><label><i>*</i>隐患名称：</label><div class="ha-ctrl"><div class="ha-input error" id="haNameWrap"><input id="haNameInput" type="text" placeholder="请输入隐患名称"></div><div class="ha-err show" id="haNameErr">隐患名称不能为空</div></div></div>
+            <div class="ha-fi"><label><i>*</i>所在分析单元：</label><div class="ha-ctrl"><div class="ha-select"><span data-ph="请选择所在分析单元">请选择所在分析单元</span><svg class="ha-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ha-dd"><div class="ha-dd-item">一期生产装置区</div><div class="ha-dd-item">二期生产装置区</div><div class="ha-dd-item">储运罐区</div><div class="ha-dd-item">公用工程区</div></div></div></div></div>
+            <div class="ha-fi"><label><i>*</i>所属部门：</label><div class="ha-ctrl"><div class="ha-select selected"><span data-ph="请选择">HSE部</span><svg class="ha-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ha-dd"><div class="ha-dd-item active">HSE部</div><div class="ha-dd-item">生产运行部</div><div class="ha-dd-item">设备管理部</div><div class="ha-dd-item">安全监督部</div></div></div></div></div>
+            <div class="ha-fi"><label>隐患部位：</label><div class="ha-ctrl"><div class="ha-select"><span data-ph="请选择">请选择</span><svg class="ha-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ha-dd"><div class="ha-dd-item">反应釜区</div><div class="ha-dd-item">储罐区</div><div class="ha-dd-item">装卸区</div><div class="ha-dd-item">配电室</div></div></div></div></div>
+            <div class="ha-fi"><label><i>*</i>隐患等级：</label><div class="ha-ctrl"><div class="ha-select"><span data-ph="请选择">请选择</span><svg class="ha-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ha-dd"><div class="ha-dd-item">重大事故隐患</div><div class="ha-dd-item">一般A级隐患</div><div class="ha-dd-item">一般B级隐患</div></div></div></div></div>
+            <div class="ha-fi"><label><i>*</i>是否重大事故隐患：</label><div class="ha-radio-group"><div class="ha-radio"><span class="ha-dot"></span>是</div><div class="ha-radio checked"><span class="ha-dot"></span>否</div></div></div>
+            <div class="ha-fi"><label>所属专项班组：</label><div class="ha-ctrl"><div class="ha-select"><span data-ph="请选择">请选择</span><svg class="ha-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ha-dd"><div class="ha-dd-item">工艺一班</div><div class="ha-dd-item">工艺二班</div><div class="ha-dd-item">设备班</div><div class="ha-dd-item">安全班</div></div></div></div></div>
+            <div class="ha-fi"><label><i>*</i>隐患原因：</label><div class="ha-ctrl"><div class="ha-select"><span data-ph="请选择">请选择</span><svg class="ha-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ha-dd"><div class="ha-dd-item">人的不安全行为</div><div class="ha-dd-item">物的不安全状态</div><div class="ha-dd-item">管理缺陷</div><div class="ha-dd-item">环境因素</div></div></div></div></div>
+            <div class="ha-fi"><label><i>*</i>是否承包商隐患：</label><div class="ha-radio-group"><div class="ha-radio"><span class="ha-dot"></span>是</div><div class="ha-radio checked"><span class="ha-dot"></span>否</div></div></div>
+            <div></div>
+            <div class="ha-fi"><label><i>*</i>专业类型：</label><div class="ha-ctrl"><div class="ha-select"><span data-ph="请选择专业类型">请选择专业类型</span><svg class="ha-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ha-dd"><div class="ha-dd-item">化工工艺</div><div class="ha-dd-item">设备设施</div><div class="ha-dd-item">电气仪表</div><div class="ha-dd-item">消防安全</div></div></div></div></div>
+            <div></div>
+            <div class="ha-fi"><label><i>*</i>体系类型：</label><div class="ha-ctrl"><div class="ha-select"><span data-ph="请选择">请选择</span><svg class="ha-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ha-dd"><div class="ha-dd-item">安全标准化</div><div class="ha-dd-item">双重预防机制</div><div class="ha-dd-item">职业健康</div></div></div></div></div>
+            <div class="ha-fi"><label><i>*</i>危害因素类型：</label><div class="ha-ctrl"><div class="ha-select"><span data-ph="请选择">请选择</span><svg class="ha-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ha-dd"><div class="ha-dd-item">人的不安全行为</div><div class="ha-dd-item">物的不安全状态</div><div class="ha-dd-item">有害环境</div></div></div></div></div>
+            <div class="ha-fi"><label>发生环节：</label><div class="ha-ctrl"><div class="ha-select"><span data-ph="请选择">请选择</span><svg class="ha-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ha-dd"><div class="ha-dd-item">生产</div><div class="ha-dd-item">检维修</div><div class="ha-dd-item">动火作业</div><div class="ha-dd-item">受限空间作业</div><div class="ha-dd-item">其他</div></div></div></div></div>
+            <div></div>
+            <div class="ha-fi ha-fi-full"><label><i>*</i>发现方式：</label><div class="ha-radio-group"><div class="ha-radio"><span class="ha-dot"></span>岗位自查</div><div class="ha-radio"><span class="ha-dot"></span>班组排查</div><div class="ha-radio"><span class="ha-dot"></span>专业检查</div><div class="ha-radio"><span class="ha-dot"></span>公司检查</div><div class="ha-radio"><span class="ha-dot"></span>联合检查</div><div class="ha-radio"><span class="ha-dot"></span>专家检查</div><div class="ha-radio"><span class="ha-dot"></span>包保履职</div><div class="ha-radio"><span class="ha-dot"></span>其他</div><input class="ha-other-input" type="text" placeholder="请输入内容"></div></div>
+            <div class="ha-fi"><label><i>*</i>发现时间：</label><div class="ha-ctrl"><div class="ha-datetime" data-ha-act="datetime"><svg viewBox="0 0 16 16" width="14" height="14"><rect x="1.5" y="2.5" width="13" height="12" rx="1" fill="none" stroke="#86909C" stroke-width="1.2"></rect><path d="M1.5 6h13M5 1v3M11 1v3" stroke="#86909C" stroke-width="1.2"></path></svg><span>2026-10-09 17:32:47</span></div></div></div>
+            <div></div>
+            <div class="ha-fi"><label><i>*</i>隐患治理类型：</label><div class="ha-radio-group ha-radio-blue"><div class="ha-radio checked"><span class="ha-dot"></span>限期整改</div><div class="ha-radio"><span class="ha-dot"></span>立即整改</div></div></div>
+            <div class="ha-fi"><label><i>*</i>计划整改期限：</label><div class="ha-ctrl"><div class="ha-date" data-ha-act="deadline"><svg viewBox="0 0 16 16" width="14" height="14"><rect x="1.5" y="2.5" width="13" height="12" rx="1" fill="none" stroke="#86909C" stroke-width="1.2"></rect><path d="M1.5 6h13M5 1v3M11 1v3" stroke="#86909C" stroke-width="1.2"></path></svg><span class="ph">请选择日期</span></div></div></div>
+            <div class="ha-fi ha-fi-full"><label>隐患图片：</label><div class="ha-ctrl"><div class="ha-upload" data-ha-act="upload-img"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16" stroke-width="1.6" stroke-linecap="round" fill="none"></path></svg></div><div class="ha-upload-hint">照片支持粘贴，单个文件不能超过10MB。</div></div></div>
+            <div class="ha-fi ha-fi-full"><label>隐患概述：</label><div class="ha-ctrl"><textarea class="ha-ta" maxlength="500" placeholder="请输入内容"></textarea><span class="ha-ta-count">0/500</span></div></div>
+            <div class="ha-fi ha-fi-full"><label>检查依据：</label><div class="ha-ctrl"><textarea class="ha-ta" maxlength="1000" placeholder="请输入内容"></textarea><span class="ha-ta-count">0/1000</span></div></div>
+            <div class="ha-fi ha-fi-full"><label><i>*</i>整改措施：</label><div class="ha-ctrl"><textarea class="ha-ta" maxlength="1000" placeholder="请输入内容"></textarea><span class="ha-ta-count">0/1000</span></div></div>
+            <div class="ha-fi"><label>隐患评估报告：</label><div class="ha-ctrl"><button class="ha-file-btn" type="button" data-ha-act="upload-file"><svg width="13" height="13" viewBox="0 0 16 16"><path d="M8 11V3M8 3L5 6M8 3l3 3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M2.5 10v3h11v-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg>上传文件</button><span class="ha-file-hint">文件不能超过50Mb</span></div></div>
+            <div></div>
+            <div class="ha-fi"><label>关联作业业务：</label><span class="ha-ro-val">---</span></div>
+            <div class="ha-section">隐患记录</div>
+            <div class="ha-tbl-wrap">
+              <table>
+                <thead><tr><th style="width:16%;">时间</th><th style="width:16%;">隐患工作流程</th><th style="width:16%;">操作</th><th style="width:12%;">操作人</th><th style="width:12%;">会签结果</th><th style="width:16%;">会签意见</th><th>备注</th></tr></thead>
+                <tbody><tr class="ha-empty-row"><td colspan="7">暂无数据</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><div id="overdueView" style="" data-page-node-id="z1UwejuOB5DkrDpiimfto9">
         <!-- 顶部：统计卡 + 趋势图 -->
         <div class="ov-top" data-page-node-id="aaDrvL6FLhi0ZAxbA1x3Hq">
           <div class="ov-left" data-page-node-id="56d8xUCa2j12k24pCvHbY3">
@@ -1430,12 +1868,12 @@
           <table data-page-node-id="9ywiDGICBHgzY7nlwmWsah">
             <thead data-page-node-id="IX0vPNWdVoSGsrTAr4SjTN"><tr data-page-node-id="ndh0Ky8VACXSFAYChCqVTj"><th style="width:52px;" data-page-node-id="QXk10dHVwJJUWxHfI8zIkW">序号</th><th data-page-node-id="nQ7yBEbgLVtgyEIt6tg5po">隐患名称</th><th data-page-node-id="Cn0ohH47Na38HiZ0rajcj5">所属部门</th><th data-page-node-id="yvHGtKXIzFSoybFNQRZcm3">隐患级别</th><th data-page-node-id="CkCFPodMJewIX7rRxWNCDS">隐患类别</th><th data-page-node-id="anR6sgrqbMcx1FmePhvJxp">是否重大事故隐患</th><th data-page-node-id="F4NMNhqtQvDXJ3G70THDCE">隐患来源</th><th data-page-node-id="BUANFu7r1L8rg3bYe1Vj7U">排查类型（一）</th><th data-page-node-id="aqdJ5PMdq6ar2i3u3ZTuOS">排查类型（二）</th><th data-page-node-id="AzGLTTPOoxu3yGPpIfQcpC">排查级别</th><th data-page-node-id="583PhjkhdWrUckeBcYXlGS">操作</th></tr></thead>
             <tbody data-page-node-id="8USZucRizFbgddm6aMrCbi">
-              <tr data-page-node-id="Qg0Ehcyo5ucbZRaTZVbvUv"><td data-page-node-id="EerRfK0YCI6ldmayJXoZUp">1</td><td class="ov-ell" data-page-node-id="1zMJzyxrB2SrvPga5AvdkA">测试隐患-逾期整改验证</td><td class="ov-ell" data-page-node-id="dh1DfE65t5HGIFaEcj4ftk">线上配置专用部门</td><td data-page-node-id="IwQMYrfNQpeGzGt43FoUyC">四级隐患</td><td data-page-node-id="VJwX4LFRkur0TuwpDce4EC">工艺</td><td data-page-node-id="xtmxtKyNlD3CJDeKpu5WKp">否</td><td data-page-node-id="ZQ0JbNGBke0GZFHpDOfV7o">专项排查</td><td class="ov-ell" data-page-node-id="nQQbzoHb0PgPp74SdZLCuX">综合性排查</td><td class="ov-ell" data-page-node-id="lrAGBc8OBkZgdPTwg256UV">督查/安全健康督查</td><td class="ov-ell" data-page-node-id="Ewyh9AI7mdZWVIFZTGITw1">二级公司检查</td><td data-page-node-id="iKmseIFOT2cvetwOoM0bzC"><span class="ov-detail" data-page-node-id="Gtm1k5mp25FArFHryJCyW8">详情</span></td></tr>
-              <tr data-page-node-id="o9UELDVacBjM4uuPLAogC4"><td data-page-node-id="sCT4BYFudsVHRdfMmLMrSi">2</td><td class="ov-ell" data-page-node-id="yz68FEAcFbr55lqanjcuCO">隐患巡查测试数据</td><td class="ov-ell" data-page-node-id="ZX2maOST5WjWBMcNfzs2gt">X- test</td><td data-page-node-id="COQGQEvleBdx9iLWjFXDHe">四级隐患</td><td data-page-node-id="XfKPssI2HWxoroDvtLdPDk">综合管理</td><td data-page-node-id="nstPv2gkYAOFTevHGAWLaB">否</td><td data-page-node-id="35NgKoIHE4x0GSquY4CYdr">专项排查</td><td class="ov-ell" data-page-node-id="KNaWYUgSxyy51ANX7upg3C">日常排查/企业内部自查</td><td class="ov-ell" data-page-node-id="ekbx7O3FhySdslK3Hj0y0J">督查/安全健康督查</td><td class="ov-ell" data-page-node-id="EYCzxv0IjPWbXU4s0I3EMQ">企业及以下自查/企业内部自查</td><td data-page-node-id="3eSHBstIw14DPqBdCLHoyR"><span class="ov-detail" data-page-node-id="2DxfbDvGDhA03zh9sqJQBC">详情</span></td></tr>
-              <tr data-page-node-id="tpfqmL3R6lQhZcNSH8RnBJ"><td data-page-node-id="JhS92CNqUTJyhRQyP6ze7a">3</td><td class="ov-ell" data-page-node-id="FTiyzFNYZGHqUcTqG8SQHb">测试</td><td class="ov-ell" data-page-node-id="NHutBsMgt0LOkOL5d7sSZj">线上配置专用部门</td><td data-page-node-id="WoqLqsvFK9gFt8DkbZeXEr">四级隐患</td><td data-page-node-id="htM3lMTEKCRt8KIYgT3y6P">其他</td><td data-page-node-id="y23Mw1Cw8v63U4BwquhaqS">--</td><td data-page-node-id="7EZFPSBRLEAXoKM6l89TGt">巡检</td><td class="ov-ell" data-page-node-id="w7oiJB8wvI6Gele4e6wGc0">日常排查/巡检</td><td class="ov-ell" data-page-node-id="rktKII5dg88Vc7Y3AvpWiZ">其他检查</td><td class="ov-ell" data-page-node-id="GYBlCuvngTq87h0dfKIhCj">企业及以下自查</td><td data-page-node-id="L5E907CirEISI090p75o6y"><span class="ov-detail" data-page-node-id="7vy0T58Mzs8vU2kBTwzNW0">详情</span></td></tr>
-              <tr data-page-node-id="Cal0k6erss2oT1x4pCNFIY"><td data-page-node-id="lnJKJArWywCWuNwVHedUqL">4</td><td class="ov-ell" data-page-node-id="ps6cGAjhYk7o0TLMFsZZmw">法兰密封面泄漏隐患</td><td class="ov-ell" data-page-node-id="b1JbtuBQkvZEng7TueZNTJ">某装置部</td><td data-page-node-id="fh9lmaJFq8mB4ERPOOD9lO">三级隐患</td><td data-page-node-id="WrGJLmTkhmrAVKlrEriurG">设备</td><td data-page-node-id="f94wwIRtiEDhcOlyyyyycD">否</td><td data-page-node-id="IkYzD5VE3WHNCUtH58VilH">日常排查</td><td class="ov-ell" data-page-node-id="Ay0iZImQcPdJm52g9qouBx">日常排查/岗位巡查</td><td class="ov-ell" data-page-node-id="USe91gQmNfsgTI1BG5Oase">专项监督检查</td><td class="ov-ell" data-page-node-id="ZYeG9M48BfafjqFttoSzaf">企业及以下自查</td><td data-page-node-id="MvqkBk6KyrLA1FUgEin4y3"><span class="ov-detail" data-page-node-id="fG6cECfWmDkS5nRyz5Q9Dy">详情</span></td></tr>
-              <tr data-page-node-id="D8Vb3XXDpnqKA1g0ZMaMyJ"><td data-page-node-id="RDRh7BqH8rGCuq27cNtlRZ">5</td><td class="ov-ell" data-page-node-id="vrOMrpomoD6Kro9GqnO9I1">安全阀校验超期隐患</td><td class="ov-ell" data-page-node-id="R3vmvWVSkKjo0deAsgRVmo">某装置部</td><td data-page-node-id="A7l6hwl2MBpjBxsfsmGiix">四级隐患</td><td data-page-node-id="apLu2PtHAzQ6S8fzRAMCo2">设备</td><td data-page-node-id="5w8fuKRtvJ3iHskUQf3xIT">否</td><td data-page-node-id="tqIyxj26judne9kkDBDubN">专项排查</td><td class="ov-ell" data-page-node-id="RN1UJ6nxpuEmYI7V2vUGI5">专项排查/设备专项</td><td class="ov-ell" data-page-node-id="GsaAGuwIKVavOfm4GTttBQ">二级公司检查</td><td class="ov-ell" data-page-node-id="W6PkOwHRLTAkP3a5vbGGn6">企业及以下自查</td><td data-page-node-id="0O5exVeyJSFGxgy9k576FG"><span class="ov-detail" data-page-node-id="QUnDdI9htTRGZeN8f5eeDR">详情</span></td></tr>
-              <tr data-page-node-id="zDl5CqfBKmfBZBFNBDtNLI"><td data-page-node-id="lHRb5dUlUraw7zZlaovdXB">6</td><td class="ov-ell" data-page-node-id="0EuDmtnTvo2qMo8SIMkDwh">平台护栏腐蚀松动</td><td class="ov-ell" data-page-node-id="wLSD9tY7ECJ0BHWmIFJCjm">某作业部</td><td data-page-node-id="lbtsh4CvgZbD1jHOdCUco0">二级隐患</td><td data-page-node-id="xRTGtrLuCN4lzspK1hwqdH">设备</td><td data-page-node-id="SYY1bEJUo2Xqe7HwQmFxQq">否</td><td data-page-node-id="kqj1G1s8Ui9Fto5YsEr90u">巡检</td><td class="ov-ell" data-page-node-id="DW2CXEg5hvRcdw2Yab4tzA">日常排查/巡检</td><td class="ov-ell" data-page-node-id="A95QEtRx1isK4Xdy7duLWW">其他检查</td><td class="ov-ell" data-page-node-id="X0bGwQmHvUHT86IZLODiCw">企业及以下自查</td><td data-page-node-id="Mpe2gQMB8U48TpBK7kqoTa"><span class="ov-detail" data-page-node-id="fl5Cfffph8lGQ4KaAAxcf8">详情</span></td></tr>
+              <tr data-page-node-id="Qg0Ehcyo5ucbZRaTZVbvUv"><td data-page-node-id="EerRfK0YCI6ldmayJXoZUp">1</td><td class="ov-ell" data-page-node-id="1zMJzyxrB2SrvPga5AvdkA">测试隐患-逾期整改验证</td><td class="ov-ell" data-page-node-id="dh1DfE65t5HGIFaEcj4ftk">线上配置专用部门</td><td data-page-node-id="IwQMYrfNQpeGzGt43FoUyC">一般B级隐患</td><td data-page-node-id="VJwX4LFRkur0TuwpDce4EC">工艺</td><td data-page-node-id="xtmxtKyNlD3CJDeKpu5WKp">否</td><td data-page-node-id="ZQ0JbNGBke0GZFHpDOfV7o">专项排查</td><td class="ov-ell" data-page-node-id="nQQbzoHb0PgPp74SdZLCuX">综合性排查</td><td class="ov-ell" data-page-node-id="lrAGBc8OBkZgdPTwg256UV">督查/安全健康督查</td><td class="ov-ell" data-page-node-id="Ewyh9AI7mdZWVIFZTGITw1">二级公司检查</td><td data-page-node-id="iKmseIFOT2cvetwOoM0bzC"><span class="ov-detail" data-page-node-id="Gtm1k5mp25FArFHryJCyW8">详情</span></td></tr>
+              <tr data-page-node-id="o9UELDVacBjM4uuPLAogC4"><td data-page-node-id="sCT4BYFudsVHRdfMmLMrSi">2</td><td class="ov-ell" data-page-node-id="yz68FEAcFbr55lqanjcuCO">隐患巡查测试数据</td><td class="ov-ell" data-page-node-id="ZX2maOST5WjWBMcNfzs2gt">X- test</td><td data-page-node-id="COQGQEvleBdx9iLWjFXDHe">一般B级隐患</td><td data-page-node-id="XfKPssI2HWxoroDvtLdPDk">综合管理</td><td data-page-node-id="nstPv2gkYAOFTevHGAWLaB">否</td><td data-page-node-id="35NgKoIHE4x0GSquY4CYdr">专项排查</td><td class="ov-ell" data-page-node-id="KNaWYUgSxyy51ANX7upg3C">日常排查/企业内部自查</td><td class="ov-ell" data-page-node-id="ekbx7O3FhySdslK3Hj0y0J">督查/安全健康督查</td><td class="ov-ell" data-page-node-id="EYCzxv0IjPWbXU4s0I3EMQ">企业及以下自查/企业内部自查</td><td data-page-node-id="3eSHBstIw14DPqBdCLHoyR"><span class="ov-detail" data-page-node-id="2DxfbDvGDhA03zh9sqJQBC">详情</span></td></tr>
+              <tr data-page-node-id="tpfqmL3R6lQhZcNSH8RnBJ"><td data-page-node-id="JhS92CNqUTJyhRQyP6ze7a">3</td><td class="ov-ell" data-page-node-id="FTiyzFNYZGHqUcTqG8SQHb">测试</td><td class="ov-ell" data-page-node-id="NHutBsMgt0LOkOL5d7sSZj">线上配置专用部门</td><td data-page-node-id="WoqLqsvFK9gFt8DkbZeXEr">一般B级隐患</td><td data-page-node-id="htM3lMTEKCRt8KIYgT3y6P">其他</td><td data-page-node-id="y23Mw1Cw8v63U4BwquhaqS">--</td><td data-page-node-id="7EZFPSBRLEAXoKM6l89TGt">巡检</td><td class="ov-ell" data-page-node-id="w7oiJB8wvI6Gele4e6wGc0">日常排查/巡检</td><td class="ov-ell" data-page-node-id="rktKII5dg88Vc7Y3AvpWiZ">其他检查</td><td class="ov-ell" data-page-node-id="GYBlCuvngTq87h0dfKIhCj">企业及以下自查</td><td data-page-node-id="L5E907CirEISI090p75o6y"><span class="ov-detail" data-page-node-id="7vy0T58Mzs8vU2kBTwzNW0">详情</span></td></tr>
+              <tr data-page-node-id="Cal0k6erss2oT1x4pCNFIY"><td data-page-node-id="lnJKJArWywCWuNwVHedUqL">4</td><td class="ov-ell" data-page-node-id="ps6cGAjhYk7o0TLMFsZZmw">法兰密封面泄漏隐患</td><td class="ov-ell" data-page-node-id="b1JbtuBQkvZEng7TueZNTJ">某装置部</td><td data-page-node-id="fh9lmaJFq8mB4ERPOOD9lO">一般B级隐患</td><td data-page-node-id="WrGJLmTkhmrAVKlrEriurG">设备</td><td data-page-node-id="f94wwIRtiEDhcOlyyyyycD">否</td><td data-page-node-id="IkYzD5VE3WHNCUtH58VilH">日常排查</td><td class="ov-ell" data-page-node-id="Ay0iZImQcPdJm52g9qouBx">日常排查/岗位巡查</td><td class="ov-ell" data-page-node-id="USe91gQmNfsgTI1BG5Oase">专项监督检查</td><td class="ov-ell" data-page-node-id="ZYeG9M48BfafjqFttoSzaf">企业及以下自查</td><td data-page-node-id="MvqkBk6KyrLA1FUgEin4y3"><span class="ov-detail" data-page-node-id="fG6cECfWmDkS5nRyz5Q9Dy">详情</span></td></tr>
+              <tr data-page-node-id="D8Vb3XXDpnqKA1g0ZMaMyJ"><td data-page-node-id="RDRh7BqH8rGCuq27cNtlRZ">5</td><td class="ov-ell" data-page-node-id="vrOMrpomoD6Kro9GqnO9I1">安全阀校验超期隐患</td><td class="ov-ell" data-page-node-id="R3vmvWVSkKjo0deAsgRVmo">某装置部</td><td data-page-node-id="A7l6hwl2MBpjBxsfsmGiix">一般B级隐患</td><td data-page-node-id="apLu2PtHAzQ6S8fzRAMCo2">设备</td><td data-page-node-id="5w8fuKRtvJ3iHskUQf3xIT">否</td><td data-page-node-id="tqIyxj26judne9kkDBDubN">专项排查</td><td class="ov-ell" data-page-node-id="RN1UJ6nxpuEmYI7V2vUGI5">专项排查/设备专项</td><td class="ov-ell" data-page-node-id="GsaAGuwIKVavOfm4GTttBQ">二级公司检查</td><td class="ov-ell" data-page-node-id="W6PkOwHRLTAkP3a5vbGGn6">企业及以下自查</td><td data-page-node-id="0O5exVeyJSFGxgy9k576FG"><span class="ov-detail" data-page-node-id="QUnDdI9htTRGZeN8f5eeDR">详情</span></td></tr>
+              <tr data-page-node-id="zDl5CqfBKmfBZBFNBDtNLI"><td data-page-node-id="lHRb5dUlUraw7zZlaovdXB">6</td><td class="ov-ell" data-page-node-id="0EuDmtnTvo2qMo8SIMkDwh">平台护栏腐蚀松动</td><td class="ov-ell" data-page-node-id="wLSD9tY7ECJ0BHWmIFJCjm">某作业部</td><td data-page-node-id="lbtsh4CvgZbD1jHOdCUco0">一般A级隐患</td><td data-page-node-id="xRTGtrLuCN4lzspK1hwqdH">设备</td><td data-page-node-id="SYY1bEJUo2Xqe7HwQmFxQq">否</td><td data-page-node-id="kqj1G1s8Ui9Fto5YsEr90u">巡检</td><td class="ov-ell" data-page-node-id="DW2CXEg5hvRcdw2Yab4tzA">日常排查/巡检</td><td class="ov-ell" data-page-node-id="A95QEtRx1isK4Xdy7duLWW">其他检查</td><td class="ov-ell" data-page-node-id="X0bGwQmHvUHT86IZLODiCw">企业及以下自查</td><td data-page-node-id="Mpe2gQMB8U48TpBK7kqoTa"><span class="ov-detail" data-page-node-id="fl5Cfffph8lGQ4KaAAxcf8">详情</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -2827,47 +3265,604 @@ const DEPTS = [
     var pageBody = document.querySelector('.page-body');
     var statsView = document.getElementById('statsView');
     var overdueView = document.getElementById('overdueView');
-    var statsLi = null, odLi = null, hlLi = null;
+    var remindView = document.getElementById('remindView');
+    var remindAddView = document.getElementById('remindAddView');
+    var remindDetailView = document.getElementById('remindDetailView');
+    var hazardAddView = document.getElementById('hazardAddView');
+    var statsLi = null, odLi = null, hlLi = null, rmLi = null;
     document.querySelectorAll('.submenu li').forEach(function(li){
       var t = li.textContent.trim();
       if (t === '隐患统计分析') statsLi = li;
       if (t === '逾期隐患') odLi = li;
       if (t === '隐患治理') hlLi = li;
+      if (t === '提醒配置') rmLi = li;
     });
     var statsInited = false;
     function switchTo(view, li){
       if (view.parentElement !== pageBody) pageBody.appendChild(view);
       view.style.display = '';
+      [statsView, overdueView, remindView, remindAddView, remindDetailView, hazardAddView].forEach(function(v){ if (v && v !== view) v.style.display = 'none'; });
       var dv = document.getElementById('detailView');
       if (dv) dv.style.display = 'none';
       pageBody.classList.remove('detail-mode');
       pageBody.classList.remove('stats-mode');
       pageBody.classList.remove('overdue-mode');
-      pageBody.classList.add(view === statsView ? 'stats-mode' : 'overdue-mode');
-      [statsLi, odLi].forEach(function(x){ if (x) x.classList.remove('active'); });
+      pageBody.classList.remove('remind-mode');
+      pageBody.classList.remove('remind-add-mode');
+      pageBody.classList.remove('remind-detail-mode');
+      pageBody.classList.remove('hazard-add-mode');
+      pageBody.classList.add(view === statsView ? 'stats-mode' : (view === remindView ? 'remind-mode' : 'overdue-mode'));
+      [statsLi, odLi, rmLi].forEach(function(x){ if (x) x.classList.remove('active'); });
       if (li) li.classList.add('active');
       if (hlLi) hlLi.classList.remove('active');
+      pageBody.scrollTop = 0;
+    }
+    function showHazardAdd(){
+      if (hazardAddView.parentElement !== pageBody) pageBody.appendChild(hazardAddView);
+      [statsView, overdueView, remindView, remindAddView, remindDetailView].forEach(function(v){ if (v) v.style.display = 'none'; });
+      hazardAddView.style.display = '';
+      pageBody.classList.remove('stats-mode');
+      pageBody.classList.remove('overdue-mode');
+      pageBody.classList.remove('remind-mode');
+      pageBody.classList.remove('remind-add-mode');
+      pageBody.classList.remove('remind-detail-mode');
+      pageBody.classList.add('hazard-add-mode');
+      [statsLi, odLi, rmLi].forEach(function(x){ if (x) x.classList.remove('active'); });
+      if (hlLi) hlLi.classList.add('active');
+      pageBody.scrollTop = 0;
+    }
+    function backFromHazardAdd(){
+      hazardAddView.style.display = 'none';
+      pageBody.classList.remove('hazard-add-mode');
+      pageBody.scrollTop = 0;
+    }
+    function showRemindAdd(){
+      if (remindAddView.parentElement !== pageBody) pageBody.appendChild(remindAddView);
+      remindView.style.display = 'none';
+      remindDetailView.style.display = 'none';
+      hazardAddView.style.display = 'none';
+      remindAddView.style.display = '';
+      pageBody.classList.remove('stats-mode');
+      pageBody.classList.remove('overdue-mode');
+      pageBody.classList.remove('remind-mode');
+      pageBody.classList.remove('remind-detail-mode');
+      pageBody.classList.remove('hazard-add-mode');
+      pageBody.classList.add('remind-add-mode');
+      pageBody.scrollTop = 0;
+      if (typeof updateTimetip === 'function') updateTimetip();
+    }
+    function showRemindDetail(){
+      if (remindDetailView.parentElement !== pageBody) pageBody.appendChild(remindDetailView);
+      remindView.style.display = 'none';
+      remindAddView.style.display = 'none';
+      hazardAddView.style.display = 'none';
+      remindDetailView.style.display = '';
+      pageBody.classList.remove('stats-mode');
+      pageBody.classList.remove('overdue-mode');
+      pageBody.classList.remove('remind-mode');
+      pageBody.classList.remove('remind-add-mode');
+      pageBody.classList.remove('hazard-add-mode');
+      pageBody.classList.add('remind-detail-mode');
+      pageBody.scrollTop = 0;
+    }
+    function backToRemindList(){
+      remindAddView.style.display = 'none';
+      remindDetailView.style.display = 'none';
+      hazardAddView.style.display = 'none';
+      remindView.style.display = '';
+      pageBody.classList.remove('remind-add-mode');
+      pageBody.classList.remove('remind-detail-mode');
+      pageBody.classList.remove('hazard-add-mode');
+      pageBody.classList.add('remind-mode');
       pageBody.scrollTop = 0;
     }
     function hideAll(){
       pageBody.classList.remove('stats-mode');
       pageBody.classList.remove('overdue-mode');
+      pageBody.classList.remove('remind-mode');
+      pageBody.classList.remove('remind-add-mode');
+      pageBody.classList.remove('remind-detail-mode');
+      pageBody.classList.remove('hazard-add-mode');
       statsView.style.display = 'none';
       overdueView.style.display = 'none';
+      remindView.style.display = 'none';
+      remindAddView.style.display = 'none';
+      remindDetailView.style.display = 'none';
+      hazardAddView.style.display = 'none';
       if (statsLi) statsLi.classList.remove('active');
       if (odLi) odLi.classList.remove('active');
+      if (rmLi) rmLi.classList.remove('active');
       if (hlLi) hlLi.classList.add('active');
     }
     if (statsLi) statsLi.addEventListener('click', function(){
       switchTo(statsView, statsLi);
       overdueView.style.display = 'none';
+      remindView.style.display = 'none';
       if (!statsInited) { initStatsView(); statsInited = true; }
     });
     if (odLi) odLi.addEventListener('click', function(){
       switchTo(overdueView, odLi);
       statsView.style.display = 'none';
+      remindView.style.display = 'none';
+    });
+    if (rmLi) rmLi.addEventListener('click', function(){
+      switchTo(remindView, rmLi);
+      statsView.style.display = 'none';
+      overdueView.style.display = 'none';
+      remindAddView.style.display = 'none';
+      remindDetailView.style.display = 'none';
     });
     if (hlLi) hlLi.addEventListener('click', hideAll);
+
+    /* 提醒配置视图内轻交互 */
+    if (remindView) {
+      var rmToastEl = null, rmTimer = null;
+      function rmToast(msg){
+        if (!rmToastEl){
+          rmToastEl = document.createElement('div');
+          rmToastEl.className = 'toast';
+          rmToastEl.innerHTML = '<span class="ticon">✓</span><span class="rm-toast-text"></span>';
+          document.body.appendChild(rmToastEl);
+        }
+        rmToastEl.querySelector('.rm-toast-text').textContent = msg;
+        rmToastEl.classList.add('show');
+        clearTimeout(rmTimer);
+        rmTimer = setTimeout(function(){ rmToastEl.classList.remove('show'); }, 2000);
+      }
+      /* 通用下拉：展开 / 选择 / 外部收起 */
+      remindView.querySelectorAll('.rm-select').forEach(function(sel){
+        sel.addEventListener('click', function(e){
+          if (e.target.closest('.rm-dd-item')) return;
+          var isOpen = sel.classList.contains('open');
+          remindView.querySelectorAll('.rm-select.open').forEach(function(s){ s.classList.remove('open'); });
+          if (!isOpen) sel.classList.add('open');
+        });
+        sel.querySelectorAll('.rm-dd-item').forEach(function(item){
+          item.addEventListener('click', function(e){
+            e.stopPropagation();
+            sel.querySelector('span').textContent = item.textContent;
+            sel.classList.add('selected');
+            sel.querySelectorAll('.rm-dd-item').forEach(function(it){ it.classList.toggle('active', it === item); });
+            sel.classList.remove('open');
+          });
+        });
+      });
+      document.addEventListener('click', function(e){
+        if (!e.target.closest || !e.target.closest('#remindView .rm-select')) {
+          remindView.querySelectorAll('.rm-select.open').forEach(function(s){ s.classList.remove('open'); });
+        }
+      });
+      /* 启停开关切换 */
+      remindView.addEventListener('click', function(e){
+        if (e.target.closest('.rm-add')) { showRemindAdd(); return; }
+        var sw = e.target.closest('.rm-switch');
+        if (sw) {
+          sw.classList.toggle('on');
+          rmToast(sw.classList.contains('on') ? '已启用该提醒' : '已停用该提醒');
+          return;
+        }
+        if (e.target.closest('.rm-btn-primary')) { rmToast('查询成功（原型演示）'); return; }
+        if (e.target.closest('.rm-btn-plain')) {
+          remindView.querySelectorAll('.rm-input input').forEach(function(inp){ inp.value = ''; });
+          remindView.querySelectorAll('.rm-select').forEach(function(sel){
+            sel.querySelector('span').textContent = sel.querySelector('span').getAttribute('data-ph') || '请选择';
+            sel.classList.remove('selected');
+            sel.querySelectorAll('.rm-dd-item').forEach(function(it){ it.classList.remove('active'); });
+          });
+          rmToast('已重置');
+          return;
+        }
+        var act = e.target.closest('.rm-act');
+        if (act) {
+          var actName = act.textContent.trim();
+          if (actName === '详情') { showRemindDetail(); return; }
+          var names = { '编辑': '原型演示：编辑提醒配置', '删除': '原型演示：删除提醒配置' };
+          rmToast(names[actName] || '原型演示');
+        }
+      });
+    }
+
+    /* 提醒配置详情视图内轻交互 */
+    if (remindDetailView) {
+      remindDetailView.addEventListener('click', function(e){
+        if (e.target.closest('.rd-back')) { backToRemindList(); return; }
+      });
+    }
+
+    /* 隐患治理列表：新增按钮 → 隐患新增页 */
+    var hzAddBtn = document.querySelector('.table-card .card-head .btn-primary');
+    if (hzAddBtn) hzAddBtn.addEventListener('click', showHazardAdd);
+
+    /* 隐患新增视图内轻交互 */
+    if (hazardAddView) {
+      var haToastEl = null, haTimer = null;
+      function haToast(msg){
+        if (!haToastEl){
+          haToastEl = document.createElement('div');
+          haToastEl.className = 'toast';
+          haToastEl.innerHTML = '<span class="ticon">✓</span><span class="ha-toast-text"></span>';
+          document.body.appendChild(haToastEl);
+        }
+        haToastEl.querySelector('.ha-toast-text').textContent = msg;
+        haToastEl.classList.add('show');
+        clearTimeout(haTimer);
+        haTimer = setTimeout(function(){ haToastEl.classList.remove('show'); }, 2000);
+      }
+      /* 通用下拉：展开 / 选择 / 外部收起 */
+      hazardAddView.querySelectorAll('.ha-select').forEach(function(sel){
+        sel.addEventListener('click', function(e){
+          if (e.target.closest('.ha-dd-item')) return;
+          var isOpen = sel.classList.contains('open');
+          hazardAddView.querySelectorAll('.ha-select.open').forEach(function(s){ s.classList.remove('open'); });
+          if (!isOpen) sel.classList.add('open');
+        });
+        sel.querySelectorAll('.ha-dd-item').forEach(function(item){
+          item.addEventListener('click', function(e){
+            e.stopPropagation();
+            sel.querySelector('span').textContent = item.textContent;
+            sel.classList.add('selected');
+            sel.querySelectorAll('.ha-dd-item').forEach(function(it){ it.classList.toggle('active', it === item); });
+            sel.classList.remove('open');
+          });
+        });
+      });
+      document.addEventListener('click', function(e){
+        if (!e.target.closest || !e.target.closest('#hazardAddView .ha-select')) {
+          hazardAddView.querySelectorAll('.ha-select.open').forEach(function(s){ s.classList.remove('open'); });
+        }
+      });
+      /* 单选组：组内互斥；隐患治理类型联动整改期限 */
+      hazardAddView.addEventListener('click', function(e){
+        var r = e.target.closest('.ha-radio');
+        if (r) {
+          var group = r.closest('.ha-radio-group');
+          if (group) group.querySelectorAll('.ha-radio').forEach(function(x){ x.classList.remove('checked'); });
+          r.classList.add('checked');
+          if (group && group.classList.contains('ha-radio-blue')) {
+            if (r.textContent.trim() === '立即整改') {
+              var t = new Date(); t.setDate(t.getDate() + 1);
+              setDeadlineVal(fmtDeadline(t));
+            } else {
+              setDeadlineVal(null);
+            }
+          }
+          return;
+        }
+        var act = e.target.closest('[data-ha-act]');
+        if (!act) return;
+        var a = act.getAttribute('data-ha-act');
+        if (a === 'cancel') { backFromHazardAdd(); return; }
+        if (a === 'datetime') { haToast('原型演示：选择发现时间'); return; }
+        if (a === 'deadline') { toggleDeadlinePanel(); return; }
+        if (a === 'upload-img') { haToast('原型演示：上传/粘贴隐患图片'); return; }
+        if (a === 'upload-file') { haToast('原型演示：上传隐患评估报告'); return; }
+        if (a === 'save') { haToast('保存成功'); return; }
+        if (a === 'submit') {
+          var nameWrap = hazardAddView.querySelector('#haNameWrap');
+          var nameErr = hazardAddView.querySelector('#haNameErr');
+          var nameVal = (hazardAddView.querySelector('#haNameInput').value || '').trim();
+          if (!nameVal) {
+            if (nameWrap) nameWrap.classList.add('error');
+            if (nameErr) nameErr.classList.add('show');
+            haToast('请输入隐患名称');
+          } else {
+            haToast('提交成功（原型演示）');
+          }
+        }
+      });
+      /* 整改期限：Element 风格日期面板 */
+      var deadlineBox = hazardAddView.querySelector('[data-ha-act=deadline]');
+      var dpPanel = null;
+      var dpState = { y: 0, m: 0, sel: null };
+      function fmtDeadline(d){
+        var m = d.getMonth() + 1, dd = d.getDate();
+        return d.getFullYear() + '-' + (m < 10 ? '0' + m : m) + '-' + (dd < 10 ? '0' + dd : dd);
+      }
+      function setDeadlineVal(str){
+        var span = deadlineBox.querySelector('span');
+        if (str) { span.textContent = str; span.classList.remove('ph'); dpState.sel = new Date(str.replace(/-/g, '/')); }
+        else { span.textContent = '请选择日期'; span.classList.add('ph'); dpState.sel = null; }
+      }
+      function dpRender(){
+        var first = new Date(dpState.y, dpState.m, 1);
+        var startWd = first.getDay();
+        var dim = new Date(dpState.y, dpState.m + 1, 0).getDate();
+        var prevDim = new Date(dpState.y, dpState.m, 0).getDate();
+        var today = new Date(); today.setHours(0, 0, 0, 0);
+        var cells = [];
+        for (var i = 0; i < 42; i++) {
+          var dnum, cls = '', d;
+          if (i < startWd) { dnum = prevDim - startWd + 1 + i; d = new Date(dpState.y, dpState.m - 1, dnum); cls = 'prev'; }
+          else if (i < startWd + dim) { dnum = i - startWd + 1; d = new Date(dpState.y, dpState.m, dnum); }
+          else { dnum = i - (startWd + dim) + 1; d = new Date(dpState.y, dpState.m + 1, dnum); cls = 'next'; }
+          if (dpState.sel && d.getTime() === dpState.sel.getTime()) cls = 'sel';
+          else if (d.getTime() === today.getTime()) cls += ' today';
+          cells.push('<td class="' + cls + '" data-t="' + d.getTime() + '">' + dnum + '</td>');
+        }
+        var rows = '';
+        for (var r2 = 0; r2 < 6; r2++) rows += '<tr>' + cells.slice(r2 * 7, r2 * 7 + 7).join('') + '</tr>';
+        dpPanel.querySelector('.ha-dp-title').textContent = dpState.y + ' 年 ' + (dpState.m + 1) + ' 月';
+        dpPanel.querySelector('tbody').innerHTML = rows;
+      }
+      function toggleDeadlinePanel(){
+        if (!dpPanel) {
+          dpPanel = document.createElement('div');
+          dpPanel.className = 'ha-date-panel';
+          dpPanel.innerHTML = '<div class="ha-dp-head">'
+            + '<div class="ha-dp-ico" data-dp="py"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 2L2 6l4 4M11 2L7 6l4 4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'
+            + '<div class="ha-dp-ico" data-dp="pm"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M7.5 2L3.5 6l4 4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'
+            + '<div class="ha-dp-title"></div>'
+            + '<div class="ha-dp-ico" data-dp="nm"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M4.5 2l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'
+            + '<div class="ha-dp-ico" data-dp="ny"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 2l4 4-4 4M1 2l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'
+            + '</div>'
+            + '<table class="ha-dp-tbl"><thead><tr><th>日</th><th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th>六</th></tr></thead><tbody></tbody></table>';
+          deadlineBox.appendChild(dpPanel);
+          dpPanel.addEventListener('click', function(ev){
+            ev.stopPropagation();
+            var ico = ev.target.closest('[data-dp]');
+            if (ico) {
+              var k = ico.getAttribute('data-dp');
+              if (k === 'py') dpState.y--;
+              if (k === 'pm') { if (dpState.m === 0) { dpState.m = 11; dpState.y--; } else dpState.m--; }
+              if (k === 'nm') { if (dpState.m === 11) { dpState.m = 0; dpState.y++; } else dpState.m++; }
+              if (k === 'ny') dpState.y++;
+              dpRender();
+              return;
+            }
+            var td = ev.target.closest('td[data-t]');
+            if (td) {
+              var d = new Date(Number(td.getAttribute('data-t')));
+              dpState.sel = d;
+              setDeadlineVal(fmtDeadline(d));
+              dpPanel.classList.remove('show');
+            }
+          });
+        }
+        var base = dpState.sel || new Date();
+        dpState.y = base.getFullYear();
+        dpState.m = base.getMonth();
+        dpRender();
+        dpPanel.classList.add('show');
+      }
+      document.addEventListener('click', function(e){
+        if (dpPanel && dpPanel.classList.contains('show') && !e.target.closest('#hazardAddView .ha-date')) dpPanel.classList.remove('show');
+      });
+      /* 隐患名称：输入即清除校验错误 */
+      var haNameInput = hazardAddView.querySelector('#haNameInput');
+      if (haNameInput) haNameInput.addEventListener('input', function(){
+        hazardAddView.querySelector('#haNameWrap').classList.remove('error');
+        hazardAddView.querySelector('#haNameErr').classList.remove('show');
+      });
+      /* 文本域字数统计 */
+      hazardAddView.querySelectorAll('.ha-ta').forEach(function(ta){
+        var cnt = ta.parentElement.querySelector('.ha-ta-count');
+        if (!cnt) return;
+        var max = ta.getAttribute('maxlength') || 0;
+        function sync(){ cnt.textContent = ta.value.length + '/' + max; }
+        ta.addEventListener('input', sync);
+        sync();
+      });
+    }
+
+    /* 新增提醒配置视图内轻交互 */
+    if (remindAddView) {
+      remindAddView.querySelectorAll('.ra-select').forEach(function(sel){
+        sel.addEventListener('click', function(e){
+          if (e.target.closest('.ra-dd-item')) return;
+          var isOpen = sel.classList.contains('open');
+          remindAddView.querySelectorAll('.ra-select.open').forEach(function(s){ s.classList.remove('open'); });
+          if (!isOpen) sel.classList.add('open');
+        });
+        bindRaItems(sel);
+      });
+      function bindRaItems(sel){
+        sel.querySelectorAll('.ra-dd-item').forEach(function(item){
+          item.addEventListener('click', function(e){
+            e.stopPropagation();
+            sel.querySelector('span').textContent = item.textContent;
+            sel.classList.add('selected');
+            sel.querySelectorAll('.ra-dd-item').forEach(function(it){ it.classList.toggle('active', it === item); });
+            sel.classList.remove('open');
+            if (sel.id === 'raSceneSel') rebuildTimeSel(item.textContent);
+            if (sel.id === 'raTimeSel') updateTimetip();
+          });
+        });
+      }
+      function rebuildTimeSel(scene){
+        var ctrl = remindAddView.querySelector('#raTimeCtrl');
+        if (!ctrl) return;
+        var isAuto = scene === '隐患自动催办提醒';
+        var opts = isAuto ? ['待提交','待审批','待接收','待整改','待验收','待复查'] : ['超期','临期'];
+        if (isAuto){
+          /* 处置节点多选：复用多选组件（复选框 + 标签），选择变化联动生效逻辑提示 */
+          ctrl.innerHTML = '<div class="ra-multisel" data-ph="请选择节点"></div>';
+          initMultiSelect(ctrl.querySelector('.ra-multisel'),
+            opts.map(function(t, i){ return {id:'t'+i, name:t}; }), false, updateTimetip);
+        } else {
+          var arrow = '<svg class="ra-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg>';
+          ctrl.innerHTML = '<div class="ra-select" id="raTimeSel"><span data-ph="请选择">请选择</span>' + arrow + '<div class="ra-dd">' + opts.map(function(t){ return '<div class="ra-dd-item">' + t + '</div>'; }).join('') + '</div></div>';
+          bindRaItems(ctrl.querySelector('.ra-select'));
+        }
+        updateTimetip();
+      }
+      function updateTimetip(){
+        var tip = remindAddView.querySelector('#raTimeTip');
+        if (!tip) return;
+        var sceneSel = remindAddView.querySelector('#raSceneSel');
+        var isAuto = sceneSel && sceneSel.querySelector('span').textContent === '隐患自动催办提醒';
+        var timeMulti = remindAddView.querySelector('#raTimeCtrl .ra-multisel');
+        var node = '', nodeSelected = false;
+        if (timeMulti){
+          var tags = [].slice.call(timeMulti.querySelectorAll('.ra-ms-tag')).map(function(t){ return t.textContent.replace('×',''); });
+          node = tags.join('、');
+          nodeSelected = tags.length > 0;
+        } else {
+          var timeSel = remindAddView.querySelector('#raTimeSel');
+          if (!timeSel) return;
+          node = timeSel.querySelector('span').textContent;
+          nodeSelected = timeSel.classList.contains('selected');
+        }
+        var daysInput = remindAddView.querySelector('#raDaysInput');
+        var days = daysInput ? daysInput.value : '';
+        var daysValid = days && /^[1-9]\d*$/.test(days);
+        var icon = '<span class="ra-tip-icon">i</span>';
+        var msg = '';
+        if (isAuto){
+          if (nodeSelected && daysValid){
+            msg = '隐患数据处于' + node + days + '天后进行催办';
+          } else {
+            msg = '请选择隐患处置节点并输入天数，查看催办生效逻辑';
+          }
+        } else {
+          if (nodeSelected && daysValid){
+            msg = node === '临期'
+              ? '隐患整改期限到期前' + days + '天进行提醒'
+              : '隐患整改期限超期' + days + '天后进行提醒';
+          } else {
+            msg = '请选择超期/临期并输入天数，查看提醒生效逻辑';
+          }
+        }
+        tip.innerHTML = icon + msg;
+      }
+      document.addEventListener('click', function(e){
+        if (!e.target.closest || !e.target.closest('#remindAddView .ra-select')) {
+          remindAddView.querySelectorAll('.ra-select.open').forEach(function(s){ s.classList.remove('open'); });
+        }
+        if (!e.target.closest || !e.target.closest('#remindAddView .ra-multisel')) {
+          remindAddView.querySelectorAll('.ra-ms-box.open').forEach(function(b){ b.classList.remove('open'); });
+        }
+      });
+      remindAddView.addEventListener('click', function(e){
+        var rd = e.target.closest('.ra-radio');
+        if (rd) {
+          remindAddView.querySelectorAll('.ra-radio').forEach(function(x){ x.classList.remove('checked'); });
+          rd.classList.add('checked');
+          var isTodo = rd.textContent.indexOf('待办事项') >= 0;
+          var todoEl = remindAddView.querySelector('#raTargetTodo');
+          var msgEl = remindAddView.querySelector('#raTargetMsg');
+          var fiEl = remindAddView.querySelector('#raTargetFi');
+          if (todoEl) todoEl.style.display = isTodo ? 'flex' : 'none';
+          if (msgEl) msgEl.classList.toggle('show', !isTodo);
+          if (fiEl) fiEl.classList.toggle('msg-mode', !isTodo);
+          return;
+        }
+        var ck = e.target.closest('.ra-check');
+        if (ck) { ck.classList.toggle('checked'); return; }
+        var sw = e.target.closest('.ra-switch');
+        if (sw) {
+          sw.classList.toggle('on');
+          rmToast(sw.classList.contains('on') ? '已启用' : '已停用');
+          return;
+        }
+        if (e.target.closest('.ra-save')) { rmToast('保存成功（原型演示）'); backToRemindList(); return; }
+        if (e.target.closest('.ra-back')) { backToRemindList(); return; }
+      });
+      var raNameInput = remindAddView.querySelector('#raNameInput');
+      if (raNameInput) raNameInput.addEventListener('input', function(){
+        var c = remindAddView.querySelector('.ra-count');
+        if (c) c.textContent = raNameInput.value.length + '/200';
+      });
+      var raDaysInput = remindAddView.querySelector('#raDaysInput');
+      if (raDaysInput) raDaysInput.addEventListener('input', updateTimetip);
+
+      /* 通知对象——系统消息模式：三维度多选组件（模糊查询 + 标签 + 多选） */
+      var MS_DATA = {
+        role: [
+          {id:'r1', name:'发现人'},
+          {id:'r2', name:'审批人'},
+          {id:'r3', name:'接收人'},
+          {id:'r4', name:'整改人'},
+          {id:'r5', name:'验收人'}
+        ],
+        post: [
+          {id:'p1', name:'车间主任'},
+          {id:'p2', name:'班组长'},
+          {id:'p3', name:'安全管理人员'},
+          {id:'p4', name:'设备主管'},
+          {id:'p5', name:'工艺主管'},
+          {id:'p6', name:'电仪主管'}
+        ],
+        person: [
+          {id:'u1', name:'张伟', sub:'13800138001 · 生产一车间'},
+          {id:'u2', name:'刘敏', sub:'13900139002 · 质量部'},
+          {id:'u3', name:'王强', sub:'13700137003 · 安全环保部'},
+          {id:'u4', name:'李娜', sub:'13600136004 · 生产二车间'},
+          {id:'u5', name:'陈刚', sub:'13500135005 · 设备动力部'},
+          {id:'u6', name:'赵芳', sub:'13400134006 · 综合管理部'}
+        ]
+      };
+      function initMultiSelect(el, opts, showSub, onChange){
+        var selected = [];
+        var ph = el.getAttribute('data-ph') || '请选择';
+        el.innerHTML =
+          '<div class="ra-ms-box">' +
+            '<div class="ra-ms-tags"></div>' +
+            '<span class="ra-ms-ph">' + ph + '</span>' +
+            '<svg class="ra-ms-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg>' +
+            '<div class="ra-ms-dd">' +
+              '<div class="ra-ms-search"><input type="text" placeholder="输入关键字搜索"></div>' +
+              '<div class="ra-ms-list"></div>' +
+            '</div>' +
+          '</div>';
+        var box = el.querySelector('.ra-ms-box');
+        var tagsEl = el.querySelector('.ra-ms-tags');
+        var phEl = el.querySelector('.ra-ms-ph');
+        var searchInput = el.querySelector('.ra-ms-search input');
+        var listEl = el.querySelector('.ra-ms-list');
+        function findOpt(id){ return opts.filter(function(o){ return o.id === id; })[0]; }
+        function renderList(filter){
+          filter = (filter || '').toLowerCase();
+          var filtered = opts.filter(function(o){
+            if (!filter) return true;
+            return o.name.toLowerCase().indexOf(filter) >= 0 || (o.sub && o.sub.toLowerCase().indexOf(filter) >= 0);
+          });
+          if (!filtered.length){ listEl.innerHTML = '<div class="ra-ms-empty" style="padding:16px;text-align:center;color:#A9AEB8;font-size:12px;">无匹配结果</div>'; return; }
+          listEl.innerHTML = filtered.map(function(o){
+            var checked = selected.indexOf(o.id) >= 0 ? ' checked' : '';
+            var subHtml = showSub && o.sub ? '<span class="ra-ms-opt-sub">' + o.sub + '</span>' : '';
+            return '<div class="ra-ms-opt' + checked + '" data-id="' + o.id + '"><span class="ra-ms-cb"></span><span class="ra-ms-opt-main">' + o.name + '</span>' + subHtml + '</div>';
+          }).join('');
+        }
+        function renderTags(){
+          tagsEl.innerHTML = selected.map(function(id){
+            var o = findOpt(id); if (!o) return '';
+            return '<span class="ra-ms-tag">' + o.name + '<span class="ra-ms-tag-x" data-id="' + id + '">×</span></span>';
+          }).join('');
+          phEl.style.display = selected.length ? 'none' : '';
+        }
+        function toggle(id){
+          var idx = selected.indexOf(id);
+          if (idx >= 0) selected.splice(idx, 1); else selected.push(id);
+          renderTags();
+          renderList(searchInput.value);
+          if (onChange) onChange();
+        }
+        box.addEventListener('click', function(e){
+          if (e.target.closest('.ra-ms-tag-x')){ e.stopPropagation(); toggle(e.target.getAttribute('data-id')); return; }
+          if (e.target.closest('.ra-ms-dd')) return;
+          var isOpen = box.classList.contains('open');
+          remindAddView.querySelectorAll('.ra-ms-box.open').forEach(function(b){ b.classList.remove('open'); });
+          if (!isOpen){ box.classList.add('open'); renderList(searchInput.value); setTimeout(function(){ searchInput.focus(); },0); }
+        });
+        searchInput.addEventListener('input', function(){ renderList(searchInput.value); });
+        listEl.addEventListener('click', function(e){
+          var opt = e.target.closest('.ra-ms-opt'); if (!opt) return;
+          e.stopPropagation();
+          toggle(opt.getAttribute('data-id'));
+        });
+        renderList(); renderTags();
+      }
+      remindAddView.querySelectorAll('.ra-multisel').forEach(function(el){
+        var key = el.getAttribute('data-ms');
+        if (MS_DATA[key]) initMultiSelect(el, MS_DATA[key], key === 'person');
+      });
+
+      /* 初始化通知时间控件（默认场景：隐患自动催办提醒 → 处置节点多选） */
+      rebuildTimeSel('隐患自动催办提醒');
+
+      /* 初始化生效逻辑提示 */
+      updateTimetip();
+    }
 
     /* 逾期视图内轻交互：查询 / 重置 / 详情（Toast 样式复用主页面 .toast） */
     if (overdueView) {
