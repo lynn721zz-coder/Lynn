@@ -500,7 +500,9 @@
   .his-empty{padding:32px;text-align:center;color:var(--text-tertiary);font-size:13px}
   .fb-board-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm)}
   .fbd-dist-head{grid-template-columns:1.5fr .6fr 2fr .5fr}
-  .fbd-row{cursor:default}
+  .fbd-dist-head span,.fbd-row>span{text-align:center}
+  .fbd-view{max-width:1160px;margin:0 auto;padding:20px 20px 60px}
+  .fbd-row{cursor:default;grid-template-columns:1.5fr .6fr 2fr .5fr}
   .fbd-kind-badge{display:inline-flex;align-items:center;height:20px;padding:0 9px;border-radius:var(--radius-full);font-size:11px;font-weight:500}
   .fbd-kind-badge.like{background:var(--success-50,#F0FDF4);color:var(--success-800,#166534)}
   .fbd-kind-badge.dislike{background:var(--danger-50);color:var(--danger-800)}
@@ -1769,7 +1771,7 @@ function fbDashboardHTML(){
         <div class="legend"><span><span class="sw" style="background:var(--success-400,#22C55E)"></span>点赞</span><span><span class="sw" style="background:var(--danger-400)"></span>点踩</span><span><span class="sw" style="background:var(--gray-400)"></span>意见</span></div>
       </div>
       <div class="board-table">
-        <div class="board-col-head fbd-dist-head"><span>反馈对象</span><span>级别</span><span>分布（点赞 / 点踩 / 意见）</span><span>合计</span></div>
+        <div class="board-col-head fbd-dist-head"><span>反馈对象</span><span>级别</span><span>分布（点赞 / 点踩 / 意见）</span><span>反馈总数</span></div>
         <div id="fbd-dist-rows"></div>
       </div>
     </div>
@@ -1806,7 +1808,7 @@ function renderFbDashboard(){
   const comment=list.filter(r=>r.kind==='comment').length;
   const mk=document.getElementById('fbd-metrics');
   if(mk)mk.innerHTML=`
-    <div class="metric accent"><div class="label">反馈总量</div><div class="value">${list.length}<span class="unit">条</span></div><div class="hint">报告级 + 类型级汇总</div></div>
+    <div class="metric accent"><div class="label">反馈总量</div><div class="value">${list.length}<span class="unit">条</span></div></div>
     <div class="metric"><div class="label">点赞</div><div class="value" style="color:var(--success-600,#16A34A)">${like}<span class="unit">条</span></div><div class="hint">正向评价，用于正向样本校准</div></div>
     <div class="metric danger"><div class="label">点踩</div><div class="value">${dislike}<span class="unit">条</span></div><div class="hint">负向评价，优先回流分析</div></div>
     <div class="metric warn"><div class="label">意见反馈</div><div class="value" style="font-size:22px">${comment}<span class="unit">条</span></div><div class="hint">含反馈标签与文字意见</div></div>`;
