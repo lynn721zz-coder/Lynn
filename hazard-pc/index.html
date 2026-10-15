@@ -635,7 +635,7 @@
             <button type="button" class="cfg-add-btn" id="cfg-type-add">＋ 新增类型</button>
           </div>
           <div class="ab-row">
-            <input type="text" id="cfg-new-type-desc" class="ab-desc" placeholder="类型说明（必填）：描述该类型的分析口径与典型情形，供 AI 分析时理解" maxlength="50">
+            <input type="text" id="cfg-new-type-desc" class="ab-desc" placeholder="类型说明（选填）：描述该类型的分析口径与典型情形，供 AI 分析时理解" maxlength="50">
           </div>
         </div>
       </div>
@@ -2240,7 +2240,7 @@ function bindCfgModal(){
     document.getElementById('cfg-date-pick').value='';
     refreshCfgPreview();
   });
-  /* 隐患类型：新增（权限仅限管理员；类型说明必填，用于 AI 分析理解口径） */
+  /* 隐患类型：新增（权限仅限管理员；类型说明选填，填写后悬浮标签可见，供 AI 分析理解口径） */
   const addType=()=>{
     if(curRole!=='admin'){showToast('新增隐患类型仅管理员可操作');return;}
     const inp=document.getElementById('cfg-new-type');
@@ -2248,13 +2248,12 @@ function bindCfgModal(){
     const v=(inp.value||'').trim();
     const desc=(descInp.value||'').trim();
     if(!v){showToast('请输入类型名称');return;}
-    if(!desc){showToast('请输入类型说明，便于 AI 分析时理解该类型的分析口径');descInp.focus();return;}
     if(cfgTypeOptions.includes(v)){showToast('该类型已存在');return;}
     cfgTypeOptions.push(v);
-    cfgTypeDesc[v]=desc;
+    if(desc)cfgTypeDesc[v]=desc;
     inp.value='';descInp.value='';
     renderCfgTypeTags();
-    showToast('已新增隐患类型「'+v+'」，勾选后保存生效');
+    showToast('已新增隐患类型「'+v+'」'+(desc?'，勾选后保存生效':'（未填写说明，勾选后保存生效）'));
   };
   document.getElementById('cfg-type-add').addEventListener('click',addType);
   document.getElementById('cfg-new-type').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addType();}});
