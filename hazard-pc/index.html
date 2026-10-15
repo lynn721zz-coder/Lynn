@@ -680,7 +680,7 @@
         <div id="rpt-fb-tags" role="group"></div>
       </div>
       <div>
-        <div class="field-label">意见描述 <span class="req">*</span></div>
+        <div class="field-label" id="rpt-fb-cmt-label">意见描述 <span class="req">*</span></div>
         <textarea class="modal-textarea" id="rpt-fb-textarea" placeholder="请填写具体反馈意见，以便精准优化报告质量…" required></textarea>
       </div>
     </div>
@@ -1394,7 +1394,7 @@ function renderCards(focusSet){
             <div class="fb-tags" role="group" aria-label="反馈快速标签" id="fbtags-${t.code}">
               ${TAGS.map(tg=>`<button class="tag" aria-pressed="false" onclick="toggleTag('${t.code}','${tg}',this)">${tg}</button>`).join('')}
             </div>
-            <div class="field-label" style="margin-top:8px;margin-bottom:6px">意见描述 <span class="req">*</span></div>
+            <div class="field-label fb-cmt-label" style="margin-top:8px;margin-bottom:6px">意见描述 <span class="req">*</span></div>
             <textarea class="fb-textarea" id="textarea-${t.code}" placeholder="请填写具体反馈意见…" aria-label="反馈意见输入框" required></textarea>
             <div class="fb-actions">
               <span class="fb-hint">反馈将回流至模型训练样本库，用于定向优化该维度</span>
@@ -1440,7 +1440,7 @@ function openFeedback(code,from,e){
   const st=state[code];
   const twrap=document.getElementById('fbtags-'+code);
   if(from==='comment'){
-    st.type=null;st.tags.clear();
+    st.type='comment';st.tags.clear();
     const c0=document.getElementById('card-'+code);
     c0.querySelector('.fb-btn.like').setAttribute('aria-pressed','false');
     c0.querySelector('.fb-btn.dislike').setAttribute('aria-pressed','false');
@@ -1452,6 +1452,13 @@ function openFeedback(code,from,e){
     }
   }
   const c=document.getElementById('card-'+code);
+  /* 意见描述：仅「意见反馈」必填，点踩选填 */
+  const lb=c.querySelector('.fb-cmt-label'),ta=document.getElementById('textarea-'+code);
+  if(lb&&ta){
+    const isCmt=from==='comment';
+    lb.innerHTML=isCmt?'意见描述 <span class="req">*</span>':'意见描述 <span style="font-size:12px;color:var(--text-tertiary);font-weight:400">（点踩选填）</span>';
+    ta.required=isCmt;
+  }
   c.dataset.open='true';
   c.querySelector('.card-head').setAttribute('aria-expanded','true');
   document.getElementById('expand-'+code).dataset.show='true';
@@ -1477,7 +1484,7 @@ function submitFeedback(code){
   const st=state[code];
   if(st.type==='dislike'&&st.tags.size===0){showToast('请至少选择一个问题标签，以便精准定位问题');return;}
   st.comment=document.getElementById('textarea-'+code).value.trim();
-  if(!st.comment){showToast('请填写意见描述，以便精准优化该维度');return;}
+  if(st.type==='comment'&&!st.comment){showToast('请填写意见描述，以便精准优化该维度');return;}
   const tagStr=st.tags.size?`，标签：${[...st.tags].join('、')}`:'';
   applySubmit(code,`反馈已提交${tagStr}，将回流至模型训练样本库`);
 }
@@ -1665,6 +1672,9 @@ function openRptFbModal(id,from){
   const st=rptFbSt(id);
   const isDislike=from==='dislike';
   document.getElementById('rpt-fb-tag-block').hidden=!isDislike;
+  /* 意见描述：仅「意见反馈」必填，点踩选填 */
+  document.getElementById('rpt-fb-cmt-label').innerHTML=isDislike?'意见描述 <span style="font-size:12px;color:var(--text-tertiary);font-weight:400">（点踩选填）</span>':'意见描述 <span class="req">*</span>';
+  document.getElementById('rpt-fb-textarea').required=!isDislike;
   if(isDislike){
     document.getElementById('rpt-fb-label').innerHTML='问题快速标签 <span style="font-size:12px;color:var(--text-tertiary);font-weight:400">（可多选）</span>';
     document.getElementById('rpt-fb-tags').innerHTML=TAGS.map(tg=>`<button class="tag" aria-pressed="${st.tags.has(tg)}" onclick="toggleRptFbTag('${tg}',this)">${tg}</button>`).join('');
@@ -1696,7 +1706,7 @@ function submitRptFb(){
   const st=rptFbSt(rptFbTarget);
   if(rptFbFrom==='dislike'&&st.tags.size===0){showToast('请至少选择一个问题标签，以便精准定位问题');return;}
   st.comment=document.getElementById('rpt-fb-textarea').value.trim();
-  if(!st.comment){showToast('请填写意见描述，以便精准优化报告质量');return;}
+  if(rptFbFrom==='comment'&&!st.comment){showToast('请填写意见描述，以便精准优化报告质量');return;}
   st.submitted=true;
   fbLogAdd({scope:'report',target:(getAllReports().find(x=>x.id===rptFbTarget)||{}).title||rptFbTarget,kind:st.type==='dislike'?'dislike':'comment',tags:[...st.tags],comment:st.comment,src:'报告列表页'});
   const tagStr=st.tags.size?`，标签：${[...st.tags].join('、')}`:'';
