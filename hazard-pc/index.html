@@ -45,6 +45,30 @@
   .avatar-chip{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:4px 6px;border-radius:var(--radius-sm)}
   .avatar-chip:hover{background:var(--gray-50)}
   .avatar-dot{width:24px;height:24px;border-radius:50%;background:var(--sys-primary-bg);color:var(--sys-primary-deep);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600}
+  /* 消息中心弹窗（右上角铃铛点击弹出） */
+  .msg-card{position:fixed;top:56px;right:14px;width:620px;max-width:calc(100vw - 28px);height:min(720px,calc(100vh - 80px));background:var(--bg-card);border-radius:var(--radius-xl);box-shadow:0 14px 44px rgba(15,23,42,.22);display:flex;flex-direction:column;overflow:hidden;transform:translateY(10px);transition:transform .22s cubic-bezier(.2,.7,.3,1)}
+  .modal-mask.show .msg-card{transform:translateY(0)}
+  .msg-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid var(--border)}
+  .msg-title{font-size:16px;font-weight:600;color:var(--text-primary)}
+  .msg-actions{display:flex;align-items:center;gap:14px}
+  .msg-readall{font-size:13px;color:var(--sys-primary);cursor:pointer}
+  .msg-readall:hover{text-decoration:underline}
+  .msg-list{flex:1;overflow-y:auto;border-bottom:1px solid var(--border)}
+  .msg-item{padding:13px 20px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+  .msg-item:hover{background:var(--gray-50)}
+  .msg-item .row1{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .msg-item .m-title{font-size:14.5px;font-weight:600;color:var(--text-primary)}
+  .msg-item.unread .m-title::after{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:#E60012;margin-left:6px;vertical-align:2px}
+  .msg-item .m-time{font-size:12.5px;color:var(--text-tertiary);white-space:nowrap}
+  .msg-item .row2{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:5px}
+  .msg-item .m-content{font-size:13px;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+  .msg-item .m-go{font-size:12.5px;color:var(--text-tertiary);white-space:nowrap}
+  .msg-item:hover .m-go{color:var(--sys-primary)}
+  .msg-foot{display:flex;align-items:center;justify-content:center;gap:20px;padding:11px 20px;font-size:13px;color:var(--text-secondary)}
+  .msg-pager{display:flex;align-items:center;gap:10px}
+  .msg-pager button{border:1px solid var(--border-strong);background:var(--bg-card);border-radius:6px;width:26px;height:26px;cursor:pointer;color:var(--text-secondary);line-height:1}
+  .msg-pager button:hover:not(:disabled){background:var(--gray-50)}
+  .msg-pager button:disabled{opacity:.35;cursor:default}
 
   /* ===== 侧栏 ===== */
   .sidebar{position:fixed;top:48px;left:0;bottom:0;width:216px;background:var(--bg-card);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:150;transition:width .25s ease}
@@ -299,6 +323,8 @@
   .tag-pick{display:inline-flex;align-items:center;padding:5px 12px;border:1px solid var(--border-strong);border-radius:var(--radius-full);font-size:12.5px;color:var(--text-secondary);cursor:pointer;background:var(--bg-card);transition:all .15s;user-select:none;margin:0 6px 8px 0}
   .tag-pick:hover{border-color:var(--sys-primary);color:var(--sys-primary)}
   .tag-pick.on{background:var(--sys-primary-bg);border-color:var(--sys-primary);color:var(--sys-primary-deep);font-weight:500}
+  .cfg-period-hint{font-size:11.5px;color:var(--text-tertiary);line-height:1.7;margin-top:2px;padding:8px 10px;background:var(--gray-50);border:1px solid var(--border);border-radius:var(--radius-sm)}
+  .cfg-period-hint b{color:var(--text-secondary);font-weight:500}
   .modal-textarea{width:100%;min-height:66px;border:1px solid var(--border-strong);border-radius:var(--radius-md);padding:8px 10px;font-size:13px;color:var(--text-primary);background:var(--bg-card);outline:none;resize:vertical;font-family:inherit;box-sizing:border-box;transition:border-color .15s,box-shadow .15s}
   .modal-textarea::placeholder{color:var(--text-tertiary)}
   .modal-textarea:focus{border-color:var(--sys-primary);box-shadow:0 0 0 3px var(--primary-50)}
@@ -471,7 +497,7 @@
   </div>
   <div class="tb-right" data-page-node-id="LWSrSaE5ZF1L0bPjHTkPuk">
     
-    <span class="bell" aria-label="通知，99+ 未读" data-page-node-id="L0p6vc5TC27UQS7lnkVJdQ">
+    <span class="bell" id="notify-bell" role="button" tabindex="0" aria-label="通知" data-page-node-id="L0p6vc5TC27UQS7lnkVJdQ">
       <svg class="icon" viewBox="0 0 24 24" fill="none" data-page-node-id="ECYfVW5Exn4FCd2VUY67ZA"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6M10.5 19a2 2 0 0 0 3 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="8aS2mHME1jDLmGiaTQXYPm"></path></svg>
       <span class="bubble" data-page-node-id="Pq57pgAhtjChmp4DJblgr8">99+</span>
     </span>
@@ -531,13 +557,14 @@
           <span class="tag-pick" data-pd="每周">每周</span>
           <span class="tag-pick" data-pd="每月">每月</span>
           <span class="tag-pick" data-pd="每季度">每季度</span>
+          <span class="tag-pick" data-pd="每年">每年</span>
           <span class="tag-pick" data-pd="自定义">自定义</span>
         </div>
+        <div class="cfg-period-hint"><b>每周</b>：每周一生成；<b>每月</b>：每月 1 号生成；<b>每季度</b>：每季度第一个月的 1 号生成（1/4/7/10 月 1 号）；<b>每年</b>：每年 1 月 1 日生成。报告生成时间均为当日 08:00。</div>
         <div id="cfg-custom" hidden>
           <div class="cfg-row">
             <span class="cfg-lb">重复频率</span>
             <select id="cfg-freq">
-              <option value="day">每天</option>
               <option value="week" selected>每周</option>
               <option value="month">每月</option>
               <option value="quarter">每季度</option>
@@ -616,7 +643,6 @@
     <div class="modal-head">
       <div>
         <div class="modal-title" id="rpt-fb-title">报告整体反馈</div>
-        <div class="modal-desc" id="rpt-fb-sub">针对整份报告的评价与意见，将回流至模型训练样本库。</div>
       </div>
       <button class="modal-close" id="rpt-fb-close" aria-label="关闭">×</button>
     </div>
@@ -626,14 +652,36 @@
         <div id="rpt-fb-tags" role="group"></div>
       </div>
       <div>
-        <div class="field-label">意见描述 <span style="font-size:12px;color:var(--text-tertiary);font-weight:400">（可选）</span></div>
-        <textarea class="modal-textarea" id="rpt-fb-textarea" placeholder="例：报告整体结论与现场实际相符，但整改建议部分缺少责任部门与完成时限，建议补充…"></textarea>
+        <div class="field-label">意见描述 <span class="req">*</span></div>
+        <textarea class="modal-textarea" id="rpt-fb-textarea" placeholder="请填写具体反馈意见，以便精准优化报告质量…" required></textarea>
       </div>
     </div>
     <div class="modal-foot">
       <span style="font-size:11.5px;color:var(--text-tertiary);margin-right:auto">反馈按报告维度记录，用于整体质量评估</span>
       <button class="btn-cancel" id="rpt-fb-cancel">取消</button>
       <button class="btn-modal-go" id="rpt-fb-submit">提交反馈</button>
+    </div>
+  </div>
+</div>
+
+<!-- 消息中心：点击右上角铃铛弹出；消息按 AI 辅助分析报告生成提醒展示，点击消息跳转报告详情 -->
+<div class="modal-mask" id="msg-center-modal" hidden>
+  <div class="msg-card" role="dialog" aria-modal="true" aria-label="消息中心">
+    <div class="msg-head">
+      <div class="msg-title">消息中心</div>
+      <div class="msg-actions">
+        <span class="msg-readall" id="msg-readall">全部已读</span>
+        <button class="modal-close" id="msg-close" aria-label="关闭">×</button>
+      </div>
+    </div>
+    <div class="msg-list" id="msg-list"></div>
+    <div class="msg-foot">
+      <span id="msg-total">共 0 条</span>
+      <div class="msg-pager">
+        <button id="msg-prev" aria-label="上一页">‹</button>
+        <span id="msg-page-ind">1 / 1</span>
+        <button id="msg-next" aria-label="下一页">›</button>
+      </div>
     </div>
   </div>
 </div>
@@ -697,13 +745,8 @@ const TYPES=[
   {code:'PPE_LACK',no:'十二',name:'个体防护不足',count:2,ratio:'0.1%',risk:'防护用品',
    examples:['作业人员未佩戴护目镜','防爆区域未穿防静电工服','酸区操作人员防护面屏缺失','粉尘作业未佩戴防尘口罩','噪音区域员工未佩戴耳塞'],risks:['防护用品缺失使人员在有毒、腐蚀、粉尘环境中直接暴露，造成急性伤害与职业病隐患','防爆区域防静电装备缺失，人体静电成为潜在点火源'],advice:['按岗位风险评估结果配齐配足防护用品，建立发放与更换台账','强化现场佩戴监督，同时改进装备舒适性与可用性，提升主动佩戴率'],fb:0,rate:0}
 ];
-const TAGS=['分析不准确','漏报','分类错误','部位定位不准','风险分析不对','整改建议不可行'];
+const TAGS=['分析不准确','漏报','分类错误','部位定位不准','风险分析不对','整改建议不可行','其他'];
 const ORGS=['中国昊华','蓝天氟材料','中化蓝天','中化新材料','中化环境','中化装备'];
-const PLACEHOLDERS={
-  EQUIP_DEFECT:'例：第 3 条「R116 工段阀门内漏」应归入「介质泄漏/密封点失效」而非「设备本体及附件缺陷」，请 AI 复核分类边界…',
-  MEDIA_LEAK:'例：第 1 条法兰渗漏风险等级应升为高，涉及 HCL 介质，建议补充应急隔离措施…',
-  SIGN_IDENT:'例：第 4 条气体报警描述错误属信息识别问题，但涉及安全联锁，建议复核是否合并至作业管控类…'
-};
 const state={}; TYPES.forEach(t=>state[t.code]={type:null,tags:new Set(),comment:'',submitted:false});
 
 /* ================= 菜单 ================= */
@@ -935,7 +978,11 @@ function bindHazardList(){
     closeAIModal();
     const now=new Date(),pad=n=>String(n).padStart(2,'0');
     const time=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes());
-    const rpt={id:'AI-'+now.getTime(),type:'ai',status:'generating',genStart:Date.now(),retries:0,title:'隐患清单 AI 辅助分析报告',time,range:timeDim,count:6496,desc:'基于当前隐患清单，围绕所关注类型进行 AI 聚焦分析与风险洞察',focus:picked,timeDim,orgDim,owner:CUR_USER_NAME};
+    const rpt=(()=>{ /* 报告标题及文件名格式：【所属单位】隐患AI辅助分析报告（隐患数据范围），如【中国中化】隐患AI辅助分析报告（2026年10月5日至2026年10月11日） */
+      const fmtCn=s=>{const m=/^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(s);return m?m[1]+'年'+parseInt(m[2],10)+'月'+parseInt(m[3],10)+'日':s;};
+      const cnRange=timeDim.split('~').map(s=>fmtCn(s.trim())).join('至');
+      return {id:'AI-'+now.getTime(),type:'ai',status:'generating',genStart:Date.now(),retries:0,title:'【'+orgDim+'】隐患AI辅助分析报告（'+cnRange+'）',time,range:timeDim,count:6496,desc:'基于当前清单，围绕所关注类型进行 AI 聚焦分析与风险洞察',focus:picked,timeDim,orgDim,owner:CUR_USER_NAME};
+    })();
     aiReports.unshift(rpt);
     /* 异步任务：分阶段进度展示；失败自动重试最多 3 次，仍失败提供「重新发起」（原型以秒级模拟真实 5-10 分钟耗时；按住 Shift 点击可演示失败场景） */
     scheduleAIGen(rpt.id);
@@ -947,14 +994,13 @@ function bindHazardList(){
       renderReportList('all');
     },600);
   });
-  /* 模拟 AI 报告异步生成任务：排队中→数据提取→AI 分析→报告组装 */
+  /* 模拟 AI 报告异步生成任务：排队中→AI 分析→报告组装 */
   let eventShiftFired=false;
-  const GEN_STAGES=['排队中','数据提取','AI 分析','报告组装'];
+  const GEN_STAGES=['排队中','AI 分析','报告组装'];
   /* 各阶段"AI 思考思路"文案池（{N} 会替换为隐患总数数量），按时间轮换播报 */
   const GEN_THOUGHTS=[
     ['正在等待分析资源就绪，任务已进入生成队列','已受理分析请求，即将开始处理'],
-    ['正在读取清单中的 {N} 条隐患记录…','正在提取隐患的结构化信息（单位 / 部位 / 类型 / 时间）','正在对隐患描述做分词与语义向量化','正在过滤重复与无效记录，锁定有效分析样本'],
-    ['正在基于隐患描述归纳风险模式，定位高频失效场景…','正在对比各类型隐患的分布与关联关系…','正在评估各类型的典型风险，并匹配历史治理经验…','正在梳理治理建议，优先参考整改成效良好的做法…'],
+    ['正在读取清单中的 {N} 条隐患记录…','正在对隐患描述做分词与语义向量化','正在过滤重复与无效记录，锁定有效分析样本','正在基于隐患描述归纳风险模式，定位高频失效场景…','正在对比各类型隐患的分布与关联关系…','正在评估各类型的典型风险，并匹配历史治理经验…','正在梳理治理建议，优先参考整改成效良好的做法…'],
     ['正在组织分析结论，按类型装配方报告结构…','正在生成汇总统计与趋势解读，即将完成']
   ];
   const GEN_RETRY_MAX=3;
@@ -985,6 +1031,9 @@ function bindHazardList(){
       }else{
         cur.status='ready';
         cur.time=nowStr();
+        const cntTxt='共 '+cur.count.toLocaleString()+' 条';
+        notifications.unshift({id:'MSG-'+(++msgSeq),title:'AI 辅助分析报告生成提醒',content:'【AI 辅助分析报告】您发起的《'+cur.title+'》（聚焦 '+((cur.focus||[]).length)+' 类隐患，'+cntTxt+'）已生成完成，请查看报告详情。',time:cur.time,read:false,rid:cur.id});
+        updateBellBubble();
         if(lp&&!lp.hidden)renderReportList(currentRFilter);
         showToast('通知：「'+cur.title+'」已生成完成，可在报告列表中查看');
       }
@@ -1001,7 +1050,7 @@ function bindHazardList(){
     scheduleAIGen(id);
   }
   window.retryAIGen=retryAIGen; /* 列表卡片内联 onclick 调用 */
-  /* "生成中"卡片：已等待时间 + 分阶段进度（排队中→数据提取→AI 分析→报告组装） */
+  /* "生成中"卡片：已等待时间 + 分阶段进度（排队中→AI 分析→报告组装） */
   setInterval(()=>{
     document.querySelectorAll('.gen-elapsed[data-start]').forEach(el=>{
       const s=Math.max(0,Math.floor((Date.now()-Number(el.dataset.start))/1000));
@@ -1010,7 +1059,7 @@ function bindHazardList(){
     document.querySelectorAll('.gen-think[data-start][data-dur]').forEach(el=>{
       const start=Number(el.dataset.start),dur=Number(el.dataset.dur)||12000;
       const p=Math.min(97,Math.max(0,(Date.now()-start)/dur*100));
-      const si=Math.min(3,Math.floor(p/25));
+      const si=Math.min(2,Math.floor(p/33.34));
       el.querySelectorAll('.gen-step').forEach(st=>{
         const i=Number(st.dataset.si);
         st.classList.toggle('done',i<si);
@@ -1119,6 +1168,30 @@ const DEFAULT_TYPE_NAMES=cfgTypeOptions.slice();
 const MAX_RPT_TYPES=15;
 let cfgTypeSel=[];
 let rptCfgHistory=[{time:'2025-12-01 08:00',action:'initial',changes:[],period:'每周 + 每月',org:'中国中化',types:['设备本体及附件缺陷','电气设备设施隐患','介质泄漏/密封点失效']}];
+/* 历史已完成的 AI 辅助分析报告（供消息中心提醒与详情跳转演示） */
+aiReports.push(
+  {id:'AI-1013',type:'ai',status:'ready',title:'【中国中化】隐患AI辅助分析报告（2025年11月1日至2025年11月30日）',time:'2026-10-13 16:40',range:'2025-11-01 ~ 2025-11-30',count:2387,desc:'基于当前隐患清单，围绕所关注类型进行 AI 聚焦分析与风险洞察',focus:['设备本体及附件缺陷','电气设备设施隐患','介质泄漏/密封点失效'],timeDim:'2025-11',orgDim:'中国中化',owner:'张伟'},
+  {id:'AI-1012',type:'ai',status:'ready',title:'【中国中化】隐患AI辅助分析报告（2025年10月1日至2025年10月31日）',time:'2026-10-12 10:15',range:'2025-10-01 ~ 2025-10-31',count:1204,desc:'基于当前隐患清单，围绕所关注类型进行 AI 聚焦分析与风险洞察',focus:['现场标识与信息识别','个体防护不足','人的不安全行为'],timeDim:'2025-10',orgDim:'中国中化',owner:'张伟'}
+);
+/* 消息中心数据：消息标题与内容均按 AI 辅助分析报告生成提醒展示，点击消息跳转对应报告详情 */
+let notifications=[];let msgPage=1;const MSG_PAGE_SIZE=10;let msgSeq=0;
+function makeAIMsg(rid,time,focusN,count,read,rtitle){
+  return {id:'MSG-'+(++msgSeq),title:'AI 辅助分析报告生成提醒',content:'【AI 辅助分析报告】您发起的《'+(rtitle||'隐患AI辅助分析报告')+'》（聚焦 '+focusN+' 类隐患，共 '+count.toLocaleString()+' 条）已生成完成，请查看报告详情。',time:time,read:!!read,rid:rid};
+}
+notifications=[
+  makeAIMsg('AI-1013','2026-10-13 16:40',3,2387,false,'【中国中化】隐患AI辅助分析报告（2025年11月1日至2025年11月30日）'),
+  makeAIMsg('AI-1012','2026-10-12 10:15',3,1204,false,'【中国中化】隐患AI辅助分析报告（2025年10月1日至2025年10月31日）'),
+  makeAIMsg('AI-1012','2026-10-11 18:02',3,1204,true,'【中国中化】隐患AI辅助分析报告（2025年10月1日至2025年10月31日）'),
+  makeAIMsg('AI-1013','2026-10-11 09:26',3,2387,true,'【中国中化】隐患AI辅助分析报告（2025年11月1日至2025年11月30日）'),
+  makeAIMsg('AI-1012','2026-10-10 15:47',3,1204,true,'【中国中化】隐患AI辅助分析报告（2025年10月1日至2025年10月31日）'),
+  makeAIMsg('AI-1013','2026-10-10 08:31',3,2387,true,'【中国中化】隐患AI辅助分析报告（2025年11月1日至2025年11月30日）'),
+  makeAIMsg('AI-1012','2026-10-09 20:12',3,1204,true,'【中国中化】隐患AI辅助分析报告（2025年10月1日至2025年10月31日）'),
+  makeAIMsg('AI-1013','2026-10-09 11:58',3,2387,true,'【中国中化】隐患AI辅助分析报告（2025年11月1日至2025年11月30日）'),
+  makeAIMsg('AI-1012','2026-10-08 17:23',3,1204,true,'【中国中化】隐患AI辅助分析报告（2025年10月1日至2025年10月31日）'),
+  makeAIMsg('AI-1013','2026-10-08 09:05',3,2387,true,'【中国中化】隐患AI辅助分析报告（2025年11月1日至2025年11月30日）'),
+  makeAIMsg('AI-1012','2026-10-07 14:49',3,1204,true,'【中国中化】隐患AI辅助分析报告（2025年10月1日至2025年10月31日）'),
+  makeAIMsg('AI-1013','2026-10-07 08:16',3,2387,true,'【中国中化】隐患AI辅助分析报告（2025年11月1日至2025年11月30日）')
+];
 function nowStr(){
   const n=new Date(),pad=x=>String(x).padStart(2,'0');
   return n.getFullYear()+'-'+pad(n.getMonth()+1)+'-'+pad(n.getDate())+' '+pad(n.getHours())+':'+pad(n.getMinutes());
@@ -1205,8 +1278,10 @@ function reportHTML(){
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0">
           <div class="header-badges" id="rpt-d-badges"></div>
-          <button class="btn-rpt-cfg" id="rpt-d-excel" title="下载当前报告覆盖的原始隐患数据清单（Excel）" onclick="exportHazardExcel(event)"><svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"><path d="M4 3h16v18H4zM4 9h16M9 9v12M4 15h16" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>下载原始数据</button>
-          <button class="btn-rpt-cfg" id="rpt-d-export" title="以 Word 文档导出当前报告" onclick="exportReportWord()"><svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"><path d="M12 3v12M7 10l5 5 5-5M4 21h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>导出 Word</button>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="btn-rpt-cfg" id="rpt-d-excel" title="下载当前报告覆盖的原始隐患数据清单（Excel）" onclick="exportHazardExcel(event)"><svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"><path d="M4 3h16v18H4zM4 9h16M9 9v12M4 15h16" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>下载原始数据</button>
+            <button class="btn-rpt-cfg" id="rpt-d-export" title="以 Word 文档导出当前报告" onclick="exportReportWord()"><svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"><path d="M12 3v12M7 10l5 5 5-5M4 21h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>导出报告（Word）</button>
+          </div>
         </div>
       </div>
       <div class="meta" id="rpt-d-meta"></div>
@@ -1238,7 +1313,6 @@ function renderCards(focusSet){
     const examples=t.examples.slice(0,5).map((e,i)=>`<li>${i+1}. ${e}<span class="ex-org">${ORGS[(codeHash+i)%ORGS.length]}</span></li>`).join('');
     const risks=(t.risks||[]).map(r=>`<li>${r}</li>`).join('');
     const advice=(t.advice||[]).map(a=>`<li>${a}</li>`).join('');
-    const ph=PLACEHOLDERS[t.code]||'请描述这一类分析的问题，便于 AI 后续优化…';
     const fbHot=`<span class="fb-stat">本维度累计反馈 <span class="hot">${t.fb} 条</span></span>`;
     return `
     <article class="type-card${(focusSet&&focusSet.has(t.name))?' focused':''}" id="card-${t.code}" data-open="false" data-submitted="false">
@@ -1275,7 +1349,8 @@ function renderCards(focusSet){
             <div class="fb-tags" role="group" aria-label="反馈快速标签" id="fbtags-${t.code}">
               ${TAGS.map(tg=>`<button class="tag" aria-pressed="false" onclick="toggleTag('${t.code}','${tg}',this)">${tg}</button>`).join('')}
             </div>
-            <textarea class="fb-textarea" id="textarea-${t.code}" placeholder="${ph}" aria-label="反馈意见输入框"></textarea>
+            <div class="field-label" style="margin-top:8px;margin-bottom:6px">意见描述 <span class="req">*</span></div>
+            <textarea class="fb-textarea" id="textarea-${t.code}" placeholder="请填写具体反馈意见…" aria-label="反馈意见输入框" required></textarea>
             <div class="fb-actions">
               <span class="fb-hint">反馈将回流至模型训练样本库，用于定向优化该维度</span>
               <div class="btns">
@@ -1338,7 +1413,6 @@ function openFeedback(code,from,e){
   setTimeout(()=>document.getElementById('textarea-'+code).focus(),320);
 }
 function toggleTag(code,tag,el){
-  el.stopPropagation();
   const st=state[code];
   if(st.tags.has(tag)){st.tags.delete(tag);el.setAttribute('aria-pressed','false');}
   else{st.tags.add(tag);el.setAttribute('aria-pressed','true');}
@@ -1356,7 +1430,9 @@ function cancelFeedback(code){
 function submitLike(code){applySubmit(code,'点赞已记录，将用于 AI 正向样本校准');}
 function submitFeedback(code){
   const st=state[code];
+  if(st.type==='dislike'&&st.tags.size===0){showToast('请至少选择一个问题标签，以便精准定位问题');return;}
   st.comment=document.getElementById('textarea-'+code).value.trim();
+  if(!st.comment){showToast('请填写意见描述，以便精准优化该维度');return;}
   const tagStr=st.tags.size?`，标签：${[...st.tags].join('、')}`:'';
   applySubmit(code,`反馈已提交${tagStr}，将回流至模型训练样本库`);
 }
@@ -1370,6 +1446,7 @@ function applySubmit(code,msg){
   fbLogAdd({scope:'type',target:t.name,kind:st.type==='dislike'?'dislike':st.type==='like'?'like':'comment',tags:[...st.tags],comment:st.comment||'',src:'报告详情页'});
   showToast(msg);
   updateMetrics(currentFocusSet);renderBoard(currentFocusSet);
+  st.tags.clear();st.comment='';
 }
 function showToast(msg){
   const wrap=document.getElementById('toast-wrap');
@@ -1463,7 +1540,7 @@ function renderReportList(filter){
     const genTag=isGen?' <span class="rpt-tag gen"><span class="gen-spin"></span>生成中</span>'+(r.retries>0?` <span class="rpt-tag gen">已自动重试 ${r.retries}/3</span>`:''):'';
     const failTag=isFail?' <span class="rpt-tag fail">生成失败</span> <span class="rpt-tag gen">已自动重试 3/3</span>':'';
     const focusStr=(isAI&&r.focus&&r.focus.length)?`<span class="dot"></span>聚焦 ${r.focus.length} 个类型`:'';
-    const genElapsed=isGen?`<span class="dot"></span><span class="gen-elapsed" data-start="${r.genStart||Date.now()}">已等待 00:00</span>`:'';
+    const genElapsed='';
     const org=r.org||r.orgDim||'—';
     const ownerStr=curRole==='admin'?`<span class="dot"></span><span>归属：${r.owner||CUR_USER_NAME}</span>`:'';
     const fb=rptFbState[r.id]||{};
@@ -1473,14 +1550,13 @@ function renderReportList(filter){
       :(isFail
         ?`<span class="rpt-desc">AI 分析任务失败：自动重试 3 次仍未成功，请点击「重新发起」重新提交任务</span>`
         :(typeNames.length
-          ?typeNames.slice(0,3).map(n=>`<span class="rpt-type-chip">${n}</span>`).join('')+(typeNames.length>3?`<span class="rpt-type-chip more">+${typeNames.length-3}</span>`:'')
+          ?typeNames.slice(0,5).map(n=>`<span class="rpt-type-chip">${n}</span>`).join('')+(typeNames.length>5?`<span class="rpt-type-chip more">+${typeNames.length-5}</span>`:'')
           :`<span class="rpt-desc">${r.desc}</span>`));
     const genBar=isGen?`<div class="gen-think" data-start="${r.genStart||Date.now()}" data-dur="${r.genDur||12000}" data-cnt="${r.count}">
       <div class="gen-steps">
         <span class="gen-step cur" data-si="0"><span class="gen-step-txt">排队中</span></span>
-        <span class="gen-step" data-si="1"><span class="gen-step-arrow">→</span><span class="gen-step-txt">数据提取</span></span>
-        <span class="gen-step" data-si="2"><span class="gen-step-arrow">→</span><span class="gen-step-txt">AI 分析</span></span>
-        <span class="gen-step" data-si="3"><span class="gen-step-arrow">→</span><span class="gen-step-txt">报告组装</span></span>
+        <span class="gen-step" data-si="1"><span class="gen-step-arrow">→</span><span class="gen-step-txt">AI 分析</span></span>
+        <span class="gen-step" data-si="2"><span class="gen-step-arrow">→</span><span class="gen-step-txt">报告组装</span></span>
       </div>
       <div class="gen-thought"><span class="think-dot"><i></i><i></i><i></i></span><span class="gen-thought-txt">正在等待分析资源就绪，任务已进入生成队列</span></div>
     </div>`:'';
@@ -1490,7 +1566,7 @@ function renderReportList(filter){
         <div class="rpt-title">${r.title}${tag}${genTag}${failTag}</div>
         <div class="rpt-types"${(!isGen&&!isFail&&typeNames.length)?` data-tip="${typeNames.join('、')}"`:''}>${chips}</div>
         ${genBar}
-        <div class="rpt-meta"><span>${r.time}</span><span class="dot"></span><span>${org}</span><span class="dot"></span><span>${r.range}</span><span class="dot"></span><span>隐患总数 ${r.count.toLocaleString()} 条</span>${focusStr}${genElapsed}${ownerStr}</div>
+        <div class="rpt-meta">${isGen?'':`<span>${r.time}</span><span class="dot"></span>`}<span>${org}</span><span class="dot"></span><span>${r.range}</span><span class="dot"></span><span>隐患总数 ${r.count.toLocaleString()} 条</span>${focusStr}${genElapsed}${ownerStr}</div>
       </div>
       <div class="rpt-side">
         ${isGen
@@ -1541,7 +1617,6 @@ function openRptFb(id,e){
 function openRptFbModal(id,from){
   rptFbTarget=id;rptFbFrom=from;
   const r=getAllReports().find(x=>x.id===id);
-  document.getElementById('rpt-fb-sub').textContent=(r?`《${r.title}》`:'')+'针对整份报告的评价与意见，将回流至模型训练样本库。';
   const st=rptFbSt(id);
   const isDislike=from==='dislike';
   document.getElementById('rpt-fb-tag-block').hidden=!isDislike;
@@ -1574,7 +1649,9 @@ function cancelRptFb(){
 }
 function submitRptFb(){
   const st=rptFbSt(rptFbTarget);
+  if(rptFbFrom==='dislike'&&st.tags.size===0){showToast('请至少选择一个问题标签，以便精准定位问题');return;}
   st.comment=document.getElementById('rpt-fb-textarea').value.trim();
+  if(!st.comment){showToast('请填写意见描述，以便精准优化报告质量');return;}
   st.submitted=true;
   fbLogAdd({scope:'report',target:(getAllReports().find(x=>x.id===rptFbTarget)||{}).title||rptFbTarget,kind:st.type==='dislike'?'dislike':'comment',tags:[...st.tags],comment:st.comment,src:'报告列表页'});
   const tagStr=st.tags.size?`，标签：${[...st.tags].join('、')}`:'';
@@ -1582,6 +1659,7 @@ function submitRptFb(){
   closeRptFbModal();
   showToast(`报告反馈已提交${likeStr}${tagStr}，将回流至模型训练样本库`);
   syncRptFbCard(rptFbTarget);
+  st.tags.clear();st.comment='';
 }
 function syncRptFbCard(id){
   const card=document.querySelector(`.rpt-card[data-rid="${id}"]`);
@@ -2188,6 +2266,47 @@ renderMenu();
 renderTabs();
 activatePage('hazard-report');
 document.querySelector('[data-menu-id="workbench"]').addEventListener('click',()=>openPage('workbench','工作台'));
+/* ===== 消息中心：铃铛点击弹出；消息点击跳转报告详情（全局作用域，供任务完成回调调用） ===== */
+const bellEl=document.getElementById('notify-bell');
+function updateBellBubble(){
+  const un=notifications.filter(n=>!n.read).length;
+  const b=bellEl.querySelector('.bubble');
+  if(b){if(un>0){b.style.display='';b.textContent=un>99?'99+':String(un);}else{b.style.display='none';}}
+  bellEl.setAttribute('aria-label','通知'+(un>0?'，'+un+' 条未读':'，无未读'));
+}
+function renderMsgList(){
+  const totalPages=Math.max(1,Math.ceil(notifications.length/MSG_PAGE_SIZE));
+  if(msgPage>totalPages)msgPage=totalPages;if(msgPage<1)msgPage=1;
+  const startI=(msgPage-1)*MSG_PAGE_SIZE;
+  const items=notifications.slice(startI,startI+MSG_PAGE_SIZE);
+  document.getElementById('msg-list').innerHTML=items.map(n=>
+    `<div class="msg-item${n.read?'':' unread'}" data-mid="${n.id}" role="button" tabindex="0">
+      <div class="row1"><span class="m-title">${n.title}</span><span class="m-time">${n.time}</span></div>
+      <div class="row2"><span class="m-content">${n.content}</span><span class="m-go">查看详情 ▶</span></div>
+    </div>`).join('');
+  document.getElementById('msg-total').textContent='共 '+notifications.length+' 条';
+  document.getElementById('msg-page-ind').textContent=msgPage+' / '+totalPages;
+  document.getElementById('msg-prev').disabled=msgPage<=1;
+  document.getElementById('msg-next').disabled=msgPage>=totalPages;
+}
+function openMsgCenter(){msgPage=1;renderMsgList();const m=document.getElementById('msg-center-modal');m.hidden=false;requestAnimationFrame(()=>m.classList.add('show'));updateBellBubble();}
+function closeMsgCenter(){const m=document.getElementById('msg-center-modal');m.classList.remove('show');setTimeout(()=>{m.hidden=true;},220);}
+bellEl.addEventListener('click',e=>{e.stopPropagation();const m=document.getElementById('msg-center-modal');m.hidden?openMsgCenter():closeMsgCenter();});
+bellEl.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();const m=document.getElementById('msg-center-modal');m.hidden?openMsgCenter():closeMsgCenter();}});
+document.getElementById('msg-close').addEventListener('click',closeMsgCenter);
+document.getElementById('msg-readall').addEventListener('click',()=>{notifications.forEach(n=>n.read=true);renderMsgList();updateBellBubble();showToast('已全部标记为已读');});
+document.getElementById('msg-prev').addEventListener('click',()=>{msgPage--;renderMsgList();});
+document.getElementById('msg-next').addEventListener('click',()=>{msgPage++;renderMsgList();});
+document.getElementById('msg-list').addEventListener('click',e=>{
+  const item=e.target.closest('.msg-item');if(!item)return;
+  const n=notifications.find(x=>x.id===item.dataset.mid);if(!n)return;
+  n.read=true;updateBellBubble();closeMsgCenter();
+  openPage('hazard-report','隐患分析报告');
+  showReportDetail(n.rid);
+});
+document.getElementById('msg-center-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeMsgCenter();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!document.getElementById('msg-center-modal').hidden)closeMsgCenter();});
+updateBellBubble();
 </script>
 
 
