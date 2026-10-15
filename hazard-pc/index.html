@@ -782,6 +782,19 @@ const TYPES=[
 /* 各类型反馈按 赞/踩/意见 拆分（l=赞 d=踩 c=意见），未配置的类型按比例推导 */
 const FB_SPLIT={EQUIP_DEFECT:[5,4,3],PHYS_GUARD:[2,1,0],ELEC_HAZARD:[2,1,1],SIGN_IDENT:[3,2,1],MEDIA_LEAK:[4,2,2],OPS_CONTROL:[1,1,0],INSTRUMENT:[2,1,0],FIRE_RESP:[0,1,0],STATIC_GROUND:[1,1,0],ENV_POLLUTE:[1,0,0]};
 TYPES.forEach(t=>{const s=FB_SPLIT[t.code];if(s){t.l=s[0];t.d=s[1];t.c=s[2];}else{t.l=Math.round(t.fb*0.4);t.d=Math.round(t.fb*0.3);t.c=Math.max(0,t.fb-t.l-t.d);}});
+/* 悬停明细的意见示例（真实反馈不足时补充展示，标注「示例」） */
+const FB_TIP_SAMPLES={
+  EQUIP_DEFECT:['设备腐蚀类隐患的整改建议可细化到具体防腐工艺与检测周期','同类阀门内漏反复出现，建议增加备件寿命预测分析'],
+  PHYS_GUARD:['护栏缺失位置建议标注到具体楼层与轴线','防护罩拆除后未复位的责任追溯建议补充'],
+  ELEC_HAZARD:['配电室空调漏水与电气安全关联分析建议加强','防爆封堵类隐患建议给出规范依据条款'],
+  SIGN_IDENT:['标识牌缺失建议关联点位编号便于核查','报警点位描述错误建议增加与 DCS 位号比对'],
+  MEDIA_LEAK:['法兰渗漏建议细分密封点失效形式，便于 LDAR 定向治理','软管老化更换周期建议给出量化建议'],
+  OPS_CONTROL:['作业票气体分析缺失的环节定位建议更精确','监护人未选择问题建议关联培训记录分析'],
+  INSTRUMENT:['仪表超期校验建议联动审批流程提醒','关键联锁仪表建议标注失效影响范围'],
+  FIRE_RESP:['消防设施遮挡问题建议结合巡检路线分析','灭火器压力异常的整改闭环建议跟踪'],
+  STATIC_GROUND:['静电跨接脱落建议结合装卸车频次分析风险','接地电阻检测数据建议纳入趋势对比'],
+  ENV_POLLUTE:['场地孔洞类隐患建议补充临边防护要求','杂乱问题建议与 6S 管理联动分析']
+};
 const TAGS=['分析不准确','漏报','分类错误','部位定位不准','风险分析不对','整改建议不可行','其他'];
 const ORGS=['中国昊华','蓝天氟材料','中化蓝天','中化新材料','中化环境','中化装备'];
 const state={}; TYPES.forEach(t=>state[t.code]={type:null,tags:new Set(),comment:'',submitted:false});
@@ -1537,9 +1550,11 @@ function updateMetrics(focusSet){
   document.getElementById('board-tab-count').textContent=total+' 条';
 }
 function fbDetailTip(t){
-  const det=fbLog.filter(r=>r.scope==='type'&&r.target===t.name&&r.kind!=='like');
-  if(!det.length)return '暂无点踩与意见明细记录';
-  return det.map(r=>(r.kind==='dislike'?'<b>【点踩】</b>':'<b>【意见】</b>')+[r.tags&&r.tags.length?r.tags.join('、'):'',r.comment||''].filter(Boolean).join('：')).join('<br>');
+  const det=fbLog.filter(r=>r.scope==='type'&&r.target===t.name&&r.kind!=='like')
+    .map(r=>(r.kind==='dislike'?'<b>【点踩】</b>':'<b>【意见】</b>')+[r.tags&&r.tags.length?r.tags.join('、'):'',r.comment||''].filter(Boolean).join('：'));
+  const samples=(FB_TIP_SAMPLES[t.code]||[]).map(s=>'<b>【意见·示例】</b>'+s);
+  const lines=det.concat(samples).slice(0,4);
+  return lines.length?lines.join('<br>'):'暂无点踩与意见明细记录';
 }
 function renderBoard(focusSet){
   const list=(focusSet&&focusSet.size)?TYPES.filter(t=>focusSet.has(t.name)):TYPES;
@@ -1561,7 +1576,7 @@ function renderBoard(focusSet){
       </div>
     </div>
     <div class="board-table">
-      <div class="board-col-head"><span>隐患类型</span><span>数量 / 占比</span><span>赞 / 踩 / 意见</span></div>
+      <div class="board-col-head"><span>隐患类型</span><span>数量 / 占比</span><span style="text-align:center">赞 / 踩 / 意见</span></div>
       ${rows}
     </div>
     <div class="board-foot">反馈集中维度：<strong>${topFb&&topFb.fb?topFb.no+'、'+topFb.name:'暂无'}</strong>${(topFb&&topFb.fb)?` — 累计 ${topFb.fb} 条反馈，建议作为样本回流与模型优化重点`:' — 暂无反馈记录，可持续观察'}</div>`;
@@ -1971,7 +1986,7 @@ function exportReportWord(id,ev){  if(ev){ev.stopPropagation();ev.preventDefault
   <hr style="border:none;border-top:1.5pt solid #0A4DA2;margin:0 0 14pt">`;
   /* 一、报告概览 */
   body+=`<p style="${H};font-size:14pt;color:#0A4DA2;margin:12pt 0 6pt">一、报告概览</p>
-  <p style="${F};line-height:1.8;margin:0 0 6pt">本报告基于 HSE 管理系统隐患清单数据，经 AI 分析引擎（模型 v2.3）语义归类与风险洞察生成，${isAI?'并按用户配置聚焦展示指定隐患类型。':''}报告期内共归集隐患总数 <b>${r.count.toLocaleString()}</b> 条，覆盖 <b>${list.length}</b> 类隐患类型。</p>`;
+  <p style="${F};line-height:1.8;margin:0 0 6pt">本报告基于 HSE 管理系统隐患清单数据，经 FORUS 化工安全大模型语义归类与风险洞察生成，${isAI?'并按用户配置聚焦展示指定隐患类型。':''}报告期内共归集隐患总数 <b>${r.count.toLocaleString()}</b> 条，覆盖 <b>${list.length}</b> 类隐患类型。</p>`;
   if(isAI&&focusList){
     body+=`<p style="${F};line-height:1.8;margin:0 0 6pt"><b>聚焦隐患类型：</b>${focusList.map(esc).join('、')}</p>`;
     if(r.timeDim||r.orgDim)body+=`<p style="${F};line-height:1.8;margin:0 0 6pt"><b>分析维度：</b>时间维度 ${esc(r.timeDim||'—')}；所属单位 ${esc(r.orgDim||'—')}</p>`;
@@ -2020,7 +2035,7 @@ function showReportDetail(id){
     const focusSet=isAI&&r.focus?new Set(r.focus):null;
     currentFocusSet=focusSet;
     const nCls=(focusSet&&focusSet.size)?focusSet.size:12;
-    document.getElementById('rpt-d-meta').innerHTML=`<span>隐患总数 ${r.count.toLocaleString()} 条</span><span class="dot"></span><span>${nCls} 类隐患类型</span><span class="dot"></span><span>${r.range}</span><span class="dot"></span><span>AI 模型 v2.3</span>`;
+    document.getElementById('rpt-d-meta').innerHTML=`<span>隐患总数 ${r.count.toLocaleString()} 条</span><span class="dot"></span><span>${nCls} 类隐患类型</span><span class="dot"></span><span>${r.range}</span><span class="dot"></span><span>FORUS化工安全大模型</span>`;
     document.querySelector('[data-rview="detail"] .count').textContent=nCls+' 类';
     if(focusSet){
       const cands=TYPES.filter(t=>focusSet.has(t.name));
