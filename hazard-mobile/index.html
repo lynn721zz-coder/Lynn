@@ -351,7 +351,15 @@
   .schecks { display: flex; flex-wrap: wrap; gap: 10px 18px; padding: 2px 0; }
   .schecks label { display: inline-flex; align-items: center; gap: 6px; margin: 0; color: var(--text-main); font-size: 14px; }
   .schecks input { width: 17px; height: 17px; accent-color: var(--primary); }
-  .combo { position: relative; }
+  .combo {
+    position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+    padding: 6px 10px; border: 1px solid #dfe3e8; border-radius: 8px; background: #fff; cursor: text;
+  }
+  .combo:focus-within { border-color: var(--primary); }
+  .combo .scontrol {
+    flex: 1 1 150px; min-width: 130px; width: auto; border: none; outline: none;
+    padding: 5px 2px; font-size: 14px; background: transparent; border-radius: 0; font-family: inherit;
+  }
   .combo-list {
     position: absolute; left: 0; right: 0; top: calc(100% + 4px);
     background: #fff; border: 1px solid #dfe3e8; border-radius: 8px;
@@ -364,7 +372,7 @@
   .combo-opt:active, .combo-opt:hover { background: #f4f8ff; }
   .combo-empty { padding: 14px; text-align: center; color: var(--text-gray); font-size: 13px; }
   /* 催办对象多选：已选标签 + 选项勾选态 */
-  .combo-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .combo-tags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-width: 0; }
   .combo-tags:empty { display: none; }
   .combo-tag {
     display: inline-flex; align-items: center; gap: 5px;
@@ -382,6 +390,13 @@
     vertical-align: middle; white-space: nowrap;
   }
   .combo-tag .resp-badge { margin-left: 2px; }
+  /* +N 折叠 / 收起 */
+  .combo-more {
+    display: inline-flex; align-items: center; padding: 2px 9px;
+    font-size: 12px; line-height: 18px; border-radius: 4px;
+    background: #fff; border: 1px solid #bcd4f7; color: #2b6de8; cursor: pointer; white-space: nowrap;
+  }
+  .combo-more:active { background: #f0f6ff; }
   .sheet-foot { padding: 10px 16px calc(14px + env(safe-area-inset-bottom)); display: flex; gap: 12px; }
   .sheet-foot .btn { height: 42px; border-radius: 21px; }
 
@@ -875,7 +890,7 @@
 
   /* ================= 催办对象（模糊搜索选项，与 PC 端一致口径） ================= */
   var targetOptions = [
-    { value: '杨威01', label: '杨威01（操作工 · 有机车间2）', resp: true },
+    { value: '杨威01', label: '杨威01（操作工 · 有机车间2）', resp: true, cur: true },
     { value: '张伟',   label: '张伟（安全员 · HSE部）' },
     { value: '魏芝',   label: '魏芝（安全员 · 安全环保部）' },
     { value: '李娜',   label: '李娜（车间主任 · 有机车间2）' },
@@ -899,8 +914,8 @@
     + '<div class="sheet-body">'
     +   '<div class="sitem"><label>隐患名称</label><input class="scontrol" id="mUrgeName" readonly value="' + esc(HAZARD_NAME) + '"></div>'
     +   '<div class="sitem" id="mUrgeTargetItem"><label><span class="req">*</span>催办对象</label>'
-    +     '<div class="combo"><input class="scontrol" id="mUrgeTargetInput" placeholder="请选择，支持关键字搜索（可多选）" autocomplete="off">'
-    +     '<div class="combo-tags" id="mUrgeTargetTags"></div>'
+    +     '<div class="combo"><div class="combo-tags" id="mUrgeTargetTags"></div>'
+    +     '<input class="scontrol" id="mUrgeTargetInput" placeholder="请选择，支持关键字搜索（可多选）" autocomplete="off">'
     +     '<div class="combo-list" id="mUrgeTargetList"></div></div>'
     +     '<div class="serr">请选择催办对象</div>'
     +     '<div class="shint">支持按姓名 / 角色 / 部门关键字模糊搜索，可多选</div></div>'
@@ -926,7 +941,9 @@
   var urgeTargetList = urgeMask.querySelector('#mUrgeTargetList');
   var urgeTargetItem = urgeMask.querySelector('#mUrgeTargetItem');
   var urgeTargetTags = urgeMask.querySelector('#mUrgeTargetTags');
-  var urgePicked = [];   // 多选：[{ value, label }]
+  var urgePicked = [];   // 多选：[{ value, label, resp }]
+  var TAG_MAX = 2;       // 折叠时最多展示的标签数，超出部分以 +N 表示
+  var urgeTagsExpanded = false;
 
   function fuzzyMatch(kw, text){
     kw = String(kw || '').toLowerCase().trim();
@@ -947,13 +964,26 @@
     return flag ? '<span class="resp-badge">整改责任人</span>' : '';
   }
   function renderUrgeTags(){
-    urgeTargetTags.innerHTML = urgePicked.map(function(p){
+    urgeTargetInput.placeholder = urgePicked.length ? '继续添加，支持关键字搜索（可多选）' : '请选择，支持关键字搜索（可多选）';
+    if (!urgePicked.length){ urgeTargetTags.innerHTML = ''; return; }
+    var show = urgeTagsExpanded ? urgePicked : urgePicked.slice(0, TAG_MAX);
+    var html = show.map(function(p){
       return '<span class="combo-tag">' + esc(p.label) + respBadge(p.resp)
         + '<span class="tag-x" data-value="' + esc(p.value) + '" title="移除">✕</span></span>';
     }).join('');
+    if (urgePicked.length > TAG_MAX){
+      html += urgeTagsExpanded
+        ? '<span class="combo-more" data-act="collapse">收起</span>'
+        : '<span class="combo-more" data-act="expand">+' + (urgePicked.length - TAG_MAX) + '</span>';
+    }
+    urgeTargetTags.innerHTML = html;
   }
   function resetUrgeTarget(){
-    urgePicked = [];
+    urgeTagsExpanded = false;
+    /* 默认选中当前节点处置人 */
+    urgePicked = targetOptions.filter(function(o){ return o.cur; }).map(function(o){
+      return { value: o.value, label: o.label, resp: !!o.resp };
+    });
     urgeTargetInput.value = '';
     renderUrgeTags();
   }
@@ -991,8 +1021,15 @@
     renderUrgeTags();
     renderTargetList();
   });
-  // 标签 ✕ 移除
+  // 标签 ✕ 移除；+N 展开 / 收起
   urgeTargetTags.addEventListener('click', function(e){
+    var more = e.target.closest('.combo-more');
+    if (more){
+      urgeTagsExpanded = more.getAttribute('data-act') === 'expand';
+      renderUrgeTags();
+      renderTargetList();
+      return;
+    }
     var x = e.target.closest('.tag-x');
     if (!x) return;
     e.stopPropagation();
@@ -1077,6 +1114,7 @@
   /* ================= 入口 ================= */
   document.getElementById('btnUrge').addEventListener('click', function(){
     urgeTargetItem.classList.remove('error');
+    resetUrgeTarget();
     openMask(urgeMask);
   });
 })();
