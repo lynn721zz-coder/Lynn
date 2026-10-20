@@ -344,6 +344,14 @@
   .combo-tag .tag-x:hover { color: #e02020; }
   .combo-item.sel { background: #f0f6ff; color: #2b6de8; }
   .combo-item .ck { float: right; font-weight: 700; }
+  /* 整改责任人特殊标识 */
+  .resp-badge {
+    display: inline-block; margin-left: 6px; padding: 0 5px;
+    font-size: 11px; line-height: 16px; border-radius: 2px;
+    background: #fff3e8; color: #b45309; border: 1px solid #ffd8a8;
+    vertical-align: middle; white-space: nowrap;
+  }
+  .combo-tag .resp-badge { margin-left: 2px; }
 
   /* ========== 轻提示 ========== */
   .toast {
@@ -802,6 +810,13 @@
   #sysView .sy-ms-item .ms-box{ position:relative; width:14px; height:14px; border:1px solid #C0C4CC; border-radius:3px; background:#FFFFFF; flex-shrink:0; transition:all .15s; }
   #sysView .sy-ms-item.checked .ms-box{ background:#2B6DE8; border-color:#2B6DE8; }
   #sysView .sy-ms-item.checked .ms-box::after{ content:''; position:absolute; left:4px; top:1px; width:4px; height:8px; border-right:2px solid #FFFFFF; border-bottom:2px solid #FFFFFF; transform:rotate(45deg); }
+  /* 不可选（早于或等于起始填报节点） */
+  #sysView .sy-ms-item.disabled{ color:#C0C4CC; cursor:not-allowed; }
+  #sysView .sy-ms-item.disabled:hover{ background:transparent; }
+  #sysView .sy-ms-item.disabled .ms-box{ border-color:#E4E7ED; background:#F5F7FA; }
+  #sysView .sy-ms-item.disabled .ms-box::after{ display:none; }
+  #sysView .sy-ms-tip{ position:fixed; z-index:9999; transform:translateX(-50%); background:#1F2937; color:#FFFFFF; font-size:12px; line-height:1.6; padding:6px 12px; border-radius:6px; box-shadow:0 6px 24px rgba(0,0,0,.18); pointer-events:none; opacity:0; transition:opacity .2s; }
+  #sysView .sy-ms-tip.show{ opacity:1; }
   #sysView .sy-check{ display:flex; align-items:center; gap:6px; font-size:13px; color:#303133; cursor:pointer; width:120px; flex-shrink:0; user-select:none; }
   #sysView .sy-check .box{ width:14px; height:14px; border:1px solid #C0C4CC; border-radius:2px; background:#FFFFFF; display:flex; align-items:center; justify-content:center; font-size:10px; color:transparent; transition:all .15s; flex-shrink:0; }
   #sysView .sy-check.checked .box{ background:#2B6DE8; border-color:#2B6DE8; color:#FFFFFF; }
@@ -2189,7 +2204,7 @@
     // 催办数据：按隐患名称存储催办记录与催办回执（详情页隐患记录中展示）
     var urgeData = {
       '演示数据01': [{
-        by: '熊辰婷', object: '张伟（整改责任人 · HSE部）',
+        by: '熊辰婷', object: '张伟（安全员 · HSE部）【整改责任人】',
         ways: '系统消息、APP推送',
         content: '您有一条隐患尚未完成整改，请尽快登录系统处理并反馈整改结果。',
         time: '2026-09-19 09:12',
@@ -2258,9 +2273,9 @@
     var comboList = urgeMask.querySelector('#urgeTargetList');
     var comboTags = urgeMask.querySelector('#urgeTargetTags');
     var urgeTargetOptions = [
-      { value: '整改责任人', label: '张伟（整改责任人 · HSE部）' },
+      { value: '整改责任人', label: '张伟（安全员 · HSE部）', resp: true },
       { value: '部门负责人', label: '刘敏（部门负责人 · 线上配置专用部）' },
-      { value: '隐患发现人', label: '熊辰婷（隐患发现人）' },
+      { value: '隐患发现人', label: '熊辰婷（HSE专员 · HSE部）' },
       { value: '安全员', label: '王强（安全员 · X-test）' }
     ];
     var urgeTargetPicked = [];   // 多选：[{ value, label }]
@@ -2281,9 +2296,13 @@
     function isPicked(val){
       return urgeTargetPicked.some(function(p){ return p.value === val; });
     }
+    // 整改责任人标识徽标（选项与已选标签均展示）
+    function respBadge(flag){
+      return flag ? '<span class="resp-badge">整改责任人</span>' : '';
+    }
     function renderUrgeTags(){
       comboTags.innerHTML = urgeTargetPicked.map(function(p){
-        return '<span class="combo-tag">' + esc(p.label)
+        return '<span class="combo-tag">' + esc(p.label) + respBadge(p.resp)
           + '<span class="tag-x" data-value="' + esc(p.value) + '" title="移除">✕</span></span>';
       }).join('');
     }
@@ -2295,8 +2314,8 @@
       }
       comboList.innerHTML = items.map(function(o){
         var sel = isPicked(o.value);
-        return '<div class="combo-item' + (sel ? ' sel' : '') + '" data-value="' + esc(o.value) + '" data-label="' + esc(o.label) + '">'
-          + esc(o.label) + (sel ? '<span class="ck">✓</span>' : '') + '</div>';
+        return '<div class="combo-item' + (sel ? ' sel' : '') + '" data-value="' + esc(o.value) + '" data-label="' + esc(o.label) + '" data-resp="' + (o.resp ? 1 : 0) + '">'
+          + esc(o.label) + respBadge(o.resp) + (sel ? '<span class="ck">✓</span>' : '') + '</div>';
       }).join('');
     }
     function openCombo(){ renderComboList(); comboList.classList.add('open'); }
@@ -2321,7 +2340,7 @@
       if (isPicked(val)) {
         urgeTargetPicked = urgeTargetPicked.filter(function(p){ return p.value !== val; });
       } else {
-        urgeTargetPicked.push({ value: val, label: lab });
+        urgeTargetPicked.push({ value: val, label: lab, resp: item.getAttribute('data-resp') === '1' });
       }
       urgeTargetItem.classList.remove('error');
       renderUrgeTags();
@@ -4146,6 +4165,73 @@ const DEPTS = [
         }
       }
       sysView.querySelectorAll('.sy-msel').forEach(sySyncMsel);
+      /* 允许调整节点约束：仅可选择起始填报节点之后的节点 */
+      var SY_NODE_CHAIN = ['发现人', '审批人', '接收人', '整改人', '验收人'];
+      var msTipEl = null, msTipTimer = null;
+      function syMsTip(msg){
+        if (!msTipEl){
+          msTipEl = document.createElement('div');
+          msTipEl.className = 'sy-ms-tip';
+          document.body.appendChild(msTipEl);
+        }
+        msTipEl.textContent = msg;
+        var anchor = document.querySelector('.sy-msel.open') || document.querySelector('.sy-cfg-adj .sy-msel');
+        if (anchor){
+          var r = anchor.getBoundingClientRect();
+          msTipEl.style.left = (r.left + r.width / 2) + 'px';
+          msTipEl.style.top = (r.top - 34) + 'px';
+        }
+        msTipEl.classList.add('show');
+        clearTimeout(msTipTimer);
+        msTipTimer = setTimeout(function(){ msTipEl.classList.remove('show'); }, 1800);
+      }
+      function syApplyAdjRule(row){
+        var startSel = row.querySelector('.sy-cfg-node .sy-select');
+        var roStart = row.querySelector('.sy-cfg-node .sy-ro');
+        var ms = row.querySelector('.sy-cfg-adj .sy-msel');
+        var startName = '';
+        if (startSel){
+          startName = startSel.querySelector('span').textContent.trim();
+          if (ms){
+            var idx = SY_NODE_CHAIN.indexOf(startName);
+            ms.querySelectorAll('.sy-ms-item').forEach(function(item){
+              var name = item.textContent.trim();
+              var order = SY_NODE_CHAIN.indexOf(name);
+              var allowed = idx > -1 && order > idx;
+              item.classList.toggle('disabled', !allowed);
+              if (!allowed && item.classList.contains('checked')){
+                item.classList.remove('checked');
+              }
+            });
+            sySyncMsel(ms);
+          }
+        } else if (roStart){
+          startName = roStart.textContent.trim();
+        }
+        /* 必填起始节点：仅可选 起始填报节点 + 允许调整节点中已选节点 */
+        syApplyReqRule(row, startName);
+      }
+      function syApplyReqRule(row, startName){
+        var ms = row.querySelector('.sy-cfg-adj .sy-msel');
+        var reqSel = Array.from(row.querySelectorAll('.sy-select')).find(function(s){ return !s.closest('.sy-cfg-node') && !s.closest('.sy-cfg-adj'); });
+        if (!reqSel) return;
+        var picked = ms ? Array.from(ms.querySelectorAll('.sy-ms-item.checked')).map(function(x){ return x.textContent.trim(); }) : [];
+        var allowed = SY_NODE_CHAIN.filter(function(n){ return n === startName || picked.indexOf(n) > -1; });
+        var cur = reqSel.querySelector('span').textContent.trim();
+        var nextVal = (cur !== '非必填' && allowed.indexOf(cur) > -1) ? cur : '非必填';
+        var dd = reqSel.querySelector('.sy-dd');
+        dd.innerHTML = '';
+        var mkItem = function(name, active){
+          var d = document.createElement('div');
+          d.className = 'sy-dd-item' + (active ? ' active' : '');
+          d.textContent = name;
+          dd.appendChild(d);
+        };
+        mkItem('非必填', nextVal === '非必填');
+        allowed.forEach(function(n){ mkItem(n, nextVal === n); });
+        reqSel.querySelector('span').textContent = nextVal;
+      }
+      sysView.querySelectorAll('.sy-cfg-row').forEach(syApplyAdjRule);
       document.addEventListener('click', function(e){
         /* 单选下拉 */
         var selItem = e.target.closest('.sy-dd-item');
@@ -4155,14 +4241,25 @@ const DEPTS = [
           selItem.classList.add('active');
           sel.querySelector('span').textContent = selItem.textContent;
           sel.classList.remove('open');
+          /* 起始填报节点变更：刷新本行允许调整节点可选范围 */
+          if (sel.closest('.sy-cfg-node')){
+            syApplyAdjRule(sel.closest('.sy-cfg-row'));
+          }
           return;
         }
         /* 多选下拉选项：勾选不收起 */
         var msItem = e.target.closest('.sy-ms-item');
         if (msItem){
+          if (msItem.classList.contains('disabled')){
+            syMsTip('仅可选择起始填报节点之后的节点');
+            e.stopPropagation();
+            return;
+          }
           var ms = msItem.closest('.sy-msel');
           msItem.classList.toggle('checked');
           sySyncMsel(ms);
+          /* 允许调整节点勾选变化：同步刷新必填起始节点可选项 */
+          if (ms.closest('.sy-cfg-adj')) syApplyAdjRule(ms.closest('.sy-cfg-row'));
           e.stopPropagation();
           return;
         }
@@ -4175,6 +4272,7 @@ const DEPTS = [
             if (x.textContent.trim() === name) x.classList.remove('checked');
           });
           sySyncMsel(ms2);
+          if (ms2.closest('.sy-cfg-adj')) syApplyAdjRule(ms2.closest('.sy-cfg-row'));
           e.stopPropagation();
           return;
         }

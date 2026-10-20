@@ -374,6 +374,14 @@
   .combo-tag .tag-x { cursor: pointer; font-size: 13px; line-height: 1; color: #7ea4e0; }
   .combo-opt.sel { background: #f0f6ff; color: #2b6de8; }
   .combo-opt .ck { float: right; font-weight: 700; }
+  /* 整改责任人特殊标识 */
+  .resp-badge {
+    display: inline-block; margin-left: 6px; padding: 0 5px;
+    font-size: 11px; line-height: 16px; border-radius: 2px;
+    background: #fff3e8; color: #b45309; border: 1px solid #ffd8a8;
+    vertical-align: middle; white-space: nowrap;
+  }
+  .combo-tag .resp-badge { margin-left: 2px; }
   .sheet-foot { padding: 10px 16px calc(14px + env(safe-area-inset-bottom)); display: flex; gap: 12px; }
   .sheet-foot .btn { height: 42px; border-radius: 21px; }
 
@@ -459,7 +467,7 @@
 
     <!-- 字段 -->
     <div class="fields" data-page-node-id="U7FjwNYypnYx3q4hH5uTkL">
-      <div class="frow" data-page-node-id="SeIIc6XmVXBs2KxvpDkEDv"><div class="flabel" data-page-node-id="OvWWSBuL0TgDQegJu7rbrO">隐患等级</div><div class="fvalue" data-page-node-id="rCRilU8zRH3kMvWGAgPJCm">一级隐患</div></div>
+      <div class="frow" data-page-node-id="SeIIc6XmVXBs2KxvpDkEDv"><div class="flabel" data-page-node-id="OvWWSBuL0TgDQegJu7rbrO">隐患等级</div><div class="fvalue" data-page-node-id="rCRilU8zRH3kMvWGAgPJCm">重大事故隐患</div></div>
       <div class="frow" data-page-node-id="mEgCPjtq1Hu7DRvshhYBqU"><div class="flabel" data-page-node-id="1yafUTHlHq4Exdy285aQfT">归口管理部门</div><div class="fvalue" data-page-node-id="qfz3jiWHfJqTNBMwiiqh89">有机车间2</div></div>
       <div class="frow" data-page-node-id="gpcc7NXmhjssvESHJGwXFn"><div class="flabel" data-page-node-id="G06GlKLJNfn8fgmW6kQ8PR">隐患治理类型</div><div class="fvalue" data-page-node-id="SsoPmTAvhoGDB8eAiOzavQ">立即整改</div></div>
       <div class="frow" data-page-node-id="xjrZaoZ6ejfXB1iNMC4cXU"><div class="flabel" data-page-node-id="qwJuekHaC1VK8QIgBDMtEl">整改责任人</div><div class="fvalue" data-page-node-id="t6caxz9zbgHEeXfDWbaDWC">杨威01</div></div>
@@ -478,7 +486,7 @@
     <!-- 催办记录 -->
     <div class="card-block" data-page-node-id="jBt4lGaPlfTbI34PRyY0sk">
       <div class="card-title" data-page-node-id="BgYrRk4rjoGYkn1CyaHpu6">催办记录</div>
-      <div id="detailUrgeList" data-page-node-id="0D9jIbfrpkP1squcvOFdru"><div class="urge-item"><div class="urge-line"><b>2025-12-31 21:30</b>　由 HSE专员 熊辰婷 发起催办</div><div class="urge-line">催办对象：<b>杨威01（整改责任人 · 有机车间2）</b></div><div class="urge-line">通知方式：系统消息、APP推送</div><div class="urge-line">催办内容：您有一条隐患尚未完成整改，请尽快登录系统处理并反馈整改结果。</div><div class="urge-reply-box"><b>杨威01（被催办人）</b>（2025-12-31 21:48）回复：收到，正在采购配件，预计 9 月 25 日前完成整改并提交核查。</div><div class="urge-actions"><span class="link-btn" data-reply="0">回复催办</span></div></div></div>
+      <div id="detailUrgeList" data-page-node-id="0D9jIbfrpkP1squcvOFdru"><div class="urge-item"><div class="urge-line"><b>2025-12-31 21:30</b>　由 HSE专员 熊辰婷 发起催办</div><div class="urge-line">催办对象：<b>杨威01（操作工 · 有机车间2）【整改责任人】</b></div><div class="urge-line">通知方式：系统消息、APP推送</div><div class="urge-line">催办内容：您有一条隐患尚未完成整改，请尽快登录系统处理并反馈整改结果。</div><div class="urge-reply-box"><b>杨威01（被催办人）</b>（2025-12-31 21:48）回复：收到，正在采购配件，预计 9 月 25 日前完成整改并提交核查。</div><div class="urge-actions"><span class="link-btn" data-reply="0">回复催办</span></div></div></div>
     </div>
 
     <div class="bottom-bar" data-page-node-id="UlbglODxFFJNQhA31OaoTK">
@@ -503,7 +511,7 @@
       <div class="flowchart" id="flowChartBox" data-page-node-id="3glqS0KgnVW2nrQlo4zbw8"><div class="fc-node">提交</div><div class="fc-arrow"><svg viewBox="0 0 16 40" fill="none"><path d="M8 0v32" stroke="#b9c6e2" stroke-width="2"></path><path d="M2.5 30L8 38l5.5-8z" fill="#b9c6e2"></path></svg></div><div class="fc-node">确认</div><div class="fc-arrow"><svg viewBox="0 0 16 40" fill="none"><path d="M8 0v32" stroke="#b9c6e2" stroke-width="2"></path><path d="M2.5 30L8 38l5.5-8z" fill="#b9c6e2"></path></svg></div><div class="fc-node current">接收</div><div class="fc-arrow"><svg viewBox="0 0 16 40" fill="none"><path d="M8 0v32" stroke="#b9c6e2" stroke-width="2"></path><path d="M2.5 30L8 38l5.5-8z" fill="#b9c6e2"></path></svg></div><div class="fc-node">整改</div><div class="fc-arrow"><svg viewBox="0 0 16 40" fill="none"><path d="M8 0v32" stroke="#b9c6e2" stroke-width="2"></path><path d="M2.5 30L8 38l5.5-8z" fill="#b9c6e2"></path></svg></div><div class="fc-node">验收</div></div>
     </div>
     <div id="flowRecordPane" data-page-node-id="13nYU6pUst8AZkWcJbiWz9">
-      <div class="timeline" id="processTimeline" data-page-node-id="uH4CPhRaJvoI3xzwPH7ABt"><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患登记 - 提交</b></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>魏芝</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 20:52:10</span></div></div></div><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患确认 - 审批通过</b></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>魏芝</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 20:52:17</span></div></div></div><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患接收 - 接收-整改</b></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>杨威01</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 20:53:14</span></div></div></div><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患整改 - 整改完成</b></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>杨威01</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 20:53:26</span></div></div></div><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患验收 - 验收完成</b></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>杨威01</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 20:53:51</span></div></div></div><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患催办 - 发起催办</b><span class="tl-tag">催办</span></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>熊辰婷（HSE专员）</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 21:30</span></div><div class="tl-detail">催办对象：<b>杨威01（整改责任人 · 有机车间2）</b>；通知方式：系统消息、APP推送<br>催办内容：您有一条隐患尚未完成整改，请尽快登录系统处理并反馈整改结果。　<span class="link-btn" data-reply="0">回复</span></div></div></div><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患催办 - 催办回复</b><span class="tl-tag">回复</span></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>杨威01（被催办人）</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 21:48</span></div><div class="tl-detail">回复内容：收到，正在采购配件，预计 9 月 25 日前完成整改并提交核查。</div></div></div></div>
+      <div class="timeline" id="processTimeline" data-page-node-id="uH4CPhRaJvoI3xzwPH7ABt"><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患登记 - 提交</b></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>魏芝</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 20:52:10</span></div></div></div><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患确认 - 审批通过</b></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>魏芝</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 20:52:17</span></div></div></div><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患接收 - 接收-整改</b></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>杨威01</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 20:53:14</span></div></div></div><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患整改 - 整改完成</b></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>杨威01</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 20:53:26</span></div></div></div><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患验收 - 验收完成</b></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>杨威01</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 20:53:51</span></div></div></div><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患催办 - 发起催办</b><span class="tl-tag">催办</span></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>熊辰婷（HSE专员）</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 21:30</span></div><div class="tl-detail">催办对象：<b>杨威01（操作工 · 有机车间2）【整改责任人】</b>；通知方式：系统消息、APP推送<br>催办内容：您有一条隐患尚未完成整改，请尽快登录系统处理并反馈整改结果。　<span class="link-btn" data-reply="0">回复</span></div></div></div><div class="tl-item"><span class="tl-dot"></span><div class="tl-body"><div class="tl-title"><b>隐患催办 - 催办回复</b><span class="tl-tag">回复</span></div><div class="tl-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"></path></svg>杨威01（被催办人）</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path></svg>2025-12-31 21:48</span></div><div class="tl-detail">回复内容：收到，正在采购配件，预计 9 月 25 日前完成整改并提交核查。</div></div></div></div>
     </div>
   </div>
 
@@ -554,7 +562,7 @@
   var HAZARD_NAME = '演示数据01';
   var urgeData = [
     {
-      object: '杨威01（整改责任人 · 有机车间2）',
+      object: '杨威01（操作工 · 有机车间2）【整改责任人】',
       ways: '系统消息、APP推送',
       content: '您有一条隐患尚未完成整改，请尽快登录系统处理并反馈整改结果。',
       time: '2025-12-31 21:30',
@@ -867,8 +875,8 @@
 
   /* ================= 催办对象（模糊搜索选项，与 PC 端一致口径） ================= */
   var targetOptions = [
-    { value: '杨威01', label: '杨威01（整改责任人 · 有机车间2）' },
-    { value: '张伟',   label: '张伟（整改责任人 · HSE部）' },
+    { value: '杨威01', label: '杨威01（操作工 · 有机车间2）', resp: true },
+    { value: '张伟',   label: '张伟（安全员 · HSE部）' },
     { value: '魏芝',   label: '魏芝（安全员 · 安全环保部）' },
     { value: '李娜',   label: '李娜（车间主任 · 有机车间2）' },
     { value: '王强',   label: '王强（设备管理员 · 设备部）' }
@@ -934,9 +942,13 @@
   function isPicked(val){
     return urgePicked.some(function(p){ return p.value === val; });
   }
+  // 整改责任人标识徽标（选项与已选标签均展示）
+  function respBadge(flag){
+    return flag ? '<span class="resp-badge">整改责任人</span>' : '';
+  }
   function renderUrgeTags(){
     urgeTargetTags.innerHTML = urgePicked.map(function(p){
-      return '<span class="combo-tag">' + esc(p.label)
+      return '<span class="combo-tag">' + esc(p.label) + respBadge(p.resp)
         + '<span class="tag-x" data-value="' + esc(p.value) + '" title="移除">✕</span></span>';
     }).join('');
   }
@@ -952,8 +964,8 @@
     } else {
       urgeTargetList.innerHTML = items.map(function(o){
         var sel = isPicked(o.value);
-        return '<div class="combo-opt' + (sel ? ' sel' : '') + '" data-value="' + esc(o.value) + '" data-label="' + esc(o.label) + '">'
-          + esc(o.label) + (sel ? '<span class="ck">✓</span>' : '') + '</div>';
+        return '<div class="combo-opt' + (sel ? ' sel' : '') + '" data-value="' + esc(o.value) + '" data-label="' + esc(o.label) + '" data-resp="' + (o.resp ? 1 : 0) + '">'
+          + esc(o.label) + respBadge(o.resp) + (sel ? '<span class="ck">✓</span>' : '') + '</div>';
       }).join('');
     }
     urgeTargetList.classList.add('show');
@@ -973,7 +985,7 @@
     if (isPicked(val)) {
       urgePicked = urgePicked.filter(function(p){ return p.value !== val; });
     } else {
-      urgePicked.push({ value: val, label: lab });
+      urgePicked.push({ value: val, label: lab, resp: opt.getAttribute('data-resp') === '1' });
     }
     urgeTargetItem.classList.remove('error');
     renderUrgeTags();
