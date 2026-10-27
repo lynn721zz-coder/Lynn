@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="HfmCLQ9pbynh5G9vco7App"><head data-page-node-id="OnAD9gfBhgz365ocpyHMO3">
+<meta charset="UTF-8" data-page-node-id="4JKxYDRmyih1Qr7AlNiOyj">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="mSgO8s5dB7s4Sc7VTf0g0o">
+<title data-page-node-id="UbFjmB5ogh5SoOQtbfkSQC">登录日志 - 子应用原型</title>
+<style data-page-node-id="EcETi9m5O4qyInSb92Hl5U">
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; font-size: 13px; color: #333; background: #f0f2f5; }
+  ul { list-style: none; }
+
+  /* ===== 顶部栏 ===== */
+  .topbar { height: 44px; background: #fff; display: flex; align-items: center; padding: 0 16px; border-bottom: 1px solid #e8e8e8; position: sticky; top: 0; z-index: 100; }
+  .logo-badge { width: 22px; height: 22px; border-radius: 4px; background: #1a66ff; color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-right: 8px; }
+  .topbar .org-name { font-size: 14px; font-weight: 700; color: #1a2b4c; margin-right: 24px; }
+  .topbar .menu-item { display: flex; align-items: center; gap: 5px; margin-right: 20px; color: #333; cursor: pointer; font-size: 13px; }
+  .topbar .menu-item .ico { width: 14px; height: 14px; border: 1.5px solid #555; border-radius: 3px; display: inline-block; position: relative; }
+  .topbar .menu-item .ico.lines::before { content: ""; position: absolute; left: 2px; right: 2px; top: 3px; height: 1.5px; background: #555; box-shadow: 0 3.5px 0 #555, 0 7px 0 #555; }
+  .topbar .menu-item .ico.grid::before { content: ""; position: absolute; inset: 2px; background: linear-gradient(#555 0 0) 0 0/5px 5px no-repeat, linear-gradient(#555 0 0) 100% 0/5px 5px no-repeat, linear-gradient(#555 0 0) 0 100%/5px 5px no-repeat, linear-gradient(#555 0 0) 100% 100%/5px 5px no-repeat; }
+  .topbar .spacer { flex: 1; }
+  .topbar .org-select { border: 1px solid #d9d9d9; border-radius: 3px; padding: 4px 26px 4px 10px; color: #333; font-size: 12px; position: relative; cursor: pointer; background: #fff; }
+  .topbar .org-select::after { content: ""; position: absolute; right: 10px; top: 50%; margin-top: -2px; border: 4px solid transparent; border-top-color: #999; }
+  .topbar .bell { position: relative; margin: 0 18px; cursor: pointer; }
+  .topbar .bell .ico-bell { width: 16px; height: 16px; border: 1.5px solid #555; border-radius: 8px 8px 2px 2px; display: block; }
+  .topbar .bell .ico-bell::after { content: ""; position: absolute; left: 50%; bottom: -5px; width: 8px; height: 1.5px; background: #555; transform: translateX(-50%); }
+  .topbar .bell .badge { position: absolute; top: -7px; right: -9px; background: #f5222d; color: #fff; font-size: 10px; min-width: 15px; height: 15px; border-radius: 8px; display: flex; align-items: center; justify-content: center; padding: 0 3px; }
+  .topbar .user { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  .topbar .user .avatar { width: 24px; height: 24px; border-radius: 50%; background: #e6efff; color: #1a66ff; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+
+  /* ===== 布局 ===== */
+  .layout { display: flex; min-height: calc(100vh - 44px); }
+  .sidebar { width: 200px; background: #fff; border-right: 1px solid #e8e8e8; padding: 16px 10px; flex-shrink: 0; }
+  .side-group { font-weight: 700; color: #1a2b4c; padding: 4px 8px 18px; font-size: 16px; display: flex; align-items: center; gap: 8px; }
+  .side-group .g-ico { width: 18px; height: 18px; flex-shrink: 0; background-color: #2f6bff; border-radius: 4px; background-image: radial-gradient(circle, #fff 1.3px, transparent 1.5px), radial-gradient(circle, #fff 1.3px, transparent 1.5px), radial-gradient(circle, #fff 1.3px, transparent 1.5px), radial-gradient(circle, #fff 1.3px, transparent 1.5px); background-position: 5px 5px, 12px 5px, 5px 12px, 12px 12px; background-size: 4px 4px; background-repeat: no-repeat; }
+  .side-item { display: flex; align-items: center; padding: 11px 12px 11px 20px; color: #444; cursor: pointer; position: relative; font-size: 13px; }
+  .side-item:hover { background: #f5f8ff; }
+  .side-item.active { background: #e8f1ff; color: #1a66ff; font-weight: 700; }
+  .side-item.active::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: #1a66ff; }
+  .side-item .arrow { margin-left: auto; width: 0; height: 0; border: 4px solid transparent; border-top-color: #b9b9b9; margin-right: 2px; margin-top: 5px; }
+
+  .main { flex: 1; padding: 10px 14px; min-width: 0; }
+
+  /* ===== 页签 ===== */
+  .tabs { display: flex; align-items: flex-end; gap: 4px; margin-bottom: 10px; }
+  .tab { background: #fff; border: 1px solid #e8e8e8; border-bottom: none; border-radius: 4px 4px 0 0; padding: 7px 14px; color: #666; cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 8px; }
+  .tab.active { color: #1a66ff; font-weight: 700; border-top: 2px solid #1a66ff; padding-top: 6px; }
+  .tab .close { color: #bbb; font-size: 12px; }
+  .tab .close:hover { color: #f5222d; }
+
+  /* ===== 卡片 ===== */
+  .card { background: #fff; border-radius: 4px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+  .card + .card { margin-top: 12px; }
+
+  /* ===== 筛选区 ===== */
+  .filter-row { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 12px 18px; }
+  .field { display: flex; align-items: center; gap: 8px; }
+  .field.align-start { align-items: flex-start; }
+  .field label { color: #333; font-size: 13px; white-space: nowrap; line-height: 32px; }
+  .ipt { height: 32px; border: 1px solid #d9d9d9; border-radius: 3px; padding: 0 10px; font-size: 12px; color: #333; outline: none; width: 180px; background: #fff; }
+  .ipt:focus { border-color: #1a66ff; box-shadow: 0 0 0 2px rgba(26,102,255,0.1); }
+  .ipt::placeholder { color: #bfbfbf; }
+  select.ipt { width: 160px; color: #333; }
+  .range { display: flex; align-items: center; gap: 6px; }
+  .range .ipt { width: 130px; }
+  .range .dash { color: #999; line-height: 32px; }
+  .btns { margin-left: auto; display: flex; gap: 10px; align-self: center; }
+  .btn { height: 32px; padding: 0 18px; border-radius: 3px; border: 1px solid #d9d9d9; background: #fff; color: #333; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+  .btn:hover { border-color: #1a66ff; color: #1a66ff; }
+  .btn.primary { background: #1a66ff; border-color: #1a66ff; color: #fff; }
+  .btn.primary:hover { background: #0f57e6; }
+  .btn.export { color: #1a66ff; border-color: #91c2ff; }
+  .btn .b-ico { font-size: 13px; }
+
+  /* ===== 登录人员多选 ===== */
+  .ms-box { position: relative; width: 240px; }
+  .ms-trigger { min-height: 32px; border: 1px solid #d9d9d9; border-radius: 3px; padding: 3px 26px 3px 8px; cursor: pointer; position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; background: #fff; }
+  .ms-trigger::after { content: ""; position: absolute; right: 10px; top: 50%; margin-top: -2px; border: 4px solid transparent; border-top-color: #999; }
+  .ms-trigger.open { border-color: #1a66ff; }
+  .ms-placeholder { color: #bfbfbf; font-size: 12px; }
+  .ms-tag { background: #e8f1ff; color: #1a66ff; border-radius: 2px; font-size: 11px; padding: 1px 6px; display: inline-flex; align-items: center; gap: 4px; }
+  .ms-tag .x { cursor: pointer; color: #7fa8e8; font-weight: 700; }
+  .ms-tag .x:hover { color: #f5222d; }
+  .ms-count { color: #1a66ff; font-size: 11px; padding: 1px 4px; }
+  .ms-panel { display: none; position: absolute; top: 36px; left: 0; width: 100%; max-height: 260px; overflow-y: auto; background: #fff; border: 1px solid #d9d9d9; border-radius: 3px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 50; padding: 6px 0; }
+  .ms-panel.show { display: block; }
+  .ms-item { display: flex; align-items: center; gap: 8px; padding: 7px 12px; cursor: pointer; font-size: 12px; color: #333; }
+  .ms-item:hover { background: #f5f8ff; }
+  .ms-item .cb { width: 14px; height: 14px; border: 1px solid #c0c4cc; border-radius: 2px; flex-shrink: 0; position: relative; background: #fff; }
+  .ms-item.checked .cb { background: #1a66ff; border-color: #1a66ff; }
+  .ms-item.checked .cb::after { content: ""; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px; border: solid #fff; border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
+  .ms-item .acct { color: #999; font-size: 11px; margin-left: auto; }
+  .ms-search { position: sticky; top: -6px; z-index: 2; background: #fff; padding: 2px 8px 8px; border-bottom: 1px solid #f0f0f0; }
+  .ms-search input { width: 100%; height: 28px; border: 1px solid #d9d9d9; border-radius: 3px; padding: 0 8px 0 26px; font-size: 12px; color: #333; outline: none; background: #fff url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-4.2-4.2'/%3E%3C/svg%3E") no-repeat 8px center; }
+  .ms-search input:focus { border-color: #1a66ff; box-shadow: 0 0 0 2px rgba(26,102,255,0.1); }
+  .ms-empty { padding: 14px 12px; text-align: center; color: #999; font-size: 12px; }
+
+  /* ===== 所属单位组织树 ===== */
+  .tree-box { width: 200px; }
+  .tree-box .ms-trigger { flex-wrap: nowrap; }
+  .tree-box #unitLabel { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tree-panel { width: 260px; max-height: 300px; }
+  .tree-row { display: flex; align-items: center; height: 30px; padding: 0 10px; font-size: 12px; color: #333; cursor: pointer; }
+  .tree-row:hover { background: #f5f8ff; }
+  .tree-row .indent { flex-shrink: 0; }
+  .tree-row .twisty { width: 16px; height: 16px; flex-shrink: 0; position: relative; }
+  .tree-row .twisty::after { content: ""; position: absolute; left: 5px; top: 5px; border: 4px solid transparent; border-left-color: #999; transform-origin: 2px 4px; transition: transform 0.15s; }
+  .tree-row.open > .twisty::after { transform: rotate(90deg); }
+  .tree-row .radio { width: 13px; height: 13px; border: 1px solid #c0c4cc; border-radius: 50%; background: #fff; flex-shrink: 0; margin: 0 7px 0 2px; position: relative; }
+  .tree-row.selected { color: #1a66ff; font-weight: 700; }
+  .tree-row.selected .radio { border-color: #1a66ff; background: #1a66ff; }
+  .tree-row.selected .radio::after { content: ""; position: absolute; left: 3px; top: 3px; width: 5px; height: 5px; border-radius: 50%; background: #fff; }
+  .tree-row .tree-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tree-row .tree-label em { font-style: normal; color: #1a66ff; background: #e8f1ff; border-radius: 2px; }
+  .tree-children { overflow: hidden; }
+
+  /* ===== 包含下级勾选 ===== */
+  .chk { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #333; cursor: pointer; white-space: nowrap; line-height: 32px; user-select: none; }
+  .chk input { width: 14px; height: 14px; margin: 0; accent-color: #1a66ff; cursor: pointer; }
+
+  /* ===== 口径说明 ===== */
+  .caliber { margin-top: 12px; background: #f2f7ff; border: 1px solid #cfe2ff; border-left: 3px solid #1a66ff; border-radius: 3px; padding: 8px 12px; color: #1a2b4c; font-size: 12px; display: flex; align-items: center; gap: 8px; }
+  .caliber .tag-ico { background: #1a66ff; color: #fff; font-size: 11px; border-radius: 2px; padding: 1px 6px; flex-shrink: 0; }
+  .caliber .usage { color: #888; margin-left: auto; font-size: 11px; }
+
+  /* ===== 表格 ===== */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 1080px; }
+  th, td { border-bottom: 1px solid #f0f0f0; padding: 11px 10px; text-align: left; font-size: 12px; white-space: nowrap; }
+  thead th { background: #f5f6f8; color: #333; font-weight: 700; font-size: 12px; }
+  tbody tr:hover { background: #f8faff; }
+  td.dim { color: #666; }
+  .status-tag { display: inline-block; padding: 1px 8px; border-radius: 2px; font-size: 11px; }
+  .status-online { background: #e7f7ef; color: #0f9d58; border: 1px solid #bfe8d2; }
+  .status-end { background: #f0f1f3; color: #666; border: 1px solid #dcdfe4; }
+  .duration-now { color: #0f9d58; font-weight: 700; }
+
+  /* ===== 分页 ===== */
+  .pager { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 14px; font-size: 12px; color: #666; }
+  .pager .pg { min-width: 28px; height: 28px; border: 1px solid #d9d9d9; border-radius: 3px; background: #fff; color: #333; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0 6px; }
+  .pager .pg.cur { background: #1a66ff; border-color: #1a66ff; color: #fff; }
+  .pager .pg:hover:not(.cur) { border-color: #1a66ff; color: #1a66ff; }
+  .pager select.ipt, .pager .jump .ipt { width: auto; height: 28px; }
+
+  /* ===== Toast ===== */
+  .toast { position: fixed; top: 70px; left: 50%; transform: translateX(-50%) translateY(-12px); background: #fff; border: 1px solid #cfe2ff; border-left: 3px solid #1a66ff; box-shadow: 0 4px 16px rgba(0,0,0,0.12); border-radius: 4px; padding: 10px 18px; font-size: 13px; color: #1a2b4c; opacity: 0; pointer-events: none; transition: all 0.25s; z-index: 200; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .proto-note { text-align: center; color: #b0b0b0; font-size: 11px; margin-top: 14px; }
+</style>
+<style id="__dm_no_drag_style__" data-page-node-id="YOalIw1W7VXE0F2NceGB8l">* { -webkit-user-drag: none !important; }</style><style id="__dm_bindable_badge_style__" data-page-node-id="1r7dGkkWuFlTbVbPongOVN">[data-sp-bindable="database"]{outline:1px dashed #0088ff;outline-offset:2px;border-radius:4px;}[data-sp-bindable="database"] *{pointer-events:none !important;transition:none !important;animation:none !important;}[data-sp-bindable="database"]{transition:none !important;animation:none !important;}</style></head>
+<body data-page-node-id="wzEC6v6Ln6P58t3Rv5hBBt" style="">
+
+  <!-- 顶部栏 -->
+  <div class="topbar" data-page-node-id="dF4dd0vTKNBCJdABgR5ALX">
+    <span class="logo-badge" data-page-node-id="GhT8EJ91lwvWBOOFtO7prZ" style="white-space: pre-wrap;">中</span>
+    <span class="org-name" data-page-node-id="63MSempmIt8hAgUN5ej78M">中国中化</span>
+    <span class="menu-item" data-page-node-id="ZsWxYSkIdg15sQJRkdJYbE"><span class="ico lines" data-page-node-id="29PtauwLeSj4emMf49K4mN"></span>菜单总览</span>
+    <span class="menu-item" data-page-node-id="tXp9ReQxPFGApqE2V7u0f6"><span class="ico grid" data-page-node-id="viqGkRWaoswyY3ZOJn18q3"></span>工作台</span>
+    <span class="spacer" data-page-node-id="qUljUI2GBU4KbiCidzCAs6"></span>
+    <span class="org-select" data-page-node-id="EdGVaoZX18HwomrTLN4cdz">中国中化</span>
+    <span class="bell" data-page-node-id="oaiRlHDG4vVgxBxhnB92vU"><span class="ico-bell" data-page-node-id="QqKzeN9u664jcLQgABzl1p"></span><span class="badge" data-page-node-id="8zNurQd8SvpO5hRFOiCTop">8</span></span>
+    <span class="user" data-page-node-id="8GWXJR8iyDiX8SEGHJQJev" style=""><span class="avatar" data-page-node-id="XhKDWerPKwH37kX5r4iE1Z">管</span>巡查管理员</span>
+  </div>
+
+  <div class="layout" data-page-node-id="ktSRyJZR0rtAtERiWNFppp">
+    <!-- 左侧菜单 -->
+    <div class="sidebar" data-page-node-id="p7hAV4tqgBI6OCRHdjxdf9">
+      <div class="side-group" data-page-node-id="QqhBk8Tq1uzVvANxAiMsYe"><span class="g-ico" data-page-node-id="AsMkCmSitvSzf2e2MLikCQ"></span>HSE在线巡查</div>
+      <div class="side-item" data-page-node-id="44mCepJfalVf1Q6YSKbvy0">巡查驾驶舱</div>
+      <div class="side-item" data-page-node-id="lptXN2eBpUCfI47IlIVKVz">人工巡查<span class="arrow" data-page-node-id="2l28Wt7zRssX37UN6TzES1"></span></div>
+      <div class="side-item" data-page-node-id="b3l4dmmSyqQ7OMTnYrgETu">智能巡查<span class="arrow" data-page-node-id="2Nqd4v4I7mUBwdnMrenpGx"></span></div>
+      <div class="side-item" data-page-node-id="lr5K3H3QS5x4mmBpW7qZsY">问题管理</div>
+      <div class="side-item" data-page-node-id="lsJWVF41tvLsD92iJWfkGE">审批配置</div>
+      <div class="side-item" data-page-node-id="EKJkx4QO27PM7yqm1iYYEo">数据导出台账</div>
+      <div class="side-item" data-page-node-id="N26IXbP5HmgJxyModoaLAu">巡查报告</div>
+      <div class="side-item active" data-page-node-id="FMTTl1lO5FYZ1XI5i0o56E">登录日志</div>
+    </div><div class="main" data-page-node-id="Rp5Vp3OQwKZLQ9J7zMsBXI">
+      <div class="tabs" data-page-node-id="iF66KJmbtKSSEtvycLyY43">
+        <div class="tab" data-page-node-id="kglcUjyH3gYv6ppdlJPlBV">工作台 <span class="close" data-page-node-id="bhUxsW1NZlTr45bpFvCsD3">×</span></div>
+        <div class="tab active" data-page-node-id="YX6OcXCyNvGzC7s9T93Zkc">登录日志 <span class="close" data-page-node-id="Hmv2JxRDxzExZAmvHSCQRy">×</span></div>
+      </div>
+
+      <!-- 筛选 -->
+      <div class="card" data-page-node-id="1dIBlwTckT5DDIwht9XpEw">
+        <div class="filter-row" data-page-node-id="3vYKUEvPQ9VRHcWSScqEVa">
+          <div class="field align-start" data-page-node-id="IGMBEwWOZqJancXsFNazjB">
+            <label data-page-node-id="QMUMMnrPKQGSlaxoDfbRt3">登录人员</label>
+            <div class="ms-box" id="userMsBox" data-page-node-id="q4wkCBhfBMo7FAu8Pi4tme">
+              <div class="ms-trigger" id="msTrigger" onclick="toggleMsPanel(event)" data-page-node-id="CbbpjwoGWYJ2ZJgxYaIn4E"><span class="ms-placeholder" data-page-node-id="dqcesmStPrqkYnw4BfhumX">请选择登录人员（可多选）</span></div>
+              <div class="ms-panel" id="msPanel" data-page-node-id="51ZmfMGphK9WCKs7c2MAys"><div class="ms-search" data-page-node-id="si52hfAXLwGD0YyUCMbBdO"><input id="msSearch" placeholder="搜索姓名、账号或手机号" oninput="filterMsItems(this.value)" data-page-node-id="AojK7zzwHYH9FzCFHrpIt2"></div><div id="msList" data-page-node-id="cUzzGOrTXOv6tI2q55XGt5"><div class="ms-item" data-name="张伟" data-acct="zhangwei" onclick="toggleUser(this)" data-page-node-id="CMeo3icup1SiIteJIK23XW"><span class="cb" data-page-node-id="8x1uv9pbVIjE6r2bGqEYQ6"></span>张伟<span class="acct" data-page-node-id="zWOC0IIkgqoU2ySB2dicIZ">zhangwei</span></div><div class="ms-item" data-name="李娜" data-acct="lina" onclick="toggleUser(this)" data-page-node-id="xzxU926gcGzothChWC5WD1"><span class="cb" data-page-node-id="Lsps7BeJPaMLaZYkC2I17h"></span>李娜<span class="acct" data-page-node-id="6oUWD1o61FI4SEaMLDlbVm">lina</span></div><div class="ms-item" data-name="陈晨" data-acct="chenchen" onclick="toggleUser(this)" data-page-node-id="cAE2mBfTLfaIp9qUmcQHWg"><span class="cb" data-page-node-id="owQmBJlFta1VATOjBPJEcM"></span>陈晨<span class="acct" data-page-node-id="mEUA5y40KjbLmxcXItZDbI">chenchen</span></div><div class="ms-item" data-name="王强" data-acct="wangqiang" onclick="toggleUser(this)" data-page-node-id="7GXKZRY2ytroDcb2GqZlFb"><span class="cb" data-page-node-id="ZAQdmmbn4UZ4xueyEk5qDd"></span>王强<span class="acct" data-page-node-id="zsfND7d3r6FN3RnGVEi1mf">wangqiang</span></div><div class="ms-item" data-name="赵敏" data-acct="zhaomin" onclick="toggleUser(this)" data-page-node-id="amwsBBHYD0FiHJ23YS4eca"><span class="cb" data-page-node-id="ZaUlrLJcjraEKhPUsHIGGU"></span>赵敏<span class="acct" data-page-node-id="UNg02W06nL3vYpjMYL6Eb5">zhaomin</span></div><div class="ms-item" data-name="刘洋" data-acct="liuyang" onclick="toggleUser(this)" data-page-node-id="7Hi8XgbAFc9PLtAm7hj5X6"><span class="cb" data-page-node-id="Uz1m3WTlFgRsXUEHcnuGeu"></span>刘洋<span class="acct" data-page-node-id="dWawaoKNd70tCSGX9FjcBM">liuyang</span></div></div><div class="ms-empty" id="msEmpty" style="display:none" data-page-node-id="RSdTD9sSiJKOuHRwjRT5ES">无匹配人员</div></div>
+            </div>
+          </div>
+          <div class="field" data-page-node-id="FTUPRQkiT8t0wLI2BRAVJa">
+            <label data-page-node-id="SvS39pZ9c36QDA71SqqWZ8">登录时间</label>
+            <span class="range" data-page-node-id="TNdq2AngqJ1acKbVmQW3Jq">
+              <input class="ipt" type="date" id="fStart" data-page-node-id="skT09oJDvPxHtH9gvzwACH">
+              <span class="dash" data-page-node-id="jtYjXxnSK7QN7YcFmPzkLH">→</span>
+              <input class="ipt" type="date" id="fEnd" data-page-node-id="X85kqt7YHqPT0aqmKPkQJ1">
+            </span>
+          </div>
+          <div class="field" data-page-node-id="FZiOQREIVsBnDGZqpVewJB">
+            <label data-page-node-id="47aJa16G57VTgZpBPaPCk8">所属单位</label>
+            <div class="ms-box tree-box" id="unitTreeBox" data-page-node-id="J0EBnf7UBvDxhVhxpiH2IC">
+              <div class="ms-trigger" id="unitTrigger" onclick="toggleUnitPanel(event)" data-page-node-id="RPUT9HUrJnYAqrUmDjB5Gh"><span class="ms-placeholder" id="unitLabel" data-page-node-id="C5PXQHxFc43B9GGnED3S4H">请选择单位</span></div>
+              <div class="ms-panel tree-panel" id="unitPanel" data-page-node-id="iTvSvO7EjZeb1fHoKZwJdD">
+                <div class="ms-search" data-page-node-id="CfBA37MpBrXT5arcv8rT7I"><input id="unitSearch" placeholder="搜索组织名称" oninput="filterUnitTree(this.value)" data-page-node-id="unitSearchInput"></div>
+                <div id="unitTree" data-page-node-id="unitTreeWrap"><div class="tree-row open" data-path="中国中化" data-name="中国中化" onclick="selectUnit(this)" data-page-node-id="aOo0o35p7s2VSqHFxGlVOw"><span class="indent" style="width:0px" data-page-node-id="0Xh5F0RsENyCX4pT2nwoer"></span><span class="twisty" onclick="toggleUnitNode(event,this)" data-page-node-id="DT07Lf6bvVgFCzfHSTshZx"></span><span class="radio" data-page-node-id="8g7uPwwSWP5N8d8Zes3Kxl"></span><span class="tree-label" data-page-node-id="7JZhXY7sxx7rnT7d4u0GWk">中国中化</span></div><div class="tree-children" data-page-node-id="DrYsoUOx7cmEMWiQJQeXLk"><div class="tree-row" data-path="中国中化/中化能源" data-name="中化能源" onclick="selectUnit(this)" data-page-node-id="EAHN1LuC73TjMkSX5QdLE1"><span class="indent" style="width:14px" data-page-node-id="0CMPl6TrPInMqCQyBmwFuG"></span><span class="twisty" data-page-node-id="lwCJimmIG1UyowPDEDSgui"></span><span class="radio" data-page-node-id="8bj6kzdG7iQ64hrnuwFaBm"></span><span class="tree-label" data-page-node-id="2Y36CF4bGbX9DdLgEIy6ff">中化能源</span></div><div class="tree-row" data-path="中国中化/先正达" data-name="先正达" onclick="selectUnit(this)" data-page-node-id="GibYIQQefBjKHHqcDlv9vq"><span class="indent" style="width:14px" data-page-node-id="4aCFihnJKnQ9d6jbfDDqay"></span><span class="twisty" data-page-node-id="wOuNwXNxYBhlcnvDkmpHvT"></span><span class="radio" data-page-node-id="B8nLg4p3le0og4ZBevFvsb"></span><span class="tree-label" data-page-node-id="sKYV1O81HHG3NjcBy5BkmX">先正达</span></div><div class="tree-row" data-path="中国中化/中化化肥" data-name="中化化肥" onclick="selectUnit(this)" data-page-node-id="9JCF53cWmyFL0SgKIEf1nM"><span class="indent" style="width:14px" data-page-node-id="FzNzTLdEeRHtGzLMyfLnK9"></span><span class="twisty" data-page-node-id="jb1ykGUuGDMJxPrrs4N2Lz"></span><span class="radio" data-page-node-id="IgXUXKtMNBk1ixXhKFA3Xv"></span><span class="tree-label" data-page-node-id="HlBVyyl2ldt0BAqEj1nqAE">中化化肥</span></div><div class="tree-row" data-path="中国中化/化工事业部" data-name="化工事业部" onclick="selectUnit(this)" data-page-node-id="yHpE8gfHI5O6DpWWF5DtyY"><span class="indent" style="width:14px" data-page-node-id="Ch2d6Atrr1Ij8FZ4pPvp5L"></span><span class="twisty" data-page-node-id="ylTH95VXkmX9nL09Jyz5et"></span><span class="radio" data-page-node-id="MZ4m1KlRa1E1HXan9H0Xi8"></span><span class="tree-label" data-page-node-id="eTH6unHc4gsFnZDIaqh3Kq">化工事业部</span></div><div class="tree-row" data-path="中国中化/蓝星公司" data-name="蓝星公司" onclick="selectUnit(this)" data-page-node-id="A2BIi79mzGy8HD1WJKZbzM"><span class="indent" style="width:14px" data-page-node-id="t54cGjgqCQCsfn6JvlE9kB"></span><span class="twisty" data-page-node-id="OStpfF8L7Mf1b6OJzj0Nrh"></span><span class="radio" data-page-node-id="WN5BpWuLk2cWfxgEjvT32g"></span><span class="tree-label" data-page-node-id="Nvexe2ZzuyDLlNNAqAHhKo">蓝星公司</span></div><div class="tree-row" data-path="中国中化/中国昊华" data-name="中国昊华" onclick="selectUnit(this)" data-page-node-id="Ks21AiuXhdmHdmGwNs2gL3"><span class="indent" style="width:14px" data-page-node-id="ukHCJCRzazZitcSN1GVo1C"></span><span class="twisty" data-page-node-id="AkXOIG5o9kmXKCxp4JKtg2"></span><span class="radio" data-page-node-id="3k6X6R3X00BO4wbvlAlAEt"></span><span class="tree-label" data-page-node-id="QKXc4ZlFuJGEJkNn4MRO4s">中国昊华</span></div><div class="tree-row" data-path="中国中化/鲁西集团" data-name="鲁西集团" onclick="selectUnit(this)" data-page-node-id="1tDHLf7ABeRPw3y4VLtgW1"><span class="indent" style="width:14px" data-page-node-id="yjc6P3VwOZgnMFVGRO6BDV"></span><span class="twisty" data-page-node-id="sAD2YySVAGvBL3e2sbbTn8"></span><span class="radio" data-page-node-id="cmrIjrHnB3g6NrExItvmZF"></span><span class="tree-label" data-page-node-id="X4wnecXDvq2ZCVZGZsJCxK">鲁西集团</span></div><div class="tree-row" data-path="中国中化/沧州大化" data-name="沧州大化" onclick="selectUnit(this)" data-page-node-id="S0r00qbui0XTOZJSPoW865"><span class="indent" style="width:14px" data-page-node-id="2zHIQuVw0dqqDYZnAhAqBd"></span><span class="twisty" data-page-node-id="qhVjBNneD1WGjipqDs1FYk"></span><span class="radio" data-page-node-id="1mf2sZMNL0nxvcEgoWDR78"></span><span class="tree-label" data-page-node-id="1SAKDNHYomiLFaQ2YVZ3bS">沧州大化</span></div><div class="tree-row" data-path="中国中化/氯碱事业部" data-name="氯碱事业部" onclick="selectUnit(this)" data-page-node-id="IdWCgtRLaAzADyMtEEP4KW"><span class="indent" style="width:14px" data-page-node-id="Ow4OBHkQviybPCAVYwuIGB"></span><span class="twisty" data-page-node-id="qzAkof3I5TDGepo2WLeMyg"></span><span class="radio" data-page-node-id="Iu36WccZq9CbWUPLEgARVf"></span><span class="tree-label" data-page-node-id="Mbw7Idp7Bgv6B36pHuF7aG">氯碱事业部</span></div></div></div>
+              </div>
+              <input type="hidden" id="fUnit" value="" data-page-node-id="gRmJNfohD4PkfqB2qrSrK8">
+            </div>
+            <label class="chk"><input type="checkbox" id="fIncludeSub" checked onchange="includeSub = this.checked">包含下级</label>
+          </div>
+          <div class="field" data-page-node-id="N0T3a39R0JNkA6aOO74jO4">
+            <label data-page-node-id="EkMC7b2fLoxVd77YBJtI9p">记录状态</label>
+            <select class="ipt" id="fStatus" style="width:130px" data-page-node-id="rrfUxCE3E6YVheFNTDaMtD">
+              <option value="" data-page-node-id="iYnPnyVQBecb8Hqno9iKRn">全部</option>
+              <option data-page-node-id="g8FALzHve5lBXxRHaqaIH6">在线中</option>
+              <option data-page-node-id="37wjkElmVoK5Z3ze7rzQcq">已结束</option>
+            </select>
+          </div>
+          <div class="btns" data-page-node-id="ynLc1CdMEneQqbN7XCGK9F">
+            <button class="btn" onclick="resetFilter()" data-page-node-id="AcYyMZRh4dPJGCBxakrytH">重置</button>
+            <button class="btn primary" onclick="doQuery()" data-page-node-id="Sz9BGtBNYSHtxJfp9a9Grr">查询</button>
+            <button class="btn export" onclick="doExport()" data-page-node-id="tW6Afo9Nk1aroyeks8fRG0"><span class="b-ico" data-page-node-id="x6AY6otARlHfNL2Amo00KP">⇩</span>导出Excel</button>
+          </div>
+        </div>
+
+        <!-- 口径说明 -->
+        <div class="caliber" data-page-node-id="12d9Fk69yOkLD31p3zL0WB" style="">
+          <span class="tag-ico" data-page-node-id="lFYGNb2RIT2gKbY8ug0Ak7">口径说明</span>
+          同一用户同一天仅一条记录；当日累计时长为当天各使用段之和；超过 30 分钟无操作视为一段使用结束。
+        </div>
+      </div>
+
+      <!-- 表格 -->
+      <div class="card" data-page-node-id="tlTRfjilGB3l71v8evbbLe">
+        <div class="table-wrap" data-page-node-id="7qoHytyKCZhr9quUX9lGvQ">
+          <table id="logTable" data-page-node-id="TFotV6C2PdOnLinwQtJeEb">
+            <thead data-page-node-id="pW7jTCchZFPv33zTHoK9gI">
+              <tr data-page-node-id="C90qAjpsHWc14T7HMXu7Ad">
+                <th data-page-node-id="JDECoE2UcO9pksAkkixbcY" style="white-space: pre-wrap;">首次登录时间​</th>
+                <th data-page-node-id="wlQGWjjxT7KwOftFQwiLsK">姓名</th>
+                <th data-page-node-id="oxj3L1rt92SHIKnrISYodw">账号</th>
+                <th>手机号</th>
+                <th data-page-node-id="zbHVMLf3p3IZGHlTA4iYDB">所属单位</th>
+                <th data-page-node-id="xsJ5X5NWy4FB7NsbTUSIfx">最后活跃时间</th>
+                <th data-page-node-id="4IiYoGiSxEMaiy5yqysHsD">当日累计时长</th>
+                <th data-page-node-id="kGnFghP4IYWoehfrMpwpee">记录状态</th>
+                <th data-page-node-id="SNyG9zyJjauxm0RHRp3U38">登录IP</th>
+              </tr>
+            </thead>
+            <tbody id="logBody" data-page-node-id="z2eE3yQBQpxQ623SXs27wc"><tr data-page-node-id="bSuGi1Eaqc6QsG0pXN4tbh"><td data-page-node-id="9zVptyFMzfkePIP8vyVbAd">2026-10-21 14:45:19</td><td data-page-node-id="UGeA0VJonhLj1xgXjIEQif">张伟</td><td class="dim" data-page-node-id="oJ9K9HC15qZSmWeheFjEO0">zhangwei</td><td data-page-node-id="8uTpYKXzYVE2FPg8sA9LO9">中化能源</td><td data-page-node-id="DDQxpGuLKFyarBYNmKAecB">2026-10-21 16:45:29</td><td data-page-node-id="uHVHrF4IbcJHGvBBiN0bJ8"><span class="duration-now" data-page-node-id="c48pDokHq6ldr3qNRiH1nb">115 小时 16 分</span></td><td data-page-node-id="MCDKiLEZAWKlty40v98ws5"><span class="status-tag status-online" data-page-node-id="Cfcy6QaXkH1e0QAcSmqkkX">在线中</span></td><td class="dim" data-page-node-id="UqYQXlgBzGmW7ZXOfMavYh">10.244.12.97</td></tr><tr data-page-node-id="4e0f3srEV09Z6Gb483ckBt"><td data-page-node-id="wg70kJAOsgUKzuFEiQnUoC">2026-10-21 11:27:50</td><td data-page-node-id="pte7GfTIqaxJKs4nMI4xF1">李娜</td><td class="dim" data-page-node-id="Cksc3PHgsJeIHUdbaCy24A">lina</td><td data-page-node-id="Tv8kpNZ6HJyCkQhHQJC4Ih">中化能源</td><td data-page-node-id="MznDTlYBvlrq5gG2LuywoT">2026-10-21 16:31:02</td><td data-page-node-id="iOVT9S2degkyvqgHgvEt2f"><span class="duration-now" data-page-node-id="HCLIDmtdYIynn9mMOGDoZc">115 小时 48 分</span></td><td data-page-node-id="MhfNfZQliwg0A1wq93VbLX"><span class="status-tag status-online" data-page-node-id="7LowreXKOH87wQQex9tEmj">在线中</span></td><td class="dim" data-page-node-id="KEmbRfMlrRUdsGtE3K9tHf">10.244.13.45</td></tr><tr data-page-node-id="gflRATprCPLGBGWsLEEADQ"><td data-page-node-id="WSLIOB6Hj2G9qdPrPKU87C">2026-10-21 14:02:36</td><td data-page-node-id="QcMVxkHBKohKT4dLkzTMZj">陈晨</td><td class="dim" data-page-node-id="DgkNBUq83US4CjY5CML3MV">chenchen</td><td data-page-node-id="Hyg9UFL7kG0scTpXE8Dkdh">蓝星公司</td><td data-page-node-id="rSeDA55N7flu0kpWjYXRI8">2026-10-21 14:02:36</td><td data-page-node-id="sKVMFKFTBjEGcm3jIkZX61"><span class="duration-now" data-page-node-id="Bdn3IstieDaxHgUDEqQ4Uc">117 小时 38 分</span></td><td data-page-node-id="ek31UlBofhwkydsk5lX6N8"><span class="status-tag status-online" data-page-node-id="IComZgFebbJXP7RLr9QDEU">在线中</span></td><td class="dim" data-page-node-id="eps2yKFGFnLEKWLG1BdNCB">10.244.12.110</td></tr><tr data-page-node-id="PoEB9y5qs22MRJ4QK9Q8f9"><td data-page-node-id="NbFIyt7RtNH80zWkjKxGfk">2026-10-21 09:32:18</td><td data-page-node-id="Etb5732WFcPmAIEJAOUk4v">王强</td><td class="dim" data-page-node-id="iFgRnMTlB0KpxAit6mAFdA">wangqiang</td><td data-page-node-id="YzCF3MRrN6uWEIcYTcenja">沧州大化</td><td data-page-node-id="POqHHdUSORVKPVHkP6JVDs">2026-10-21 16:20:31</td><td data-page-node-id="qWnEAJQrg2Cq0a02Hgdmrj">52 分钟</td><td data-page-node-id="JcSM6GayQDVwZqBYV5l30p"><span class="status-tag status-end" data-page-node-id="Wuu2pe6nOmPuJgjFI63LkX">已结束</span></td><td class="dim" data-page-node-id="z3fvd4XTFI99aaF09CPv6d">10.244.12.89</td></tr><tr data-page-node-id="qYq2IQnjyYrOM6sIQ85Cf5"><td data-page-node-id="tit7EsxmADfnGkkj0NmmIS">2026-10-21 15:12:07</td><td data-page-node-id="XpAnTPC5FxBAVILfjFwLlh">赵敏</td><td class="dim" data-page-node-id="1CeAJiyRskAzhLGizKV2D7">zhaomin</td><td data-page-node-id="taosPH1Yrhoy59HG8JrWIO">先正达</td><td data-page-node-id="S3XUELzeeYpBfDyL4uymT4">2026-10-21 15:40:52</td><td data-page-node-id="UOO4o97yKEZlFHv2dr4BMH">29 分钟</td><td data-page-node-id="qLqbiOgiVntLfEurXvSpGm"><span class="status-tag status-end" data-page-node-id="Z3ITE115dr2P3vcQoBuWBz">已结束</span></td><td class="dim" data-page-node-id="Gk9sDKFEynxIFgyDhgDSYs">10.244.12.102</td></tr><tr data-page-node-id="T0Sl5HbzfkYTXzRfXywNcR"><td data-page-node-id="eGRImzj12YnUY6vOBg21JN">2026-10-21 10:15:33</td><td data-page-node-id="Wc6dpjNAQxIhLKlDvCF6Hs">刘洋</td><td class="dim" data-page-node-id="oOqzXAgGC40fJrn3IcEWW1">liuyang</td><td data-page-node-id="gXkHCUjdJEEXqXQlUKffxC">鲁西集团</td><td data-page-node-id="tVYVYGhe4PY1gYApsmedk2">2026-10-21 11:47:09</td><td data-page-node-id="9dI6dQ6jiyoQWdP1LPdt8y">1 小时 32 分</td><td data-page-node-id="PEx5ptqXH1XVQH1JWjVCpO"><span class="status-tag status-end" data-page-node-id="cS3NwueWwR0YR5twV4chM4">已结束</span></td><td class="dim" data-page-node-id="sZdivpYGiHBIaS3sbn8WDt">10.244.12.97</td></tr><tr data-page-node-id="Ebki0X9mFCIUxMCivFAQDS"><td data-page-node-id="8n7enMXxjTxK17kyi1noQC">2026-10-20 17:20:05</td><td data-page-node-id="F1XkGj9buN4fCNE3FVmoH9">赵敏</td><td class="dim" data-page-node-id="RoDUQP5LAdlbAtxjFTBqwg">zhaomin</td><td data-page-node-id="MEvmusnQc8jSpXXl6F0ytn">先正达</td><td data-page-node-id="tFhRATBdWcibFy6Nu9t1kN">2026-10-20 17:55:41</td><td data-page-node-id="aNYwTFVa8xsu6Nhs7JGbVG">36 分钟</td><td data-page-node-id="hHj3bP6SOsWuJ9veTkk7R7"><span class="status-tag status-end" data-page-node-id="vdUH0gQnrbDSIhgFBWSWAe">已结束</span></td><td class="dim" data-page-node-id="kHculQbLHQjATL1Jja9Ad1">10.244.12.102</td></tr><tr data-page-node-id="oVeRfn63WfoxoUIAz6jrX5"><td data-page-node-id="ICHRAUlOU2DC3cEiLyZIVX">2026-10-20 16:08:27</td><td data-page-node-id="Lgr3QQNmBpGpbJE3D0oUnH">陈晨</td><td class="dim" data-page-node-id="VwY7GECAzAj0alFQkW8blK">chenchen</td><td data-page-node-id="OIWf7t40N8SN8Ewon41GlJ">蓝星公司</td><td data-page-node-id="97oDB29u3BZhcgcE0Huxnz">2026-10-20 16:36:12</td><td data-page-node-id="eEaeZ4V4ZuAyyYOOJHvbCD">28 分钟</td><td data-page-node-id="cpwMMPSa6O19wbkwKxx0OI"><span class="status-tag status-end" data-page-node-id="QHsQO5D696vZEQdf36Ynb8">已结束</span></td><td class="dim" data-page-node-id="EK6lDhZMMdmZsfsoAviBCx">10.244.13.45</td></tr><tr data-page-node-id="SSgussBzDIWHnmOjc0xX1l"><td data-page-node-id="vOKIa96gopRTELUvnjc8q3">2026-10-20 14:41:56</td><td data-page-node-id="nydiSySqCD8QgFXUlSTpTX">刘洋</td><td class="dim" data-page-node-id="7u8CW58i77TgBLakfQWkzY">liuyang</td><td data-page-node-id="6d7c1PEaRBreAALHhFiJRQ">鲁西集团</td><td data-page-node-id="OBauS5fHq4UV0yoURnVDSH">2026-10-20 16:12:30</td><td data-page-node-id="dkssgccywR41cQA9wBSMOw">1 小时 31 分</td><td data-page-node-id="brkbUyF0AGI26y0fjzm2xg"><span class="status-tag status-end" data-page-node-id="brQgtOnkDQwB4A5pGvEtgX">已结束</span></td><td class="dim" data-page-node-id="yWQ4pLds0ieAxNNct2yhhE">10.244.12.97</td></tr></tbody>
+          </table>
+        </div>
+
+        <div class="pager" data-page-node-id="j5z9MqsZCFnW2VOHtVREYt">
+          <span data-page-node-id="RgM4zx6LHOsYw6hHJNAH2k">共 <b id="totalCount" data-page-node-id="9FNVDvzbyHeqH7S6UeU1Q6">9</b> 条</span>
+          <span class="pg" data-page-node-id="4Q5TmyNJ6uoEVkzE1EoN1d">‹</span>
+          <span class="pg cur" data-page-node-id="bobvb7AKE6PXVIFCjg6Ms6">1</span>
+          <span class="pg" data-page-node-id="u2zUwKNXLKVqk6AsA7Oots">›</span>
+          <span data-page-node-id="k9BO9ASy1OE2FUDxEx4kLt">
+            <select class="ipt" data-page-node-id="T3PREQj07Z9xLkAY090a2c"><option data-page-node-id="AtSwzuckPgAEONI252Ej7G">20条/页</option><option data-page-node-id="r4GFiVZEZMw88meMpMCY2n">50条/页</option><option data-page-node-id="pEwQDZw5bOYMKRRLT60rxx">100条/页</option></select>
+          </span>
+          <span data-page-node-id="oFRTriJqf1GVSGBBEnEXBY">跳至 <input class="ipt" style="width:44px;height:28px" value="1" data-page-node-id="qh3oIAWHPBHF5omu5WjOwv"> 页</span>
+        </div>
+      </div>
+
+      <div class="proto-note" data-page-node-id="LJgxfi8UEV6Ay6dNed4O2t">— 登录日志页面原型（按天记录） · 示例数据仅用于演示 · 对应《子应用用户登录日志功能需求文档》V1.1 —</div>
+    </div>
+
+    <!-- 主内容 -->
+    
+  </div>
+
+  <div class="toast" id="toast" data-page-node-id="cdCEHkBUsgGhR4UCFlLaFK">筛选条件已重置（默认查询当天）</div>
+
+<script data-page-node-id="xeNz7gOhu0HEkEUhOSzIa6">
+  // ===== 示例数据（一人一天一条；segs 为当天各使用段，e 为空表示使用中） =====
+  var D = "2026-10-21 ", P = "2026-10-20 ";
+  var rows = [
+    { date: "2026-10-21", name: "张伟",   acct: "zhangwei",  phone: "13812340621", unit: "中化能源", first: D + "14:45:19", last: D + "16:45:29", status: "在线中", ip: "10.244.12.97",
+      segs: [ { s: D + "14:45:19", e: D + "15:06:03", way: "超时判定" }, { s: D + "16:45:29", e: null } ] },
+    { date: "2026-10-21", name: "李娜",   acct: "lina",      phone: "13932124853", unit: "中化能源", first: D + "11:27:50", last: D + "16:31:02", status: "在线中", ip: "10.244.13.45",
+      segs: [ { s: D + "11:27:50", e: D + "12:05:22", way: "正常退出" }, { s: D + "16:31:02", e: null } ] },
+    { date: "2026-10-21", name: "陈晨",   acct: "chenchen",  phone: "13767889106", unit: "蓝星公司", first: D + "14:02:36", last: D + "14:02:36", status: "在线中", ip: "10.244.12.110",
+      segs: [ { s: D + "14:02:36", e: null } ] },
+    { date: "2026-10-21", name: "王强",   acct: "wangqiang", phone: "13645677342", unit: "沧州大化", first: D + "09:32:18", last: D + "16:20:31", status: "已结束", ip: "10.244.12.89",
+      segs: [ { s: D + "09:32:18", e: D + "10:02:44", way: "超时判定" }, { s: D + "15:58:44", e: D + "16:20:31", way: "超时判定" } ] },
+    { date: "2026-10-21", name: "赵敏",   acct: "zhaomin",   phone: "13586432580", unit: "先正达", first: D + "15:12:07", last: D + "15:40:52", status: "已结束", ip: "10.244.12.102",
+      segs: [ { s: D + "15:12:07", e: D + "15:40:52", way: "超时判定" } ] },
+    { date: "2026-10-21", name: "刘洋",   acct: "liuyang",   phone: "18810293967", unit: "鲁西集团", first: D + "10:15:33", last: D + "11:47:09", status: "已结束", ip: "10.244.12.97",
+      segs: [ { s: D + "10:15:33", e: D + "11:47:09", way: "正常退出" } ] },
+    { date: "2026-10-20", name: "赵敏",   acct: "zhaomin",   phone: "13586432580", unit: "先正达", first: P + "17:20:05", last: P + "17:55:41", status: "已结束", ip: "10.244.12.102",
+      segs: [ { s: P + "17:20:05", e: P + "17:55:41", way: "正常退出" } ] },
+    { date: "2026-10-20", name: "陈晨",   acct: "chenchen",  phone: "13767889106", unit: "蓝星公司", first: P + "16:08:27", last: P + "16:36:12", status: "已结束", ip: "10.244.13.45",
+      segs: [ { s: P + "16:08:27", e: P + "16:36:12", way: "超时判定" } ] },
+    { date: "2026-10-20", name: "刘洋",   acct: "liuyang",   phone: "18810293967", unit: "鲁西集团", first: P + "14:41:56", last: P + "16:12:30", status: "已结束", ip: "10.244.12.97",
+      segs: [ { s: P + "14:41:56", e: P + "16:12:30", way: "正常退出" } ] }
+  ];
+
+  var selectedUsers = [];   // 多选已选姓名
+
+  // ===== 所属单位组织树（示例结构） =====
+  var orgTree = [
+    { name: "中国中化", children: [
+      { name: "中化能源" },
+      { name: "先正达" },
+      { name: "中化化肥" },
+      { name: "化工事业部" },
+      { name: "蓝星公司" },
+      { name: "中国昊华" },
+      { name: "鲁西集团" },
+      { name: "沧州大化" },
+      { name: "氯碱事业部" }
+    ] }
+  ];
+  var unitSelPath = "";      // 已选节点的完整路径，如 中国中化/中化能源
+  var unitSelName = "";
+  var unitKw = "";
+  var includeSub = true;     // 是否包含下级单位
+  var unitOpen = { "中国中化": true };   // 默认展开根节点
+
+  // 命中判断：自身或任一子孙名称包含关键字
+  function unitHit(node, kw) {
+    if (!kw) return true;
+    if (node.name.toLowerCase().indexOf(kw) >= 0) return true;
+    if (!node.children) return false;
+    return node.children.some(function(c) { return unitHit(c, kw); });
+  }
+
+  function unitHl(name, kw) {
+    if (!kw) return name;
+    var i = name.toLowerCase().indexOf(kw);
+    if (i < 0) return name;
+    return name.slice(0, i) + "<em>" + name.slice(i, i + kw.length) + "</em>" + name.slice(i + kw.length);
+  }
+
+  function walkUnit(nodes, parentPath, level, kw) {
+    var out = "";
+    nodes.forEach(function(n) {
+      if (!unitHit(n, kw)) return;
+      var p = parentPath ? parentPath + "/" + n.name : n.name;
+      var hasChild = !!(n.children && n.children.length);
+      var open = kw ? true : !!unitOpen[p];
+      out += '<div class="tree-row' + (unitSelPath === p ? " selected" : "") + (open ? " open" : "") + '"'
+        + ' data-path="' + p + '" data-name="' + n.name + '" onclick="selectUnit(this)">'
+        + '<span class="indent" style="width:' + (level * 14) + 'px"></span>'
+        + (hasChild ? '<span class="twisty" onclick="toggleUnitNode(event,this)"></span>' : '<span class="twisty"></span>')
+        + '<span class="radio"></span>'
+        + '<span class="tree-label">' + unitHl(n.name, kw) + "</span></div>";
+      if (hasChild) {
+        out += '<div class="tree-children"' + (open ? "" : ' style="display:none"') + ">"
+          + walkUnit(n.children, p, level + 1, kw) + "</div>";
+      }
+    });
+    return out;
+  }
+
+  function renderUnitTree() {
+    var html = walkUnit(orgTree, "", 0, unitKw.trim().toLowerCase());
+    document.getElementById("unitTree").innerHTML = html || '<div class="ms-empty">无匹配组织</div>';
+  }
+
+  function toggleUnitNode(e, el) {
+    e.stopPropagation();
+    var row = el.parentNode;
+    var p = row.getAttribute("data-path");
+    unitOpen[p] = !unitOpen[p];
+    row.classList.toggle("open");
+    var box = row.nextElementSibling;
+    if (box) box.style.display = unitOpen[p] ? "" : "none";
+  }
+
+  function selectUnit(el) {
+    unitSelPath = el.getAttribute("data-path");
+    unitSelName = el.getAttribute("data-name");
+    document.getElementById("fUnit").value = unitSelPath;
+    var label = document.getElementById("unitLabel");
+    label.textContent = unitSelPath.split("/").join(" / ");
+    label.classList.remove("ms-placeholder");
+    document.getElementById("unitPanel").classList.remove("show");
+    document.getElementById("unitTrigger").classList.remove("open");
+  }
+
+  function toggleUnitPanel(e) {
+    e.stopPropagation();
+    var panel = document.getElementById("unitPanel");
+    var trigger = document.getElementById("unitTrigger");
+    var willOpen = !panel.classList.contains("show");
+    panel.classList.toggle("show");
+    trigger.classList.toggle("open");
+    if (willOpen) {
+      unitKw = "";
+      document.getElementById("unitSearch").value = "";
+      renderUnitTree();
+      setTimeout(function() { document.getElementById("unitSearch").focus(); }, 0);
+    }
+  }
+
+  function filterUnitTree(v) {
+    unitKw = v || "";
+    renderUnitTree();
+  }
+
+  // 按名称查找节点路径（用于历史记录的单位归属判断）
+  function findUnitPath(name, nodes, parentPath) {
+    nodes = nodes || orgTree;
+    parentPath = parentPath || "";
+    for (var i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+      var p = parentPath ? parentPath + "/" + n.name : n.name;
+      if (n.name === name) return p;
+      if (n.children) {
+        var r = findUnitPath(name, n.children, p);
+        if (r) return r;
+      }
+    }
+    return "";
+  }
+
+  // 单位匹配：勾选"包含下级"时命中所选单位及其全部下级；未勾选时仅匹配所选单位本身
+  function unitMatch(rUnit) {
+    if (!unitSelPath) return true;
+    var rPath = findUnitPath(rUnit);
+    if (!rPath) return rUnit === unitSelName;
+    if (rPath === unitSelPath) return true;
+    if (includeSub && rPath.indexOf(unitSelPath + "/") === 0) return true;
+    return false;
+  }
+
+  // ===== 当日累计时长（已结束段求和 + 使用中段实时累加至今） =====
+  function dailyDuration(segs, status) {
+    var mins = 0;
+    var now = new Date();
+    segs.forEach(function(g) {
+      var s = new Date(g.s.replace(/-/g, "/"));
+      if (g.e) { mins += Math.round((new Date(g.e.replace(/-/g, "/")) - s) / 60000); }
+      else { mins += Math.max(0, Math.round((now - s) / 60000)); }
+    });
+    var txt = fmt(mins);
+    if (status === "在线中") return '<span class="duration-now">' + txt + "</span>";
+    return txt;
+  }
+  function fmt(mins) {
+    if (mins < 60) return mins + " 分钟";
+    return Math.floor(mins / 60) + " 小时 " + (mins % 60) + " 分";
+  }
+
+  // ===== 登录人员多选 =====
+  function buildMsPanel() {
+    var users = [];
+    var seen = {};
+    rows.forEach(function(r) {
+      if (!seen[r.name]) { seen[r.name] = true; users.push({ name: r.name, acct: r.acct, phone: r.phone }); }
+    });
+    var panel = document.getElementById("msPanel");
+    var html = '<div class="ms-search"><input id="msSearch" placeholder="搜索姓名、账号或手机号" oninput="filterMsItems(this.value)"></div>'
+      + '<div id="msList">';
+    users.forEach(function(u) {
+      html += '<div class="ms-item" data-name="' + u.name + '" data-acct="' + u.acct + '" data-phone="' + u.phone + '" onclick="toggleUser(this)">'
+        + '<span class="cb"></span>' + u.name
+        + '<span class="acct">' + u.acct + "</span></div>";
+    });
+    html += '</div><div class="ms-empty" id="msEmpty" style="display:none">无匹配人员</div>';
+    panel.innerHTML = html;
+    refreshMsItems();
+  }
+
+  // 模糊查询：姓名或账号包含关键字即命中（忽略大小写与首尾空格）
+  function filterMsItems(kw) {
+    kw = (kw || "").trim().toLowerCase();
+    var hitCount = 0;
+    document.querySelectorAll("#msList .ms-item").forEach(function(it) {
+      var name = (it.getAttribute("data-name") || "").toLowerCase();
+      var acct = (it.getAttribute("data-acct") || "").toLowerCase();
+      var phone = it.getAttribute("data-phone") || "";
+      var hit = !kw || name.indexOf(kw) >= 0 || acct.indexOf(kw) >= 0 || phone.indexOf(kw) >= 0;
+      it.style.display = hit ? "" : "none";
+      if (hit) hitCount++;
+    });
+    document.getElementById("msEmpty").style.display = hitCount ? "none" : "block";
+  }
+
+  function refreshMsItems() {
+    var items = document.querySelectorAll("#msPanel .ms-item");
+    items.forEach(function(it) {
+      if (selectedUsers.indexOf(it.getAttribute("data-name")) >= 0) it.classList.add("checked");
+      else it.classList.remove("checked");
+    });
+    renderMsTrigger();
+  }
+
+  function renderMsTrigger() {
+    var trigger = document.getElementById("msTrigger");
+    if (!selectedUsers.length) {
+      trigger.innerHTML = '<span class="ms-placeholder">请选择登录人员（可多选）</span>';
+      return;
+    }
+    var html = "";
+    var maxShow = 2;
+    selectedUsers.slice(0, maxShow).forEach(function(n) {
+      html += '<span class="ms-tag">' + n + '<span class="x" onclick="removeUser(event, \'' + n + '\')">×</span></span>';
+    });
+    if (selectedUsers.length > maxShow) {
+      html += '<span class="ms-count">+' + (selectedUsers.length - maxShow) + '</span>';
+    }
+    trigger.innerHTML = html;
+  }
+
+  function toggleUser(el) {
+    var n = el.getAttribute("data-name");
+    var i = selectedUsers.indexOf(n);
+    if (i >= 0) selectedUsers.splice(i, 1); else selectedUsers.push(n);
+    refreshMsItems();
+  }
+
+  function removeUser(e, n) {
+    e.stopPropagation();
+    var i = selectedUsers.indexOf(n);
+    if (i >= 0) selectedUsers.splice(i, 1);
+    refreshMsItems();
+  }
+
+  function toggleMsPanel(e) {
+    e.stopPropagation();
+    var panel = document.getElementById("msPanel");
+    var trigger = document.getElementById("msTrigger");
+    var willOpen = !panel.classList.contains("show");
+    panel.classList.toggle("show");
+    trigger.classList.toggle("open");
+    if (willOpen) {
+      var input = document.getElementById("msSearch");
+      input.value = "";
+      filterMsItems("");
+      setTimeout(function() { input.focus(); }, 0);
+    }
+  }
+  // 点击下拉框内部（搜索框、选项）不关闭面板
+  document.addEventListener("click", function(e) {
+    if (e.target.closest && e.target.closest("#userMsBox")) return;
+    if (e.target.closest && e.target.closest("#unitTreeBox")) return;
+    document.getElementById("msPanel").classList.remove("show");
+    document.getElementById("msTrigger").classList.remove("open");
+    document.getElementById("unitPanel").classList.remove("show");
+    document.getElementById("unitTrigger").classList.remove("open");
+  });
+
+  function today() {
+    var d = new Date();
+    var m = d.getMonth() + 1, day = d.getDate();
+    return d.getFullYear() + "-" + (m < 10 ? "0" + m : m) + "-" + (day < 10 ? "0" + day : day);
+  }
+
+  // n 天前的日期（yyyy-MM-dd）
+  function daysAgo(n) {
+    var d = new Date();
+    d.setDate(d.getDate() - n);
+    var m = d.getMonth() + 1, day = d.getDate();
+    return d.getFullYear() + "-" + (m < 10 ? "0" + m : m) + "-" + (day < 10 ? "0" + day : day);
+  }
+
+  function render(list) {
+    var body = document.getElementById("logBody");
+    var html = "";
+    list.forEach(function(r) {
+      html += "<tr>"
+        + "<td>" + r.first + "</td>"
+        + "<td>" + r.name + "</td>"
+        + '<td class="dim">' + r.acct + "</td>"
+        + '<td class="dim">' + r.phone + "</td>"
+        + "<td>" + r.unit + "</td>"
+        + "<td>" + r.last + "</td>"
+        + "<td>" + dailyDuration(r.segs, r.status) + "</td>"
+        + '<td><span class="status-tag ' + (r.status === "在线中" ? "status-online" : "status-end") + '">' + r.status + "</span></td>"
+        + '<td class="dim">' + r.ip + "</td>"
+        + "</tr>";
+    });
+    if (!list.length) html = '<tr><td colspan="9" style="text-align:center;color:#999;padding:40px 0">暂无符合条件的记录</td></tr>';
+    body.innerHTML = html;
+    document.getElementById("totalCount").textContent = list.length;
+  }
+
+  function showToast(msg) {
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function() { t.classList.remove("show"); }, 2600);
+  }
+
+  function doQuery() {
+    includeSub = document.getElementById("fIncludeSub").checked;
+    var st = document.getElementById("fStatus").value;
+    var start = document.getElementById("fStart").value;
+    var end = document.getElementById("fEnd").value;
+    var list = rows.filter(function(r) {
+      if (selectedUsers.length && selectedUsers.indexOf(r.name) < 0) return false;
+      if (!unitMatch(r.unit)) return false;
+      if (st && r.status !== st) return false;
+      if (start && r.date < start) return false;
+      if (end && r.date > end) return false;
+      return true;
+    });
+    render(list);
+    showToast("查询成功，共 " + list.length + " 条记录（最大可查跨度 90 天）");
+  }
+
+  function resetFilter() {
+    selectedUsers = [];
+    refreshMsItems();
+    unitSelPath = "";
+    unitSelName = "";
+    unitKw = "";
+    includeSub = true;
+    document.getElementById("fIncludeSub").checked = true;
+    document.getElementById("fUnit").value = "";
+    var ul = document.getElementById("unitLabel");
+    ul.textContent = "请选择单位";
+    ul.classList.add("ms-placeholder");
+    document.getElementById("unitSearch").value = "";
+    renderUnitTree();
+    document.getElementById("fStatus").value = "";
+    document.getElementById("fStart").value = daysAgo(6);
+    document.getElementById("fEnd").value = today();
+    render(rows);
+    showToast("筛选条件已重置（默认查询最近一周）");
+  }
+
+  function doExport() {
+    showToast("已提交异步导出任务，文件生成后可在下载中心下载（单次上限 5 万条，导出行为将记录审计日志）");
+  }
+
+  // 初始化
+  document.getElementById("fStart").value = daysAgo(6);
+  document.getElementById("fEnd").value = today();
+  buildMsPanel();
+  renderUnitTree();
+  render(rows);
+</script>
+
+
+
+</body></html>
