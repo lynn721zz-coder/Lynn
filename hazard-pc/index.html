@@ -359,6 +359,8 @@
     vertical-align: middle; white-space: nowrap;
   }
   .combo-tag .resp-badge { margin-left: 2px; }
+  /* 催办对象：只读输入框，点击弹窗选择 */
+  #urgeTargetInput { cursor: pointer; }
   /* +N 折叠 / 收起 */
   .combo-more {
     display: inline-flex; align-items: center; padding: 2px 9px;
@@ -366,6 +368,57 @@
     background: #fff; border: 1px solid #bcd4f7; color: #2b6de8; cursor: pointer; white-space: nowrap;
   }
   .combo-more:hover { background: #f0f6ff; }
+
+  /* ========== 催办对象人员选择弹窗 ========== */
+  .up-mask { position: fixed; inset: 0; background: rgba(31,45,61,.5); z-index: 140; display: none; align-items: center; justify-content: center; padding: 24px; }
+  .up-modal { width: 1080px; max-width: 96vw; height: 720px; max-height: 92vh; background: #fff; border-radius: 8px; box-shadow: 0 8px 30px rgba(31,45,61,.18); display: flex; flex-direction: column; overflow: hidden; }
+  .up-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px 0; flex-shrink: 0; }
+  .up-title { font-size: 16px; font-weight: 600; color: #1d2129; }
+  .up-x { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: #86909c; cursor: pointer; border-radius: 4px; font-size: 14px; }
+  .up-x:hover { color: #4e5969; background: #f2f3f5; }
+  .up-tools { display: flex; align-items: center; gap: 10px; padding: 14px 24px; flex-shrink: 0; }
+  .up-btn { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 14px; background: #2b6de8; color: #fff; font-size: 13px; border: none; border-radius: 4px; cursor: pointer; font-family: inherit; }
+  .up-btn:hover { background: #4a82ec; }
+  .up-btn svg { width: 13px; height: 13px; }
+  .up-input { height: 32px; width: 150px; border: 1px solid #e2e6ee; border-radius: 4px; font-size: 13px; padding: 0 10px; color: #4e5969; outline: none; font-family: inherit; }
+  .up-input::placeholder { color: #c0c6d1; }
+  .up-input:focus { border-color: #2b6de8; }
+  select.up-input { width: 150px; color: #c0c6d1; appearance: none; background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2386909C' fill='none' stroke-width='1.2'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 9px center; cursor: pointer; }
+  .up-count { margin-left: auto; font-size: 13px; color: #4e5969; }
+  .up-count b { color: #2b6de8; font-weight: 600; }
+  .up-clear { height: 32px; padding: 0 16px; background: #fff; border: 1px solid #dcdfe6; border-radius: 4px; font-size: 13px; color: #4e5969; cursor: pointer; font-family: inherit; }
+  .up-clear:hover { color: #2b6de8; border-color: #2b6de8; }
+  .up-body { flex: 1; min-height: 0; display: flex; border-top: 1px solid #f0f2f6; }
+  .up-tree { width: 190px; flex-shrink: 0; border-right: 1px solid #f0f2f6; overflow-y: auto; padding: 10px 0 14px; }
+  .up-tree-ck { display: flex; align-items: center; gap: 7px; padding: 6px 16px 8px; font-size: 13px; color: #2b6de8; }
+  .up-tree-ck input { width: 14px; height: 14px; accent-color: #2b6de8; margin: 0; cursor: pointer; }
+  .up-tree-item { display: flex; align-items: center; gap: 4px; padding: 7px 16px; font-size: 13px; color: #4e5969; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; user-select: none; }
+  .up-tree-item:hover { background: #f5f7fa; color: #2b6de8; }
+  .up-tree-item.active { color: #2b6de8; background: #f0f6ff; }
+  .up-tree-item .tc { font-size: 10px; color: #86909c; width: 12px; flex-shrink: 0; }
+  .up-tree-item.l1 { padding-left: 34px; }
+  .up-tree-item.l2 { padding-left: 52px; }
+  .up-main { flex: 1; min-width: 0; overflow-y: auto; }
+  .up-main table { width: 100%; min-width: 0; border-collapse: collapse; }
+  .up-main th, .up-main td { text-align: left; padding: 11px 10px; font-size: 13px; border-bottom: 1px solid #f0f2f6; white-space: nowrap; }
+  .up-main thead th { background: #f5f7fa; color: #1d2129; font-weight: 600; }
+  .up-main tbody tr { cursor: pointer; }
+  .up-main tbody tr:hover { background: #f7faff; }
+  .up-main input[type=checkbox] { width: 14px; height: 14px; accent-color: #2b6de8; cursor: pointer; margin: 0; }
+  .up-main td.pn { color: #1d2129; }
+  .up-main td.pno, .up-main td.pph { color: #4e5969; max-width: 100px; overflow: hidden; text-overflow: ellipsis; }
+  .up-main td.pd, .up-main td.pp { color: #4e5969; max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
+  .up-empty { text-align: center; color: #86909c; font-size: 13px; padding: 40px 0; }
+  .up-sel { width: 190px; flex-shrink: 0; border-left: 1px solid #f0f2f6; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+  .up-chip { display: flex; align-items: center; gap: 6px; background: #f2f3f5; border-radius: 3px; padding: 5px 8px; font-size: 12px; color: #1d2129; }
+  .up-chip .avatar { width: 18px; height: 18px; border-radius: 50%; background: #c9cdd4; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .up-chip .avatar svg { width: 11px; height: 11px; }
+  .up-chip .uname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .up-chip .ux { margin-left: auto; color: #86909c; cursor: pointer; font-size: 12px; flex-shrink: 0; }
+  .up-chip .ux:hover { color: #f53f3f; }
+  .up-sel-empty { font-size: 12px; color: #c0c6d1; text-align: center; margin-top: 20px; }
+  .up-foot { display: flex; justify-content: flex-end; gap: 12px; padding: 14px 24px; flex-shrink: 0; }
+  .up-foot .btn-plain, .up-foot .btn-primary { height: 32px; }
 
   /* ========== 轻提示 ========== */
   .toast {
@@ -552,6 +605,69 @@
     border-radius: 4px; font-size: 13px; cursor: pointer;
   }
   .btn-back:hover { background: #f2f7ff; }
+  .btn-accept-jy {
+    height: 28px; padding: 0 16px; margin-right: 8px;
+    border: none; background: #2b6de8; color: #fff;
+    border-radius: 4px; font-size: 13px; cursor: pointer;
+  }
+  .btn-accept-jy:hover { background: #4a83ec; }
+
+  /* ========== 整改验收弹窗 ========== */
+  .jy-modal { width: 640px; max-height: 84vh; display: flex; flex-direction: column; }
+  .jy-modal .modal-body { overflow-y: auto; }
+  .jy-radios { display: flex; gap: 24px; line-height: 32px; }
+  .jy-radios .jy-radio { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #333; cursor: pointer; user-select: none; }
+  .jy-radios .jy-dot { width: 14px; height: 14px; border: 1px solid #c0c4cc; border-radius: 50%; background: #fff; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .jy-radios .jy-radio.checked .jy-dot { border-color: #2b6de8; }
+  .jy-radios .jy-radio.checked .jy-dot::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #2b6de8; }
+  .jy-count { text-align: right; font-size: 12px; color: #999; margin-top: 4px; }
+  .jy-img-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .jy-img-tile { position: relative; width: 78px; height: 78px; border-radius: 4px; overflow: hidden; }
+  .jy-img-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .jy-img-tile .rm { position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; border: none; border-radius: 50%; background: rgba(0,0,0,.55); color: #fff; font-size: 11px; line-height: 1; cursor: pointer; }
+  .jy-img-add { width: 78px; height: 78px; border: 1px dashed #c0c4cc; border-radius: 4px; background: #fafbfc; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #a8abb2; cursor: pointer; }
+  .jy-img-add:hover { border-color: #2b6de8; color: #2b6de8; }
+  .jy-file-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .jy-file-btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #dcdfe6; background: #fff; color: #606266; border-radius: 4px; height: 30px; padding: 0 12px; font-size: 13px; cursor: pointer; background-image: none; }
+  .jy-file-btn:hover { color: #2b6de8; border-color: #2b6de8; }
+  .jy-file-note { font-size: 12px; color: #999; }
+  .jy-file-name { display: none; align-items: center; gap: 6px; background: #f5f7fa; border-radius: 3px; padding: 5px 8px 5px 10px; font-size: 12px; color: #606266; }
+  .jy-file-name.show { display: inline-flex; }
+  .jy-file-name .fn { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .jy-file-name .x { color: #999; cursor: pointer; padding: 0 2px; }
+  .jy-ro { display: flex; align-items: center; gap: 8px; background: #f7f8fa; border: 1px solid #e2e6ee; border-radius: 4px; height: 32px; padding: 0 10px; }
+  .jy-ro input { flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-size: 13px; color: #333; }
+  .jy-ro .suf { color: #909399; font-size: 12px; flex-shrink: 0; }
+  .jy-auto { flex-shrink: 0; color: #2b6de8; background: #e8f1ff; border-radius: 3px; padding: 2px 6px; font-size: 12px; line-height: 1; white-space: nowrap; }
+  .jy-alloc-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .jy-alloc-add { border: 1px solid #dcdfe6; background: #fff; color: #606266; border-radius: 4px; height: 28px; padding: 0 12px; font-size: 12.5px; cursor: pointer; background-image: none; }
+  .jy-alloc-add:hover { color: #2b6de8; border-color: #2b6de8; }
+  .jy-alloc-cnt { font-size: 12px; color: #999; }
+  .jy-alloc-cnt em { font-style: normal; color: #2b6de8; font-weight: 600; }
+  .jy-alloc-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; }
+  .jy-alloc-row .idx { width: 18px; text-align: center; color: #999; font-size: 12px; flex-shrink: 0; }
+  .jy-alloc-inp { height: 30px; border: 1px solid #dcdfe6; border-radius: 4px; padding: 0 8px; font-size: 12.5px; color: #333; min-width: 0; outline: none; background: #fff; }
+  .jy-alloc-inp:focus { border-color: #2b6de8; }
+  .jy-alloc-inp.err { border-color: #f5222d; background: #fff5f5; }
+  .jy-alloc-person { flex: 1.6; }
+  .jy-alloc-money { flex: 1; }
+  .jy-alloc-del { border: none; background: none; color: #f5222d; font-size: 12.5px; cursor: pointer; flex-shrink: 0; padding: 4px; }
+  .jy-alloc-empty { color: #999; font-size: 12.5px; text-align: center; padding: 14px 0 4px; line-height: 1.7; }
+  .jy-alloc-sum { display: none; margin-top: 8px; background: #f0f6ff; border-radius: 4px; padding: 8px 12px; font-size: 12px; color: #3a5db0; line-height: 1.7; }
+  .jy-alloc-sum.show { display: block; }
+  .jy-alloc-sum b { color: #2b6de8; }
+  .jy-tip { display: block; }
+  .jy-tip.ok { color: #2ba471; }
+  .jy-person-dd { position: fixed; width: 280px; background: #fff; border: 1px solid #e4e7ed; border-radius: 4px; box-shadow: 0 8px 24px rgba(0,0,0,.14); z-index: 120; max-height: 220px; overflow-y: auto; display: none; }
+  .jy-person-dd.show { display: block; }
+  .jy-pdd-opt { padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f5f5f5; }
+  .jy-pdd-opt:last-child { border-bottom: none; }
+  .jy-pdd-opt:hover { background: #f5f7fa; }
+  .jy-pdd-name { font-size: 13px; color: #303133; font-weight: 600; }
+  .jy-pdd-sub { margin-top: 2px; font-size: 11.5px; color: #909399; }
+  .jy-pdd-empty { padding: 14px; text-align: center; color: #999; font-size: 12.5px; }
+  .jy-err { display: none; font-size: 12px; color: #f5222d; margin-top: 5px; }
+  .jy-err.show { display: block; }
   .d2-card { padding: 28px 44px 30px; }
   .d2-row { display: flex; margin-bottom: 15px; font-size: 13px; line-height: 20px; }
   .d2-cell { width: 50%; display: flex; padding-right: 30px; }
@@ -1083,6 +1199,36 @@
   #hazardAddView tbody tr:hover td{ background:#F7F9FC; }
   #hazardAddView .ha-empty-row td{ text-align:center; color:#86909C; padding:30px 12px; }
 
+  /* ========== 发现人选择弹窗（命名空间 fd-，发现部门随发现人带出） ========== */
+  .fd-mask{ position:fixed; inset:0; background:rgba(29,33,41,0.45); z-index:140; display:none; align-items:center; justify-content:center; }
+  .fd-mask.show{ display:flex; }
+  .fd-modal{ width:720px; max-width:92vw; background:#FFFFFF; border-radius:8px; overflow:hidden; display:flex; flex-direction:column; max-height:78vh; }
+  .fd-head{ display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid #F0F1F3; flex-shrink:0; }
+  .fd-title{ font-size:15px; font-weight:600; color:#1D2129; }
+  .fd-x{ cursor:pointer; color:#86909C; font-size:14px; padding:2px 6px; line-height:1; }
+  .fd-x:hover{ color:#366EF4; }
+  .fd-tools{ padding:12px 18px 0; display:flex; gap:10px; flex-shrink:0; }
+  .fd-input{ flex:1; height:32px; border:1px solid #E0E3E8; border-radius:4px; padding:0 10px; font-size:13px; outline:none; font-family:inherit; color:#1D2129; }
+  .fd-input:focus{ border-color:#366EF4; }
+  .fd-input::placeholder{ color:#A9AEB8; }
+  .fd-body{ flex:1; overflow:auto; margin:12px 18px 0; border:1px solid #F0F1F3; border-radius:4px; min-height:180px; }
+  .fd-body table{ width:100%; border-collapse:collapse; font-size:13px; }
+  .fd-body th{ background:#F7F8FA; color:#4E5969; font-weight:500; text-align:left; padding:9px 12px; white-space:nowrap; }
+  .fd-body td{ padding:10px 12px; border-top:1px solid #F0F1F3; color:#1D2129; white-space:nowrap; cursor:pointer; }
+  .fd-body tbody tr:hover td{ background:#F7F9FC; }
+  .fd-body tbody tr.sel td{ background:#ECF2FE; }
+  .fd-radio{ display:inline-block; width:14px; height:14px; border-radius:50%; border:1px solid #C9CDD4; position:relative; vertical-align:middle; }
+  .fd-radio::after{ content:''; position:absolute; top:3px; left:3px; width:6px; height:6px; border-radius:50%; background:transparent; }
+  tr.sel .fd-radio{ border-color:#366EF4; }
+  tr.sel .fd-radio::after{ background:#366EF4; }
+  .fd-empty{ text-align:center; color:#86909C; padding:34px 0; font-size:13px; }
+  .fd-foot{ display:flex; justify-content:flex-end; gap:10px; padding:14px 18px; flex-shrink:0; }
+  .fd-foot button{ height:32px; padding:0 22px; border-radius:4px; font-size:13px; cursor:pointer; border:none; font-family:inherit; }
+  .fd-btn-plain{ background:#FFFFFF; border:1px solid #E0E3E8; color:#4E5969; }
+  .fd-btn-plain:hover{ border-color:#366EF4; color:#366EF4; }
+  .fd-btn-primary{ background:#366EF4; color:#FFFFFF; }
+  .fd-btn-primary:hover{ background:#5B87F5; }
+
   /* ========== 逾期隐患视图（命名空间 #overdueView） ========== */
   #overdueView{
     font-family: "Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
@@ -1581,7 +1727,11 @@
               <label data-page-node-id="nHHkJ20DviT6noJyxaBceF">排查级别：</label>
               <select class="fcontrol" data-page-node-id="UGSA9JanfHe57JsOX5lETF"><option data-page-node-id="mAZOg4F2RTfw8LsH9cM1ia">请选择</option></select>
             </div>
-            <div class="fitem" style="justify-content:flex-end;" data-page-node-id="Al9wBaKuez5rQvIeBPuDtM">
+            <div class="fitem" data-page-node-id="NewObsTransferHz">
+              <label style="width:auto;">是否安全观察项转入：</label>
+              <select class="fcontrol"><option>请选择</option><option>是</option><option>否</option></select>
+            </div>
+            <div class="fitem" style="width:100%; min-width:0; justify-content:flex-end; padding-right:0;" data-page-node-id="Al9wBaKuez5rQvIeBPuDtM">
               <div class="filter-btns" data-page-node-id="YGgSAlBIBR8xkyIbcnZd3b">
                 <button class="btn btn-primary" type="submit" data-page-node-id="pNO0zAIpungTj3pbjPvPLl">查 询</button>
                 <button class="btn btn-plain" type="button" data-page-node-id="AUS769wUb1HnuLixGGRuSI">重 置</button>
@@ -1605,6 +1755,11 @@
         <div class="select dept" data-page-node-id="PHBaLGqD3pcTBCEnGoj0VR" data-value="全部部门">
           <span data-page-node-id="3EJMVMGfL7gwFQL1VuZdGB">全部部门</span>
           <svg viewBox="0 0 12 12" width="12" height="12" fill="none" data-page-node-id="1hyBwq3PBbvno2mdTkq76V"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#8B8B8B" stroke-width="1.3" stroke-linecap="round" data-page-node-id="LvPIAIillR5rn7lM0ZAHNu"></path></svg>
+        </div>
+        <span class="filter-label" id="statsObsLabel">是否安全观察项转入</span>
+        <div class="select dept" id="statsObsSel" data-value="全部">
+          <span>全部</span>
+          <svg viewBox="0 0 12 12" width="12" height="12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#8B8B8B" stroke-width="1.3" stroke-linecap="round"></path></svg>
         </div>
         <button class="btn btn-primary" data-page-node-id="2io14iofwHAdxGpsgFfHaC">查询</button>
         <button class="btn btn-plain" data-page-node-id="6P3S3dFaATDq2nyjgwUcuC">重置</button>
@@ -1891,7 +2046,7 @@
                 
                 
                 
-              <th class="idx col-freeze-l" data-page-node-id="eRqzXAaYTlVtLyRYgcq2vc" data-ci="0">序号</th><th data-page-node-id="0rgBbdveJOPvOFocNDxdjf" data-ci="1" class="col-freeze-name">隐患名称</th><th data-page-node-id="b73Taicg3uw50BWMYcQBcD" data-ci="2">所属部门</th><th data-page-node-id="4H9G2LQmYQPuWvVCErmRHR" data-ci="3">所属分析单元</th><th data-page-node-id="rLdj4EaO1Y4JiPqVOhE5JN" data-ci="4">隐患级别</th><th data-page-node-id="T5uAE8xTR7TQpmCb0ZPLOK" data-ci="5">隐患类别</th><th data-page-node-id="IE4Nmqx9YCC5OhVRHGipW8" data-ci="6">是否重大事故隐患</th><th data-page-node-id="d7wrQFUMe63cKCpUbXuEIn" data-ci="7">隐患来源</th><th data-page-node-id="4sEwCW0EA58qpW4tBFJQhd" data-ci="8">发现时间</th><th data-page-node-id="KOZBB8u4Er5Mmu9SDvKzdW" data-ci="9" style="display: none;">排查类型</th><th data-page-node-id="E99EITCMCWmACfog1RTN8O" data-ci="10" style="display: none;">排查级别</th><th data-page-node-id="6at8E3I2SQgC6y5FZTWHPp" data-ci="11" style="display: none;">发现人</th><th data-page-node-id="Kc4IaHIDgQkZM1QvTXuoMc" data-ci="12" style="display: none;">隐患状态</th><th data-page-node-id="MGvYERueSYVikhhr5Jjfix" data-ci="13" style="display: none;">是否外部检查</th><th data-page-node-id="nIBsfxDs07hQDgxn5vtTdw" data-ci="14" class="col-freeze-r">操作</th></tr>
+              <th class="idx col-freeze-l" data-page-node-id="eRqzXAaYTlVtLyRYgcq2vc" data-ci="0">序号</th><th data-page-node-id="0rgBbdveJOPvOFocNDxdjf" data-ci="1" class="col-freeze-name">隐患名称</th><th data-page-node-id="b73Taicg3uw50BWMYcQBcD" data-ci="2">所属部门</th><th data-page-node-id="4H9G2LQmYQPuWvVCErmRHR" data-ci="3">所属分析单元</th><th data-page-node-id="rLdj4EaO1Y4JiPqVOhE5JN" data-ci="4">隐患级别</th><th data-page-node-id="T5uAE8xTR7TQpmCb0ZPLOK" data-ci="5">隐患类别</th><th data-page-node-id="IE4Nmqx9YCC5OhVRHGipW8" data-ci="6">是否安全观察项转入</th><th data-page-node-id="d7wrQFUMe63cKCpUbXuEIn" data-ci="7">隐患来源</th><th data-page-node-id="4sEwCW0EA58qpW4tBFJQhd" data-ci="8">发现时间</th><th data-page-node-id="KOZBB8u4Er5Mmu9SDvKzdW" data-ci="9" style="display: none;">排查类型</th><th data-page-node-id="E99EITCMCWmACfog1RTN8O" data-ci="10" style="display: none;">排查级别</th><th data-page-node-id="6at8E3I2SQgC6y5FZTWHPp" data-ci="11" style="display: none;">发现人</th><th data-page-node-id="Kc4IaHIDgQkZM1QvTXuoMc" data-ci="12" style="display: none;">隐患状态</th><th data-page-node-id="MGvYERueSYVikhhr5Jjfix" data-ci="13" style="display: none;">是否外部检查</th><th data-page-node-id="nIBsfxDs07hQDgxn5vtTdw" data-ci="14" class="col-freeze-r">操作</th></tr>
             </thead>
             <tbody data-page-node-id="mwJi7RRTfDDTjw2mm0IccH">
               <tr data-page-node-id="VDcVEqS2fZ2Wt8T50P9RXc">
@@ -1905,7 +2060,7 @@
                 
                 
                 
-              <td class="idx col-freeze-l" data-page-node-id="OurDFEfBs19Q1eHPF6QjQ9" data-ci="0">1</td><td data-page-node-id="vAMRra3h8CCxE9fkuxGe1F" data-ci="1" class="col-freeze-name">演示数据01</td><td data-page-node-id="GzAvgiQVaZQufH4lRZCVuV" data-ci="2"><span class="dept" data-page-node-id="DO8xAcoAoa9ody3C0MiFCw"><svg viewBox="0 0 16 16" data-page-node-id="sGuPGXg9X7BI6thnhv2LD9"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="sUpVWpMRVwA3TeXNCKiIB2"></path></svg>HSE部</span></td><td data-page-node-id="8linYxZG3xl07KDwIbcn46" data-ci="3">0512风险分析单元</td><td data-page-node-id="Ck2PfmGRGmEzA7tIVSwVxt" data-ci="4">一般B级隐患</td><td data-page-node-id="83vq5m3JhzOMbj9pCEKHAZ" data-ci="5">综合管理</td><td data-page-node-id="4T8LXQo2RDjDd7fjX28Els" data-ci="6">否</td><td data-page-node-id="qjUFpC2R6qnsPj4oL4CCpk" data-ci="7">随手拍</td><td data-page-node-id="Wh4GTUBIsODGMMRNr2NQGV" data-ci="8">2026-09-18 10:23</td><td data-page-node-id="oVY2SiKHeYUMQHeamcjUmy" data-ci="9" style="display: none;">随手拍</td><td data-page-node-id="dHytkcCMEeBtizoCu18jYl" data-ci="10" style="display: none;">企业级及以下自查</td><td data-page-node-id="E9osIIyKJcgXi7tPPFPbVv" data-ci="11" style="display: none;">熊辰婷</td><td data-page-node-id="7QMh7gOl3vSwIyLG1JXptx" data-ci="12" style="display: none;">整改中</td><td data-page-node-id="Hq3sf5hczmtY9DBc79T4Kw" data-ci="13" style="display: none;">否</td><td data-page-node-id="dWdsCUmIl0SduqCsmK3F8O" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="o49i7fUxjBkHajEJwDmolp"><a data-page-node-id="t8zdsmtQ1dyPcvgiKyBU6k">详情</a><a data-page-node-id="VrW2YRzwlelT0TkxnGFhFi" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a class="disabled" data-page-node-id="uUqPxR12BEe9hZGlh0gX09">删除</a></div></td></tr>
+              <td class="idx col-freeze-l" data-page-node-id="OurDFEfBs19Q1eHPF6QjQ9" data-ci="0">1</td><td data-page-node-id="vAMRra3h8CCxE9fkuxGe1F" data-ci="1" class="col-freeze-name">演示数据01</td><td data-page-node-id="GzAvgiQVaZQufH4lRZCVuV" data-ci="2"><span class="dept" data-page-node-id="DO8xAcoAoa9ody3C0MiFCw"><svg viewBox="0 0 16 16" data-page-node-id="sGuPGXg9X7BI6thnhv2LD9"><path d="M2.5 14V3.5L8 1.5l5.5 2V14h-4v-3.5h-3V14z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" data-page-node-id="sUpVWpMRVwA3TeXNCKiIB2"></path></svg>HSE部</span></td><td data-page-node-id="8linYxZG3xl07KDwIbcn46" data-ci="3">0512风险分析单元</td><td data-page-node-id="Ck2PfmGRGmEzA7tIVSwVxt" data-ci="4">一般B级隐患</td><td data-page-node-id="83vq5m3JhzOMbj9pCEKHAZ" data-ci="5">综合管理</td><td data-page-node-id="4T8LXQo2RDjDd7fjX28Els" data-ci="6">是</td><td data-page-node-id="qjUFpC2R6qnsPj4oL4CCpk" data-ci="7">随手拍</td><td data-page-node-id="Wh4GTUBIsODGMMRNr2NQGV" data-ci="8">2026-09-18 10:23</td><td data-page-node-id="oVY2SiKHeYUMQHeamcjUmy" data-ci="9" style="display: none;">随手拍</td><td data-page-node-id="dHytkcCMEeBtizoCu18jYl" data-ci="10" style="display: none;">企业级及以下自查</td><td data-page-node-id="E9osIIyKJcgXi7tPPFPbVv" data-ci="11" style="display: none;">熊辰婷</td><td data-page-node-id="7QMh7gOl3vSwIyLG1JXptx" data-ci="12" style="display: none;">整改中</td><td data-page-node-id="Hq3sf5hczmtY9DBc79T4Kw" data-ci="13" style="display: none;">否</td><td data-page-node-id="dWdsCUmIl0SduqCsmK3F8O" data-ci="14" class="col-freeze-r"><div class="op" data-page-node-id="o49i7fUxjBkHajEJwDmolp"><a data-page-node-id="t8zdsmtQ1dyPcvgiKyBU6k">详情</a><a data-page-node-id="VrW2YRzwlelT0TkxnGFhFi" class="op-urge" style="margin:0;padding:0;box-sizing:border-box;-webkit-user-drag:none !important;color:#2b6de8;text-decoration:none;font-size:13px;cursor:pointer">催办</a><a class="disabled" data-page-node-id="uUqPxR12BEe9hZGlh0gX09">删除</a></div></td></tr>
               <tr data-page-node-id="KZX0PoNXGPc1ZAKTKQT3Pz">
                 
                 
@@ -2106,18 +2261,17 @@
             <div class="ha-fi"><label><i>*</i>所属部门：</label><div class="ha-ctrl"><div class="ha-select selected"><span data-ph="请选择">HSE部</span><svg class="ha-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ha-dd"><div class="ha-dd-item active">HSE部</div><div class="ha-dd-item">生产运行部</div><div class="ha-dd-item">设备管理部</div><div class="ha-dd-item">安全监督部</div></div></div></div></div>
             <div class="ha-fi"><label>隐患部位：</label><div class="ha-ctrl"><div class="ha-select"><span data-ph="请选择">请选择</span><svg class="ha-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ha-dd"><div class="ha-dd-item">反应釜区</div><div class="ha-dd-item">储罐区</div><div class="ha-dd-item">装卸区</div><div class="ha-dd-item">配电室</div></div></div></div></div>
             <div class="ha-fi"><label><i>*</i>隐患等级：</label><div class="ha-ctrl"><div class="ha-select"><span data-ph="请选择">请选择</span><svg class="ha-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ha-dd"><div class="ha-dd-item">重大事故隐患</div><div class="ha-dd-item">一般A级隐患</div><div class="ha-dd-item">一般B级隐患</div></div></div></div></div>
-            <div class="ha-fi"><label><i>*</i>是否重大事故隐患：</label><div class="ha-radio-group"><div class="ha-radio"><span class="ha-dot"></span>是</div><div class="ha-radio checked"><span class="ha-dot"></span>否</div></div></div>
-            <div class="ha-fi"><label>所属专项班组：</label><div class="ha-ctrl"><div class="ha-select"><span data-ph="请选择">请选择</span><svg class="ha-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ha-dd"><div class="ha-dd-item">工艺一班</div><div class="ha-dd-item">工艺二班</div><div class="ha-dd-item">设备班</div><div class="ha-dd-item">安全班</div></div></div></div></div>
-            <div class="ha-fi"><label><i>*</i>隐患原因：</label><div class="ha-ctrl"><div class="ha-select"><span data-ph="请选择">请选择</span><svg class="ha-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ha-dd"><div class="ha-dd-item">人的不安全行为</div><div class="ha-dd-item">物的不安全状态</div><div class="ha-dd-item">管理缺陷</div><div class="ha-dd-item">环境因素</div></div></div></div></div>
+            <div class="ha-fi"><label><i>*</i>隐患原因：</label><div class="ha-ctrl"><div class="ha-input"><input type="text" placeholder="请输入隐患原因"></div></div></div>
             <div class="ha-fi"><label><i>*</i>是否承包商隐患：</label><div class="ha-radio-group"><div class="ha-radio"><span class="ha-dot"></span>是</div><div class="ha-radio checked"><span class="ha-dot"></span>否</div></div></div>
             <div></div>
-            <div class="ha-fi"><label><i>*</i>专业类型：</label><div class="ha-ctrl"><div class="ha-select"><span data-ph="请选择专业类型">请选择专业类型</span><svg class="ha-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ha-dd"><div class="ha-dd-item">化工工艺</div><div class="ha-dd-item">设备设施</div><div class="ha-dd-item">电气仪表</div><div class="ha-dd-item">消防安全</div></div></div></div></div>
-            <div></div>
-            <div class="ha-fi"><label><i>*</i>体系类型：</label><div class="ha-ctrl"><div class="ha-select"><span data-ph="请选择">请选择</span><svg class="ha-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ha-dd"><div class="ha-dd-item">安全标准化</div><div class="ha-dd-item">双重预防机制</div><div class="ha-dd-item">职业健康</div></div></div></div></div>
-            <div class="ha-fi"><label><i>*</i>危害因素类型：</label><div class="ha-ctrl"><div class="ha-select"><span data-ph="请选择">请选择</span><svg class="ha-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ha-dd"><div class="ha-dd-item">人的不安全行为</div><div class="ha-dd-item">物的不安全状态</div><div class="ha-dd-item">有害环境</div></div></div></div></div>
-            <div class="ha-fi"><label>发生环节：</label><div class="ha-ctrl"><div class="ha-select"><span data-ph="请选择">请选择</span><svg class="ha-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ha-dd"><div class="ha-dd-item">生产</div><div class="ha-dd-item">检维修</div><div class="ha-dd-item">动火作业</div><div class="ha-dd-item">受限空间作业</div><div class="ha-dd-item">其他</div></div></div></div></div>
+            <div class="ha-fi"><label><i>*</i>专业类型：</label><div class="ha-ctrl"><div class="ha-input"><input type="text" placeholder="请输入专业类型"></div></div></div>
+            <div class="ha-fi"><label><i>*</i>体系类型：</label><div class="ha-ctrl"><div class="ha-input"><input type="text" placeholder="请输入体系类型"></div></div></div>
+            <div class="ha-fi"><label><i>*</i>危害因素类型：</label><div class="ha-ctrl"><div class="ha-input"><input type="text" placeholder="请输入危害因素类型"></div></div></div>
+            <div class="ha-fi"><label>发生环节：</label><div class="ha-ctrl"><div class="ha-input"><input type="text" placeholder="请输入发生环节"></div></div></div>
             <div></div>
             <div class="ha-fi ha-fi-full"><label><i>*</i>发现方式：</label><div class="ha-radio-group"><div class="ha-radio"><span class="ha-dot"></span>岗位自查</div><div class="ha-radio"><span class="ha-dot"></span>班组排查</div><div class="ha-radio"><span class="ha-dot"></span>专业检查</div><div class="ha-radio"><span class="ha-dot"></span>公司检查</div><div class="ha-radio"><span class="ha-dot"></span>联合检查</div><div class="ha-radio"><span class="ha-dot"></span>专家检查</div><div class="ha-radio"><span class="ha-dot"></span>包保履职</div><div class="ha-radio"><span class="ha-dot"></span>其他</div><input class="ha-other-input" type="text" placeholder="请输入内容"></div></div>
+            <div class="ha-fi"><label><i>*</i>发现人：</label><div class="ha-ctrl"><div class="ha-input" id="haFinderWrap"><input id="haFinderInput" type="text" value="熊辰婷" readonly placeholder="请选择发现人" style="flex:1;min-width:0;cursor:pointer;"><svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><circle cx="8" cy="5.5" r="2.6" fill="none" stroke="#86909C" stroke-width="1.2"/><path d="M2.8 13.2c.8-2.6 2.9-4 5.2-4s4.4 1.4 5.2 4" fill="none" stroke="#86909C" stroke-width="1.2" stroke-linecap="round"/></svg></div></div></div>
+            <div class="ha-fi"><label>发现部门：</label><div class="ha-ctrl"><div class="ha-input" style="background:#F7F8FA;"><input id="haFinderDeptInput" type="text" value="HSE部" readonly style="color:#86909C;cursor:not-allowed;"></div></div></div>
             <div class="ha-fi"><label><i>*</i>发现时间：</label><div class="ha-ctrl"><div class="ha-datetime" data-ha-act="datetime"><svg viewBox="0 0 16 16" width="14" height="14"><rect x="1.5" y="2.5" width="13" height="12" rx="1" fill="none" stroke="#86909C" stroke-width="1.2"></rect><path d="M1.5 6h13M5 1v3M11 1v3" stroke="#86909C" stroke-width="1.2"></path></svg><span>2026-10-09 17:32:47</span></div></div></div>
             <div></div>
             <div class="ha-fi"><label><i>*</i>隐患治理类型：</label><div class="ha-radio-group ha-radio-blue"><div class="ha-radio checked"><span class="ha-dot"></span>限期整改</div><div class="ha-radio"><span class="ha-dot"></span>立即整改</div></div></div>
@@ -2404,6 +2558,17 @@
                 </div>
               </div>
             </div>
+            <div id="syCfgImage" style="display:none;">
+              <div class="sy-cfg-title">图片上传配置</div>
+              <div class="sy-hz-row">
+                <div class="sy-check auto" id="syImgCheck"><span class="box">✓</span>照片上传配置:</div>
+                <div class="sy-select" id="syImgSelect"><span style="color:#A8ABB2;">拍照和相册选择</span><svg class="sy-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="sy-dd"><div class="sy-dd-item active">拍照和相册选择</div><div class="sy-dd-item">仅拍照</div><div class="sy-dd-item">仅相册</div></div></div>
+              </div>
+              <div class="sy-hz-row">
+                <div class="sy-check auto blue checked" id="syImgDeselCheck"><span class="box">✓</span>图片脱敏配置:</div>
+                <div class="sy-select selected" id="syImgDesel"><span>无需脱敏</span><svg class="sy-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="sy-dd"><div class="sy-dd-item">自动脱敏</div><div class="sy-dd-item active">无需脱敏</div></div></div>
+              </div>
+            </div>
             <div class="sy-empty" id="syCfgEmpty" style="display:none;">该节点暂无配置项</div>
           </div>
         </section>
@@ -2476,6 +2641,7 @@
             <div class="ov-fi" data-page-node-id="4loCH77ZtBH55ezAiJEo1H"><label data-page-node-id="4K9QMTfvlAOayEqIlBhfw8">排查类型（一）：</label><div class="ov-select" data-page-node-id="eaPltBbmZBGDY9vRJ2RqAt"><span data-page-node-id="g5XYfeDv4or5brsfTj0ZVf">请选择</span><svg viewBox="0 0 12 12" width="12" height="12" data-page-node-id="SCSWA1LXzn5N1qG4Xpp1fa"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round" data-page-node-id="rHJpZfn6wsGF0OGldxDX2T"></path></svg></div></div>
             <div class="ov-fi" data-page-node-id="blKGDpkD2WSIkvgQUpdyCn"><label data-page-node-id="tck48hGcVKouLHfwZz8GSD">排查类型（二）：</label><div class="ov-select" data-page-node-id="oZsoixbaU2SJ9c34ih2DFb"><span data-page-node-id="iztiZq7KpZX8YCaCcFsThd">请选择</span><svg viewBox="0 0 12 12" width="12" height="12" data-page-node-id="0b1EmLM7ik5vC7mcrHPkoy"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round" data-page-node-id="Z49sWzT8eJdWfVrmfJREon"></path></svg></div></div>
             <div class="ov-fi" data-page-node-id="zzMjcw6DibqIYbOOTYxWC2"><label data-page-node-id="IccOYda6Fe7HxdZGKsAn6C">排查级别：</label><div class="ov-select" data-page-node-id="Rc4Jhvi6OaziAb9BNGPvxj"><span data-page-node-id="K1oaWhRSHErxcMN33HPslx">请选择</span><svg viewBox="0 0 12 12" width="12" height="12" data-page-node-id="uxsLEx4ETioukAxqQqmL5Q"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round" data-page-node-id="lnlXRoxtk7u4DUuNb85O1l"></path></svg></div></div>
+            <div class="ov-fi" data-page-node-id="NewObsTransferOd"><label>是否安全观察项转入：</label><div class="ov-select" id="ovObsSel"><span class="ov-sel-label">请选择</span><svg class="ov-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><span class="ov-clear" title="清空"><svg viewBox="0 0 14 14" width="14" height="14"><circle cx="7" cy="7" r="6" fill="none" stroke="#A9AEB8" stroke-width="1.2"></circle><path d="M4.8 4.8l4.4 4.4M9.2 4.8L4.8 9.2" stroke="#A9AEB8" stroke-width="1.2" stroke-linecap="round"></path></svg></span><div class="ov-dd"><div class="ov-dd-item">是</div><div class="ov-dd-item">否</div></div></div></div>
             <div class="ov-btns" data-page-node-id="E8019BrPt7YZNL7ckXkU9H"><button class="ov-btn ov-btn-primary" type="button" data-page-node-id="sEljYP1YjECzKjfvlzgJh0">查 询</button><button class="ov-btn ov-btn-plain" type="button" data-page-node-id="5x4wuHL4cM5m8lKNIVvvN3">重 置</button></div>
           </div>
         </div>
@@ -2484,7 +2650,7 @@
         <div class="ov-card ov-table-card" data-page-node-id="ZrL7Mou3FGtJ6nLMgKF4GJ">
           <div class="ov-table-head" data-page-node-id="WFratAvZvioP4fKlJpkGF2"><div class="ov-table-title" data-page-node-id="bQ7f4fFyUTAvfoP7fOLBl3">逾期隐患</div><button class="ov-export" type="button" title="导出当前列表数据" data-page-node-id="ZGIkJFVymr0jp0bvAiC6tb"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" data-page-node-id="UYGntw9EvbTKFmVdcXsOIx"><path d="M8 2v8M8 10l-3-3M8 10l3-3" stroke="#4E5969" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="L20H7HCmmUR8lPPF9gPCAq"></path><path d="M2.5 11.5v2h11v-2" stroke="#4E5969" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="yDVjtmI2hQNcsuqUUsnCGt"></path></svg>导出</button></div>
           <table data-page-node-id="9ywiDGICBHgzY7nlwmWsah">
-            <thead data-page-node-id="IX0vPNWdVoSGsrTAr4SjTN"><tr data-page-node-id="ndh0Ky8VACXSFAYChCqVTj"><th style="width:52px;" data-page-node-id="QXk10dHVwJJUWxHfI8zIkW">序号</th><th data-page-node-id="nQ7yBEbgLVtgyEIt6tg5po">隐患名称</th><th data-page-node-id="Cn0ohH47Na38HiZ0rajcj5">所属部门</th><th data-page-node-id="yvHGtKXIzFSoybFNQRZcm3">隐患级别</th><th data-page-node-id="CkCFPodMJewIX7rRxWNCDS">隐患类别</th><th data-page-node-id="anR6sgrqbMcx1FmePhvJxp">是否重大事故隐患</th><th data-page-node-id="F4NMNhqtQvDXJ3G70THDCE">隐患来源</th><th data-page-node-id="BUANFu7r1L8rg3bYe1Vj7U">排查类型（一）</th><th data-page-node-id="aqdJ5PMdq6ar2i3u3ZTuOS">排查类型（二）</th><th data-page-node-id="AzGLTTPOoxu3yGPpIfQcpC">排查级别</th><th data-page-node-id="583PhjkhdWrUckeBcYXlGS">操作</th></tr></thead>
+            <thead data-page-node-id="IX0vPNWdVoSGsrTAr4SjTN"><tr data-page-node-id="ndh0Ky8VACXSFAYChCqVTj"><th style="width:52px;" data-page-node-id="QXk10dHVwJJUWxHfI8zIkW">序号</th><th data-page-node-id="nQ7yBEbgLVtgyEIt6tg5po">隐患名称</th><th data-page-node-id="Cn0ohH47Na38HiZ0rajcj5">所属部门</th><th data-page-node-id="yvHGtKXIzFSoybFNQRZcm3">隐患级别</th><th data-page-node-id="CkCFPodMJewIX7rRxWNCDS">隐患类别</th><th data-page-node-id="anR6sgrqbMcx1FmePhvJxp">是否安全观察项转入</th><th data-page-node-id="F4NMNhqtQvDXJ3G70THDCE">隐患来源</th><th data-page-node-id="BUANFu7r1L8rg3bYe1Vj7U">排查类型（一）</th><th data-page-node-id="aqdJ5PMdq6ar2i3u3ZTuOS">排查类型（二）</th><th data-page-node-id="AzGLTTPOoxu3yGPpIfQcpC">排查级别</th><th data-page-node-id="583PhjkhdWrUckeBcYXlGS">操作</th></tr></thead>
             <tbody data-page-node-id="8USZucRizFbgddm6aMrCbi">
               <tr data-page-node-id="Qg0Ehcyo5ucbZRaTZVbvUv"><td data-page-node-id="EerRfK0YCI6ldmayJXoZUp">1</td><td class="ov-ell" data-page-node-id="1zMJzyxrB2SrvPga5AvdkA">测试隐患-逾期整改验证</td><td class="ov-ell" data-page-node-id="dh1DfE65t5HGIFaEcj4ftk">线上配置专用部门</td><td data-page-node-id="IwQMYrfNQpeGzGt43FoUyC">一般B级隐患</td><td data-page-node-id="VJwX4LFRkur0TuwpDce4EC">工艺</td><td data-page-node-id="xtmxtKyNlD3CJDeKpu5WKp">否</td><td data-page-node-id="ZQ0JbNGBke0GZFHpDOfV7o">专项排查</td><td class="ov-ell" data-page-node-id="nQQbzoHb0PgPp74SdZLCuX">综合性排查</td><td class="ov-ell" data-page-node-id="lrAGBc8OBkZgdPTwg256UV">督查/安全健康督查</td><td class="ov-ell" data-page-node-id="Ewyh9AI7mdZWVIFZTGITw1">二级公司检查</td><td data-page-node-id="iKmseIFOT2cvetwOoM0bzC"><span class="ov-detail" data-page-node-id="Gtm1k5mp25FArFHryJCyW8">详情</span></td></tr>
               <tr data-page-node-id="o9UELDVacBjM4uuPLAogC4"><td data-page-node-id="sCT4BYFudsVHRdfMmLMrSi">2</td><td class="ov-ell" data-page-node-id="yz68FEAcFbr55lqanjcuCO">隐患巡查测试数据</td><td class="ov-ell" data-page-node-id="ZX2maOST5WjWBMcNfzs2gt">X- test</td><td data-page-node-id="COQGQEvleBdx9iLWjFXDHe">一般B级隐患</td><td data-page-node-id="XfKPssI2HWxoroDvtLdPDk">综合管理</td><td data-page-node-id="nstPv2gkYAOFTevHGAWLaB">否</td><td data-page-node-id="35NgKoIHE4x0GSquY4CYdr">专项排查</td><td class="ov-ell" data-page-node-id="KNaWYUgSxyy51ANX7upg3C">日常排查/企业内部自查</td><td class="ov-ell" data-page-node-id="ekbx7O3FhySdslK3Hj0y0J">督查/安全健康督查</td><td class="ov-ell" data-page-node-id="EYCzxv0IjPWbXU4s0I3EMQ">企业及以下自查/企业内部自查</td><td data-page-node-id="3eSHBstIw14DPqBdCLHoyR"><span class="ov-detail" data-page-node-id="2DxfbDvGDhA03zh9sqJQBC">详情</span></td></tr>
@@ -2570,8 +2736,7 @@
 
     /* ---------- 动态创建：催办弹窗 ---------- */
     var urgeMask = document.createElement('div');
-    urgeMask.className = 'modal-mask';
-    urgeMask.innerHTML =
+    urgeMask.className = 'modal-mask';    urgeMask.innerHTML =
       '<div class="modal" role="dialog" aria-label="隐患催办">'
       + '<div class="modal-head"><div class="modal-title">隐患催办</div><button class="modal-close" id="urgeClose" type="button" title="关闭">✕</button></div>'
       + '<div class="modal-body">'
@@ -2579,11 +2744,10 @@
       + '<div class="mitem" id="urgeTargetItem"><label><span class="req">*</span>催办对象：</label>'
       + '<div class="mcontrol-wrap"><div class="combo" id="urgeTargetCombo">'
       + '<div class="combo-tags" id="urgeTargetTags"></div>'
-      + '<input class="mcontrol combo-input" id="urgeTargetInput" placeholder="请选择，支持关键字搜索（可多选）" autocomplete="off">'
-      + '<div class="combo-list" id="urgeTargetList"></div>'
+      + '<input class="mcontrol combo-input" id="urgeTargetInput" placeholder="点击选择催办对象（可多选）" readonly autocomplete="off">'
       + '</div>'
       + '<div class="merr">请选择催办对象</div>'
-      + '<div class="mhint">支持按姓名/角色/部门关键字模糊搜索，可多选</div></div></div>'
+      + '<div class="mhint">点击输入框弹出人员选择弹窗，可多选</div></div></div>'
       + '<div class="mitem"><label><span class="req">*</span>催办方式：</label>'
       + '<div class="mcontrol-wrap"><div class="mchecks" id="urgeWays">'
       + '<label><input type="checkbox" checked>系统消息</label>'
@@ -2600,7 +2764,6 @@
     document.body.appendChild(urgeMask);
     var urgeTargetItem = urgeMask.querySelector('#urgeTargetItem');
     var comboInput = urgeMask.querySelector('#urgeTargetInput');
-    var comboList = urgeMask.querySelector('#urgeTargetList');
     var comboTags = urgeMask.querySelector('#urgeTargetTags');
     var urgeTargetOptions = [
       { value: '整改责任人', label: '张伟（安全员 · HSE部）', resp: true, cur: true },
@@ -2633,7 +2796,7 @@
       return flag ? '<span class="resp-badge">整改责任人</span>' : '';
     }
     function renderUrgeTags(){
-      comboInput.placeholder = urgeTargetPicked.length ? '继续添加，支持关键字搜索（可多选）' : '请选择，支持关键字搜索（可多选）';
+      comboInput.placeholder = urgeTargetPicked.length ? '继续添加，点击选择（可多选）' : '点击选择催办对象（可多选）';
       if (!urgeTargetPicked.length){ comboTags.innerHTML = ''; return; }
       var show = urgeTagsExpanded ? urgeTargetPicked : urgeTargetPicked.slice(0, TAG_MAX);
       var html = show.map(function(p){
@@ -2647,58 +2810,20 @@
       }
       comboTags.innerHTML = html;
     }
-    function renderComboList(){
-      var items = urgeTargetOptions.filter(function(o){ return fuzzyMatch(comboInput.value, o.label); });
-      if (!items.length) {
-        comboList.innerHTML = '<div class="combo-empty">未找到匹配的催办对象</div>';
-        return;
-      }
-      comboList.innerHTML = items.map(function(o){
-        var sel = isPicked(o.value);
-        return '<div class="combo-item' + (sel ? ' sel' : '') + '" data-value="' + esc(o.value) + '" data-label="' + esc(o.label) + '" data-resp="' + (o.resp ? 1 : 0) + '">'
-          + esc(o.label) + respBadge(o.resp) + (sel ? '<span class="ck">✓</span>' : '') + '</div>';
-      }).join('');
-    }
-    function openCombo(){ renderComboList(); comboList.classList.add('open'); }
-    function closeCombo(){ comboList.classList.remove('open'); }
     function resetUrgeTarget(){
       urgeTagsExpanded = false;
       /* 默认选中当前节点处置人 */
       urgeTargetPicked = urgeTargetOptions.filter(function(o){ return o.cur; }).map(function(o){
         return { value: o.value, label: o.label, resp: !!o.resp };
       });
-      comboInput.value = '';
       renderUrgeTags();
     }
-    comboInput.addEventListener('focus', openCombo);
-    comboInput.addEventListener('input', function(){
-      urgeTargetItem.classList.remove('error');
-      openCombo();
-    });
-    // mousedown 早于 input 失焦，保证选项可点中；多选：点击切换选中，不收起面板
-    comboList.addEventListener('mousedown', function(e){
-      var item = e.target.closest('.combo-item');
-      if (!item) return;
-      e.preventDefault();
-      var val = item.getAttribute('data-value');
-      var lab = item.getAttribute('data-label');
-      if (isPicked(val)) {
-        urgeTargetPicked = urgeTargetPicked.filter(function(p){ return p.value !== val; });
-      } else {
-        urgeTargetPicked.push({ value: val, label: lab, resp: item.getAttribute('data-resp') === '1' });
-      }
-      urgeTargetItem.classList.remove('error');
-      renderUrgeTags();
-      renderComboList();
-    });
-    // 标签 ✕ 移除（列表若开着同步勾选态；stopPropagation 防止节点重渲染脱离 DOM 被误判为外部点击而收起）
+    // 标签 ✕ 移除与 +N 展开/收起
     comboTags.addEventListener('click', function(e){
-      /* +N 展开 / 收起 */
       var more = e.target.closest('.combo-more');
       if (more){
         urgeTagsExpanded = more.getAttribute('data-act') === 'expand';
         renderUrgeTags();
-        renderComboList();
         return;
       }
       var x = e.target.closest('.tag-x');
@@ -2707,11 +2832,169 @@
       var val = x.getAttribute('data-value');
       urgeTargetPicked = urgeTargetPicked.filter(function(p){ return p.value !== val; });
       renderUrgeTags();
-      renderComboList();
     });
-    document.addEventListener('click', function(e){
-      if (!e.target.closest || !e.target.closest('#urgeTargetCombo')) closeCombo();
-    });
+
+    /* ---------- 催办对象人员选择弹窗 ---------- */
+    (function(){
+      var UP_PEOPLE = [
+        { name:'胡伟玲-05', no:'--',    phone:'18310243525', dept:'X-test',        pos:'x-test岗位' },
+        { name:'胡伟玲-02', no:'--',    phone:'18310243522', dept:'X-test',        pos:'--' },
+        { name:'胡伟玲-04', no:'--',    phone:'18310243524', dept:'X-test',        pos:'x-test岗位' },
+        { name:'胡伟玲-03', no:'--',    phone:'18310243523', dept:'X-test',        pos:'x-test岗位' },
+        { name:'胡伟玲-01', no:'--',    phone:'18310243521', dept:'X-test',        pos:'x-test岗位' },
+        { name:'胡伟玲-06', no:'666',   phone:'18310243526', dept:'X-test',        pos:'x-test岗位' },
+        { name:'胡伟玲',    no:'--',    phone:'18310663001', dept:'X-test',        pos:'x-test岗位' },
+        { name:'张伟',      no:'--',    phone:'18310243001', dept:'HSE部',         pos:'安全员',     resp:true, optValue:'整改责任人' },
+        { name:'刘敏',      no:'--',    phone:'18310243002', dept:'线上配置专用部', pos:'部门负责人', optValue:'部门负责人' },
+        { name:'熊辰婷',    no:'--',    phone:'18310243003', dept:'HSE部',         pos:'HSE专员',   optValue:'隐患发现人' },
+        { name:'王强',      no:'--',    phone:'18310243004', dept:'X-test',        pos:'安全员',     optValue:'安全员' }
+      ];
+      function personLabel(p){
+        return p.pos !== '--' ? p.name + '（' + p.pos + ' · ' + p.dept + '）' : p.name + '（' + p.dept + '）';
+      }
+      function chipLabel(p){
+        return p.name + ' (' + p.dept + ')';
+      }
+      var UP_TREE = ['设备管理部','总经办办公室','测试部门\'L','测试部门\'LM','财务部','qpk测试部门\'3','ZPQ','qpk测试部门\'2','ZQ部','智巡测试',
+        { label:'回归部门', caret:true },'质检部',{ label:'ZH-测试部门\'1', caret:true, l1:true },'张雨生专属测试',
+        { label:'qpk测试部门', caret:true, l1:true },{ label:'stasf', l2:true },
+        { label:'环保车间', caret:true, l1:true },{ label:'环保车间一班', l2:true },{ label:'环保车间三班', l2:true },{ label:'环保车间二班', l2:true },{ label:'环保车间办公室', l2:true }];
+
+      var mask = document.createElement('div');
+      mask.className = 'up-mask';
+      mask.style.display = 'none';
+      mask.innerHTML =
+        '<div class="up-modal" role="dialog" aria-label="催办对象">'
+        + '<div class="up-head"><span class="up-title">催办对象</span><span class="up-x" id="upClose" title="关闭">✕</span></div>'
+        + '<div class="up-tools">'
+        + '<button class="up-btn" type="button"><svg viewBox="0 0 14 14"><circle cx="7" cy="4.5" r="2.5" fill="none" stroke="#FFFFFF" stroke-width="1.2"/><path d="M2 12c.7-2.4 2.6-3.6 5-3.6s4.3 1.2 5 3.6" fill="none" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round"/></svg>按人员</button>'
+        + '<input class="up-input" id="upNameKw" type="text" placeholder="请输入员工姓名">'
+        + '<input class="up-input" id="upNoKw" type="text" placeholder="请输入工号">'
+        + '<select class="up-input" id="upPosKw"><option>请选择岗位</option><option>x-test岗位</option><option>安全员</option><option>部门负责人</option><option>HSE专员</option></select>'
+        + '<button class="up-btn" id="upSearch" type="button"><svg viewBox="0 0 14 14"><circle cx="6" cy="6" r="4.2" fill="none" stroke="#FFFFFF" stroke-width="1.3"/><path d="M9.4 9.4L12.6 12.6" stroke="#FFFFFF" stroke-width="1.3" stroke-linecap="round"/></svg>查询</button>'
+        + '<span class="up-count">已选择：<b id="upSelCount">0</b> 项</span>'
+        + '<button class="up-clear" id="upClear" type="button">清空</button>'
+        + '</div>'
+        + '<div class="up-body">'
+        + '<div class="up-tree" id="upTree"><label class="up-tree-ck"><input type="checkbox" checked>包含子部门</label></div>'
+        + '<div class="up-main"><table><thead><tr><th style="width:44px;"><input type="checkbox" id="upCheckAll"></th><th>姓名</th><th>工号</th><th>手机号</th><th>部门</th><th>岗位</th></tr></thead><tbody id="upTbody"></tbody></table></div>'
+        + '<div class="up-sel" id="upSelPanel"></div>'
+        + '</div>'
+        + '<div class="up-foot"><button class="btn btn-plain" id="upCancel" type="button">取 消</button><button class="btn btn-primary" id="upConfirm" type="button">确 认</button></div>'
+        + '</div>';
+      document.body.appendChild(mask);
+
+      var tbody = mask.querySelector('#upTbody');
+      var selPanel = mask.querySelector('#upSelPanel');
+      var selCount = mask.querySelector('#upSelCount');
+      var checkAll = mask.querySelector('#upCheckAll');
+      var personSel = {};   /* { name: person } */
+
+      /* 渲染部门树 */
+      var treeEl = mask.querySelector('#upTree');
+      treeEl.insertAdjacentHTML('beforeend', UP_TREE.map(function(item){
+        var it = typeof item === 'string' ? { label: item } : item;
+        return '<div class="up-tree-item' + (it.l1 ? ' l1' : '') + (it.l2 ? ' l2' : '') + '">'
+          + (it.caret ? '<span class="tc">▶</span>' : '') + it.label + '</div>';
+      }).join(''));
+      treeEl.addEventListener('click', function(e){
+        var item = e.target.closest('.up-tree-item');
+        if (!item) return;
+        treeEl.querySelectorAll('.up-tree-item').forEach(function(x){ x.classList.remove('active'); });
+        item.classList.add('active');
+      });
+
+      function filtered(){
+        var kw = mask.querySelector('#upNameKw').value.trim();
+        var noKw = mask.querySelector('#upNoKw').value.trim();
+        var posKw = mask.querySelector('#upPosKw').value;
+        return UP_PEOPLE.filter(function(p){
+          if (kw && p.name.indexOf(kw) === -1) return false;
+          if (noKw && p.no.indexOf(noKw) === -1) return false;
+          if (posKw !== '请选择岗位' && p.pos !== posKw) return false;
+          return true;
+        });
+      }
+      function renderRows(){
+        var list = filtered();
+        if (!list.length){
+          tbody.innerHTML = '<tr><td colspan="6"><div class="up-empty">暂无数据</div></td></tr>';
+          checkAll.checked = false;
+          return;
+        }
+        tbody.innerHTML = list.map(function(p){
+          var ck = !!personSel[p.name];
+          return '<tr data-name="' + esc(p.name) + '">'
+            + '<td><input type="checkbox" class="up-row-ck"' + (ck ? ' checked' : '') + '></td>'
+            + '<td class="pn">' + esc(p.name) + '</td>'
+            + '<td class="pno">' + esc(p.no) + '</td>'
+            + '<td class="pph">' + esc(p.phone) + '</td>'
+            + '<td class="pd">' + esc(p.dept) + '</td>'
+            + '<td class="pp">' + esc(p.pos) + '</td></tr>';
+        }).join('');
+        checkAll.checked = list.every(function(p){ return !!personSel[p.name]; });
+      }
+      function renderSelPanel(){
+        var names = Object.keys(personSel);
+        selCount.textContent = names.length;
+        selPanel.innerHTML = names.length
+          ? names.map(function(n){
+              var p = personSel[n];
+              return '<span class="up-chip" data-name="' + esc(n) + '">'
+                + '<span class="avatar"><svg viewBox="0 0 14 14"><circle cx="7" cy="4.5" r="2.5" fill="#FFFFFF"/><path d="M2 12c.7-2.4 2.6-3.6 5-3.6s4.3 1.2 5 3.6" fill="#FFFFFF"/></svg></span>'
+                + '<span class="uname">' + esc(chipLabel(p)) + '</span><span class="ux" title="移除">✕</span></span>';
+            }).join('')
+          : '<div class="up-sel-empty">暂无已选人员</div>';
+        checkAll.checked = UP_PEOPLE.length > 0 && UP_PEOPLE.every(function(p){ return !!personSel[p.name]; });
+      }
+      function renderAll(){ renderRows(); renderSelPanel(); }
+      function toggle(name){
+        if (personSel[name]) delete personSel[name]; else personSel[name] = UP_PEOPLE.find(function(p){ return p.name === name; });
+        renderAll();
+      }
+      tbody.addEventListener('click', function(e){
+        var tr = e.target.closest('tr');
+        if (!tr || !tr.dataset.name) return;
+        toggle(tr.dataset.name);
+      });
+      checkAll.addEventListener('click', function(e){ e.stopPropagation(); });
+      checkAll.addEventListener('change', function(){
+        UP_PEOPLE.forEach(function(p){ if (checkAll.checked) personSel[p.name] = p; else delete personSel[p.name]; });
+        renderAll();
+      });
+      selPanel.addEventListener('click', function(e){
+        var x = e.target.closest('.ux');
+        if (!x) return;
+        toggle(x.closest('.up-chip').dataset.name);
+      });
+      mask.querySelector('#upSearch').addEventListener('click', renderRows);
+      mask.querySelector('#upClear').addEventListener('click', function(){ personSel = {}; renderAll(); });
+      function closePerson(){ mask.style.display = 'none'; }
+      mask.querySelector('#upClose').addEventListener('click', closePerson);
+      mask.querySelector('#upCancel').addEventListener('click', closePerson);
+      mask.addEventListener('click', function(e){ if (e.target === mask) closePerson(); });
+      mask.querySelector('#upConfirm').addEventListener('click', function(){
+        urgeTargetPicked = Object.keys(personSel).map(function(n){
+          var p = personSel[n];
+          return { value: p.optValue || p.name, label: personLabel(p), resp: !!p.resp };
+        });
+        urgeTargetItem.classList.remove('error');
+        renderUrgeTags();
+        closePerson();
+      });
+
+      /* 输入框点击打开弹窗，预选当前已选催办对象 */
+      comboInput.addEventListener('click', function(){
+        urgeTargetItem.classList.remove('error');
+        personSel = {};
+        urgeTargetPicked.forEach(function(pk){
+          var p = UP_PEOPLE.find(function(x){ return personLabel(x) === pk.label; });
+          if (p) personSel[p.name] = p;
+        });
+        renderAll();
+        mask.style.display = 'flex';
+      });
+    })();
 
     function openUrgeModal(){
       urgeTargetItem.classList.remove('error');
@@ -2820,13 +3103,13 @@
         finder: '常假设（南京安迪苏）（模拟数据）'
       };
       detailView.innerHTML =
-        '<div class="d2-head"><div class="d2-title">详情</div><button class="btn-back" id="detailBack" type="button">返回</button></div>'
+        '<div class="d2-head"><div class="d2-title">详情</div><button class="btn-accept-jy" id="btnAcceptJy" type="button">整改验收</button><button class="btn-back" id="detailBack" type="button">返回</button></div>'
         + '<div class="card d2-card">'
         + '<dl class="d2-grid">'
         + d2row('隐患名称', curDetail.name, '所属分析单元', curDetail.unit)
         + d2row('状态', '整改中', '', '')
         + d2row('所属部门', curDetail.dept, '隐患部位', '')
-        + d2row('隐患等级', curDetail.level, '是否重大事故隐患', curDetail.major)
+        + d2row('隐患等级', curDetail.level, '是否安全观察项转入', curDetail.major)
         + d2row('隐患专项类别', '—', '是否外部隐患', '否')
         + d2row('隐患来源', curDetail.source, '', '')
         + d2row('是否未包含在隐患', '否', '', '')
@@ -2844,6 +3127,18 @@
         + d2row('隐患评估报告', '—', '', '')
         + d2row('关联作业任务', '—', '', '')
         + '</dl>'
+        + '<div class="d2-sec">奖励分配情况</div>'
+        + '<dl class="d2-grid">'
+        + d2row('奖励金额', '¥800.50', '奖励人次', '2')
+        + '</dl>'
+        + '<div class="d-table-wrap"><table class="d-table d2-table">'
+        + '<thead><tr>'
+        + '<th style="width:60px;">序号</th><th>奖励人员</th><th style="width:140px;">分配金额（元）</th>'
+        + '</tr></thead>'
+        + '<tbody>'
+        + '<tr><td>1</td><td>张明（质量效能部）</td><td>500.00</td></tr>'
+        + '<tr><td>2</td><td>李华（质量效能部）</td><td>300.50</td></tr>'
+        + '</tbody></table></div>'
         + '<div class="d2-sec">隐患记录</div>'
         + '<div class="d-table-wrap"><table class="d-table d2-table">'
         + '<thead><tr>'
@@ -2856,6 +3151,7 @@
       detailView.style.display = '';
       pageBody.scrollTop = 0;
       detailView.querySelector('#detailBack').addEventListener('click', hideDetail);
+      detailView.querySelector('#btnAcceptJy').addEventListener('click', function(){ jyOpen(); });
       renderRecords();
     }
     function hideDetail(){
@@ -2902,9 +3198,304 @@
       replyMask.style.display = 'flex';
     }
 
+    /* ---------- 整改验收弹窗（对齐整改验收交互原型） ---------- */
+    var jyMask = document.createElement('div');
+    jyMask.className = 'modal-mask';
+    jyMask.innerHTML =
+      '<div class="modal jy-modal" role="dialog" aria-modal="true">'
+      + '<div class="modal-head"><div class="modal-title">整改验收</div><button class="modal-close" id="jyClose" type="button" title="关闭">✕</button></div>'
+      + '<div class="modal-body">'
+      + '<div class="mitem"><label><span class="req">*</span>验收意见:</label><div class="mcontrol-wrap">'
+      + '<div class="jy-radios" id="jyOpinion"><span class="jy-radio checked" data-value="合格"><span class="jy-dot"></span>合格</span><span class="jy-radio" data-value="不合格"><span class="jy-dot"></span>不合格</span></div>'
+      + '</div></div>'
+      + '<div class="mitem" id="jyItemSituation"><label><span class="req">*</span>验收情况:</label><div class="mcontrol-wrap">'
+      + '<textarea class="mcontrol" id="jySituation" maxlength="500" placeholder="请输入"></textarea>'
+      + '<div class="jy-count" id="jyCount">0/500</div><div class="jy-err" id="jyErrSituation">请输入验收情况</div>'
+      + '</div></div>'
+      + '<div class="mitem"><label>验收图片:</label><div class="mcontrol-wrap">'
+      + '<div class="jy-img-grid" id="jyImgGrid"><div class="jy-img-add" id="jyImgAdd">＋</div></div>'
+      + '<div class="mhint">照片限制5张，单个文件不能超过10MB。</div>'
+      + '<input type="file" id="jyImgInput" accept="image/*" multiple hidden>'
+      + '</div></div>'
+      + '<div class="mitem"><label>验收报告:</label><div class="mcontrol-wrap">'
+      + '<div class="jy-file-row"><button class="jy-file-btn" id="jyBtnReport" type="button">上传文件</button>'
+      + '<span class="jy-file-note">文件不能超过500Mb</span>'
+      + '<span class="jy-file-name" id="jyReportName"><span class="fn" id="jyReportFileName"></span><span class="x" id="jyReportDel">✕</span></span></div>'
+      + '<input type="file" id="jyReportInput" hidden>'
+      + '</div></div>'
+      + '<div class="mitem"><label>奖励金额:</label><div class="mcontrol-wrap">'
+      + '<div class="jy-ro"><input type="text" id="jyRewardMoney" readonly placeholder="由分配数据统计得出"><span class="jy-auto">自动统计</span><span class="suf">元</span></div>'
+      + '<div class="mhint">金额 = 下方各分配金额合计，无需手动填写</div>'
+      + '<div class="jy-err" id="jyErrMoney">请添加奖励分配以生成奖励金额</div>'
+      + '</div></div>'
+      + '<div class="mitem"><label>奖励人次:</label><div class="mcontrol-wrap">'
+      + '<div class="jy-ro"><input type="text" id="jyRewardCount" readonly placeholder="由分配条数统计得出"><span class="jy-auto">自动统计</span><span class="suf">人次</span></div>'
+      + '<div class="mhint">人次 = 下方分配记录条数，无需手动填写</div>'
+      + '<div class="jy-err" id="jyErrCount">请添加奖励分配以生成奖励人次</div>'
+      + '</div></div>'
+      + '<div class="mitem" id="jyItemAlloc"><label><span class="req">*</span>奖励分配:</label><div class="mcontrol-wrap">'
+      + '<div class="jy-alloc-head"><button class="jy-alloc-add" id="jyAddAlloc" type="button">+ 添加分配</button>'
+      + '<span class="jy-alloc-cnt" id="jyAllocCount">已分配 <em>0</em> 条</span></div>'
+      + '<div id="jyAllocList"></div>'
+      + '<div class="jy-alloc-empty" id="jyAllocEmpty">点击「+ 添加分配」开始添加奖励分配，金额与人数将自动汇总到上方</div>'
+      + '<div class="jy-alloc-sum" id="jyAllocSum"><span>分配金额合计：<b id="jyAllocTotal">0</b> 元（即奖励总额）　奖励人次：<b id="jyAllocCountEcho">0</b> 人</span>'
+      + '<span class="jy-tip" id="jyAllocTip"></span></div>'
+      + '<div class="jy-err" id="jyErrAlloc">请完善人员分配</div>'
+      + '</div></div>'
+      + '</div>'
+      + '<div class="modal-foot"><button class="btn btn-plain" id="jyCancel" type="button">取 消</button><button class="btn btn-primary" id="jyOk" type="button">确 定</button></div>'
+      + '</div>';
+    document.body.appendChild(jyMask);
+    var jyPersonDd = document.createElement('div');
+    jyPersonDd.className = 'jy-person-dd';
+    jyPersonDd.id = 'jyPersonDd';
+    document.body.appendChild(jyPersonDd);
+
+    var JY_PERSONS = [
+      { name: '张明', dept: '质量效能部', phone: '138 0010 0086' },
+      { name: '李华', dept: '安全环保部', phone: '139 0011 0022' },
+      { name: '王强', dept: '设备动力部', phone: '137 0012 0033' },
+      { name: '赵敏', dept: '生产运行部', phone: '136 0013 0044' },
+      { name: '孙伟', dept: '质量检验部', phone: '135 0014 0055' },
+      { name: '周婷', dept: '人力资源部', phone: '134 0015 0066' },
+      { name: '吴磊', dept: '仓储物流部', phone: '133 0016 0077' },
+      { name: '郑雪', dept: '综合管理部', phone: '132 0017 0088' }
+    ];
+    var jySituation = jyMask.querySelector('#jySituation');
+    var jyAllocList = jyMask.querySelector('#jyAllocList');
+    var jyActiveInput = null;
+    function jyRows(){ return jyAllocList.querySelectorAll('.jy-alloc-row'); }
+    function jyFmt(n){ return Math.abs(n - Math.round(n)) < 0.001 ? String(Math.round(n)) : n.toFixed(2); }
+    function jyShowErr(id){ jyMask.querySelector('#' + id).classList.add('show'); }
+    function jyHideErr(id){ jyMask.querySelector('#' + id).classList.remove('show'); }
+    function jyOpen(){ jyMask.classList.add('show'); jyRecompute(); }
+    function jyCloseModal(){
+      jyMask.classList.remove('show');
+      jyPersonDd.classList.remove('show');
+      ['jyErrSituation','jyErrMoney','jyErrCount','jyErrAlloc'].forEach(jyHideErr);
+      jySituation.classList.remove('err');
+    }
+    jyMask.querySelector('#jyClose').addEventListener('click', jyCloseModal);
+    jyMask.querySelector('#jyCancel').addEventListener('click', jyCloseModal);
+    jyMask.addEventListener('click', function(e){ if (e.target === jyMask) jyCloseModal(); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && jyMask.classList.contains('show')) jyCloseModal(); });
+    /* 验收意见单选 */
+    jyMask.querySelector('#jyOpinion').addEventListener('click', function(e){
+      var item = e.target.closest('.jy-radio');
+      if (!item) return;
+      this.querySelectorAll('.jy-radio').forEach(function(r){ r.classList.remove('checked'); });
+      item.classList.add('checked');
+    });
+    /* 验收情况字数 */
+    jySituation.addEventListener('input', function(){
+      jyMask.querySelector('#jyCount').textContent = jySituation.value.length + '/500';
+      if (jySituation.value.trim()) jyHideErr('jyErrSituation');
+      jySituation.classList.remove('err');
+    });
+    /* 验收图片上传 */
+    var jyImgCount = 0;
+    jyMask.querySelector('#jyImgAdd').addEventListener('click', function(){ jyMask.querySelector('#jyImgInput').click(); });
+    jyMask.querySelector('#jyImgInput').addEventListener('change', function(){
+      var input = this;
+      Array.prototype.slice.call(input.files).forEach(function(file){
+        if (file.type.indexOf('image') !== 0) return;
+        if (jyImgCount >= 5) { showToast('照片最多上传5张'); return; }
+        if (file.size > 10 * 1024 * 1024) { showToast('「' + file.name + '」超过10MB，已跳过'); return; }
+        var tile = document.createElement('div');
+        tile.className = 'jy-img-tile';
+        var img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        var del = document.createElement('button');
+        del.className = 'rm'; del.type = 'button'; del.textContent = '✕';
+        del.addEventListener('click', function(){ tile.remove(); jyImgCount--; });
+        tile.appendChild(img); tile.appendChild(del);
+        jyMask.querySelector('#jyImgGrid').insertBefore(tile, jyMask.querySelector('#jyImgAdd'));
+        jyImgCount++;
+      });
+      input.value = '';
+    });
+    /* 验收报告上传 */
+    jyMask.querySelector('#jyBtnReport').addEventListener('click', function(){ jyMask.querySelector('#jyReportInput').click(); });
+    jyMask.querySelector('#jyReportInput').addEventListener('change', function(){
+      if (this.files.length) {
+        jyMask.querySelector('#jyReportFileName').textContent = this.files[0].name;
+        jyMask.querySelector('#jyReportName').classList.add('show');
+      }
+    });
+    jyMask.querySelector('#jyReportDel').addEventListener('click', function(){
+      jyMask.querySelector('#jyReportName').classList.remove('show');
+      jyMask.querySelector('#jyReportInput').value = '';
+    });
+    /* 奖励分配：人员模糊搜索下拉 */
+    function jyRenderDd(filter){
+      var kw = (filter || '').trim().toLowerCase();
+      var list = JY_PERSONS.filter(function(p){
+        if (!kw) return true;
+        return (p.name + p.dept + p.phone).toLowerCase().indexOf(kw) >= 0;
+      });
+      jyPersonDd.innerHTML = list.length ? list.map(function(p){
+        return '<div class="jy-pdd-opt" data-name="' + p.name + '"><div class="jy-pdd-name">' + p.name + '</div>'
+          + '<div class="jy-pdd-sub">' + p.dept + ' · ' + p.phone + '</div></div>';
+      }).join('') : '<div class="jy-pdd-empty">无匹配人员</div>';
+    }
+    function jyShowDd(input){
+      jyActiveInput = input;
+      jyRenderDd(input.value);
+      var r = input.getBoundingClientRect();
+      jyPersonDd.style.left = r.left + 'px';
+      jyPersonDd.style.top = (r.bottom + 2) + 'px';
+      jyPersonDd.classList.add('show');
+    }
+    function jyHideDd(){ jyPersonDd.classList.remove('show'); jyActiveInput = null; }
+    jyPersonDd.addEventListener('mousedown', function(e){
+      var opt = e.target.closest('.jy-pdd-opt');
+      if (!opt) return;
+      if (!jyActiveInput) {
+        var rows = jyRows();
+        for (var i = 0; i < rows.length; i++) {
+          var inp = rows[i].querySelector('.jy-alloc-person');
+          if (!inp.value.trim()) { jyActiveInput = inp; break; }
+        }
+      }
+      if (!jyActiveInput) return;
+      e.preventDefault();
+      var p = JY_PERSONS.find(function(x){ return x.name === opt.getAttribute('data-name'); });
+      if (p) {
+        jyActiveInput.value = p.name + '（' + p.dept + '）';
+        jyActiveInput.classList.remove('err');
+        jyHideErr('jyErrAlloc');
+        jyRecompute();
+      }
+      jyHideDd();
+    });
+    document.addEventListener('mousedown', function(e){
+      if (!jyPersonDd.contains(e.target) && !(jyActiveInput && e.target === jyActiveInput)) jyHideDd();
+    });
+    function jyAddRow(){
+      var row = document.createElement('div');
+      row.className = 'jy-alloc-row';
+      var idx = document.createElement('span'); idx.className = 'idx';
+      var person = document.createElement('input');
+      person.type = 'text'; person.className = 'jy-alloc-inp jy-alloc-person';
+      person.setAttribute('autocomplete', 'off');
+      person.placeholder = '选择奖励人员';
+      person.addEventListener('focus', function(){ jyShowDd(person); });
+      person.addEventListener('input', function(){ if (jyActiveInput === person) jyRenderDd(person.value); });
+      person.addEventListener('blur', function(){ setTimeout(jyHideDd, 160); });
+      var money = document.createElement('input');
+      money.type = 'text'; money.className = 'jy-alloc-inp jy-alloc-money';
+      money.placeholder = '分配金额';
+      var suf = document.createElement('span'); suf.textContent = '元';
+      suf.style.cssText = 'color:#909399;font-size:12px;flex-shrink:0;';
+      var mwrap = document.createElement('div');
+      mwrap.style.cssText = 'display:flex;align-items:center;gap:6px;flex:1;min-width:0;';
+      mwrap.appendChild(money); mwrap.appendChild(suf);
+      var del = document.createElement('button');
+      del.type = 'button'; del.className = 'jy-alloc-del'; del.textContent = '删除';
+      del.addEventListener('click', function(){ row.remove(); jyRenumber(); jyRecompute(); });
+      row.appendChild(idx); row.appendChild(person); row.appendChild(mwrap); row.appendChild(del);
+      jyAllocList.appendChild(row);
+      jyRenumber();
+      jyRecompute();
+      person.focus();
+    }
+    function jyRenumber(){
+      jyRows().forEach(function(r, i){ r.querySelector('.idx').textContent = (i + 1); });
+    }
+    jyMask.querySelector('#jyAddAlloc').addEventListener('click', jyAddRow);
+    jyAllocList.addEventListener('input', function(){
+      jyHideErr('jyErrAlloc'); jyRecompute();
+    });
+    /* 核心：分配数据反向统计总额与人次 */
+    function jyRecompute(){
+      var rows = jyRows();
+      var n = rows.length;
+      var total = 0;
+      rows.forEach(function(r){
+        var v = parseFloat(r.querySelector('.jy-alloc-money').value.trim());
+        if (!isNaN(v)) total += v;
+      });
+      jyMask.querySelector('#jyRewardMoney').value = n > 0 ? jyFmt(total) : '';
+      jyMask.querySelector('#jyRewardCount').value = n > 0 ? String(n) : '';
+      jyMask.querySelector('#jyAllocCount').innerHTML = '已分配 <em>' + n + '</em> 条';
+      jyMask.querySelector('#jyAllocEmpty').style.display = n > 0 ? 'none' : 'block';
+      var sumEl = jyMask.querySelector('#jyAllocSum');
+      if (n > 0) {
+        sumEl.classList.add('show');
+        jyMask.querySelector('#jyAllocTotal').textContent = jyFmt(total);
+        jyMask.querySelector('#jyAllocCountEcho').textContent = n;
+        var filled = 0;
+        rows.forEach(function(r){
+          var p = r.querySelector('.jy-alloc-person').value.trim();
+          var m = r.querySelector('.jy-alloc-money').value.trim();
+          if (p && !isNaN(Number(m)) && Number(m) > 0) filled++;
+        });
+        var tip = jyMask.querySelector('#jyAllocTip');
+        if (filled === n) { tip.textContent = '✓ 全部分配已填写完整'; tip.className = 'jy-tip ok'; }
+        else { tip.textContent = '尚有 ' + (n - filled) + ' 条未填写人员或金额'; tip.className = 'jy-tip'; }
+      } else {
+        sumEl.classList.remove('show');
+      }
+      jyHideErr('jyErrAlloc'); jyHideErr('jyErrMoney'); jyHideErr('jyErrCount');
+    }
+    /* 校验与提交 */
+    jyMask.querySelector('#jyOk').addEventListener('click', function(){
+      ['jyErrSituation','jyErrMoney','jyErrCount','jyErrAlloc'].forEach(jyHideErr);
+      jySituation.classList.remove('err');
+      var firstErr = null;
+      if (!jySituation.value.trim()) {
+        jyShowErr('jyErrSituation'); jySituation.classList.add('err');
+        firstErr = jySituation;
+      }
+      var rows = jyRows();
+      var n = rows.length;
+      var allocOK = true, allocMsg = '';
+      if (n === 0) {
+        allocOK = false; allocMsg = '请添加奖励分配（至少 1 条）';
+        jyShowErr('jyErrMoney'); jyShowErr('jyErrCount');
+      } else {
+        rows.forEach(function(r){
+          var p = r.querySelector('.jy-alloc-person'), m = r.querySelector('.jy-alloc-money');
+          p.classList.remove('err'); m.classList.remove('err');
+          if (!p.value.trim()) { p.classList.add('err'); allocOK = false; }
+          var mv = m.value.trim();
+          if (!mv || isNaN(Number(mv)) || Number(mv) <= 0) { m.classList.add('err'); allocOK = false; }
+        });
+        var total = 0;
+        rows.forEach(function(r){ var v = parseFloat(r.querySelector('.jy-alloc-money').value.trim()); if (!isNaN(v)) total += v; });
+        if (total <= 0 && allocOK) { allocOK = false; allocMsg = '分配金额合计需大于 0'; }
+      }
+      if (!allocOK) {
+        var errEl = jyMask.querySelector('#jyErrAlloc');
+        errEl.textContent = allocMsg || '请完善人员分配';
+        errEl.classList.add('show');
+        firstErr = firstErr || jyAllocList;
+      }
+      if (firstErr) {
+        showToast('存在必填项未填写或校验未通过，请检查表单');
+        firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      var opinion = jyMask.querySelector('#jyOpinion .jy-radio.checked').getAttribute('data-value');
+      var names = [];
+      var total = 0;
+      rows.forEach(function(r){
+        names.push(r.querySelector('.jy-alloc-person').value.trim());
+        total += parseFloat(r.querySelector('.jy-alloc-money').value.trim());
+      });
+      jyCloseModal();
+      showToast('提交成功：' + opinion + '｜奖励 ' + jyFmt(total) + ' 元 / ' + n + ' 人次（' + names.join('、') + '）');
+      /* 重置表单 */
+      jySituation.value = '';
+      jyMask.querySelector('#jyCount').textContent = '0/500';
+      jyAllocList.innerHTML = '';
+      jyMask.querySelector('#jyRewardMoney').value = '';
+      jyMask.querySelector('#jyRewardCount').value = '';
+    });
+
     /* ---------- 列配置：自定义展示字段 + 拖拽排序 + 按用户维度保存/上报 ---------- */
     var listTable = document.querySelector('.table-card table');
-    var COLS = ['序号','隐患名称','所属部门','所属分析单元','隐患级别','隐患类别','是否重大事故隐患','隐患来源','发现时间','排查类型','排查级别','发现人','隐患状态','是否外部检查','操作'];
+    var COLS = ['序号','隐患名称','所属部门','所属分析单元','隐患级别','隐患类别','是否安全观察项转入','隐患来源','发现时间','排查类型','排查级别','发现人','隐患状态','是否外部检查','操作'];
     var LOCKED = { 0: true, 1: true, 14: true }; // 序号、隐患名称、操作列固定展示
     var BIZ_DEFAULT = [2,3,4,5,6,7,8,9,10,11,12,13]; // 业务字段默认顺序
     var DEFAULT_VISIBLE = COLS.map(function(_, i){ return i <= 8 || LOCKED[i]; }); // 默认展示原 9 列，新增 5 字段默认隐藏；锁定列恒可见
@@ -3484,7 +4075,7 @@ const DEPTS = [
         <div class="rw-summary"></div>
         <div class="rw-table-wrap">
           <table class="rw-table">
-            <thead><tr><th>序号</th><th>姓名</th><th>岗位</th><th>奖励金额</th><th>涉及隐患数量</th><th>奖励时间</th></tr></thead>
+            <thead><tr><th>序号</th><th>姓名</th><th>岗位</th><th>奖励金额</th><th>涉及隐患数量</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -3512,7 +4103,6 @@ const DEPTS = [
         <td>${r.post}</td>
         <td class="rw-amount">¥${r.amount.toLocaleString('zh-CN')}</td>
         <td><span class="hz-link" data-idx="${i}">${r.hazards}</span></td>
-        <td>${r.time}</td>
       </tr>`).join('');
     m.classList.add('show');
   }
@@ -3551,7 +4141,6 @@ const DEPTS = [
             <div class="hz-fi"><label>所属分析单元：</label><div class="hz-ctrl"><div class="hz-select" data-opts="导入名称|生产一车间|生产二车间|储运单元"><span data-ph="请选择">请选择</span><i class="hz-caret"></i></div></div></div>
             <div class="hz-btnrow"><button class="hz-btn primary" data-hz-act="query">查 询</button><button class="hz-btn plain" data-hz-act="reset">重 置</button><span class="hz-fold" data-hz-act="fold">︿</span></div>
           </div>
-          <div class="hz-mid"><button class="hz-export" data-hz-act="export"><svg viewBox="0 0 16 16" width="13" height="13"><path d="M8 11V3M8 3L5 6M8 3l3 3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 10v3h11v-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>导出</button></div>
           <div class="hz-table-wrap">
             <table class="hz-table">
               <thead><tr><th>序号</th><th>隐患名称</th><th>所属部门</th><th>所属分析单元</th><th>隐患级别</th><th>隐患类别</th><th>排查级别</th><th>是否外部检查</th><th>发现时间</th><th>整改期限</th><th>状态</th><th>操作</th></tr></thead>
@@ -3594,8 +4183,7 @@ const DEPTS = [
       const act = e.target.closest('[data-hz-act]');
       if (!act) return;
       const a = act.getAttribute('data-hz-act');
-      if (a === 'export') hzToast('导出成功');
-      else if (a === 'query') hzToast('查询成功');
+      if (a === 'query') hzToast('查询成功');
       else if (a === 'date') hzToast('原型演示：选择发现时间范围');
       else if (a === 'fold') { hzModal.querySelector('.hz-modal').classList.toggle('folded'); act.textContent = hzModal.querySelector('.hz-modal').classList.contains('folded') ? '﹀' : '︿'; }
       else if (a === 'reset') {
@@ -3777,6 +4365,52 @@ const DEPTS = [
       else openPanel(t);
     });
   });
+})();
+
+/* ================= 筛选：是否安全观察项转入 下拉 ================= */
+(function initObsFilter() {
+  const trigger = document.getElementById('statsObsSel');
+  if (!trigger) return;
+  const label = trigger.querySelector('span');
+  const OPTS = ['全部', '是', '否'];
+  const panel = document.createElement('div');
+  panel.className = 'dd-panel';
+  panel.innerHTML = '<div class="dd-list"></div>';
+  const listEl = panel.querySelector('.dd-list');
+  function render() {
+    listEl.innerHTML = '';
+    OPTS.forEach(o => {
+      const it = document.createElement('div');
+      it.className = 'dd-item' + (o === label.textContent.trim() ? ' active' : '');
+      it.textContent = o;
+      it.addEventListener('click', () => {
+        label.textContent = o;
+        trigger.dataset.value = o;
+        close();
+      });
+      listEl.appendChild(it);
+    });
+  }
+  function open() {
+    render();
+    const r = trigger.getBoundingClientRect();
+    panel.style.left = r.left + 'px';
+    panel.style.top = (r.bottom + 4) + 'px';
+    panel.style.display = 'flex';
+    trigger.style.borderColor = '#0052D9';
+  }
+  function close() {
+    panel.style.display = 'none';
+    trigger.style.borderColor = '';
+  }
+  document.body.appendChild(panel);
+  trigger.addEventListener('click', () => {
+    if (panel.style.display === 'flex') close(); else open();
+  });
+  document.addEventListener('mousedown', e => {
+    if (panel.style.display === 'flex' && !panel.contains(e.target) && !trigger.contains(e.target)) close();
+  });
+  window.addEventListener('scroll', close, true);
 })();
 
 /* ================= 统计时间：双日历日期范围选择（Element 风格） ================= */
@@ -4616,7 +5250,7 @@ const DEPTS = [
           { label:'隐患治理配置', children:[
             { label:'隐患治理', cfg:'hazard' },
             { label:'隐患字段配置', cfg:true },
-            { label:'图片上传配置' },
+            { label:'图片上传配置', cfg:'image' },
             { label:'系统版本配置' },
             { label:'风险分级管控配置' }
           ]}
@@ -4631,7 +5265,9 @@ const DEPTS = [
       var syCfgFields = document.getElementById('syCfgFields');
       var syCfgHazard = document.getElementById('syCfgHazard');
       var syCfgPlan = document.getElementById('syCfgPlan');
+      var syCfgImage = document.getElementById('syCfgImage');
       var syCfgEmpty = document.getElementById('syCfgEmpty');
+      /* 图片上传配置：照片上传配置复选框由下方 .sy-hz-row 通用逻辑绑定 toggle，此处无需重复绑定 */
       var selectedLabel = '隐患字段配置';
 
       function buildNode(data, depth){
@@ -4666,8 +5302,9 @@ const DEPTS = [
           syCfgFields.style.display = mode === true ? '' : 'none';
           syCfgHazard.style.display = mode === 'hazard' ? '' : 'none';
           syCfgPlan.style.display = mode === 'plan' ? '' : 'none';
+          syCfgImage.style.display = mode === 'image' ? '' : 'none';
           syCfgEmpty.style.display = mode ? 'none' : '';
-          var titleMap = { true: syCfgFields, 'hazard': syCfgHazard, 'plan': syCfgPlan };
+          var titleMap = { true: syCfgFields, 'hazard': syCfgHazard, 'plan': syCfgPlan, 'image': syCfgImage };
           var titleBox = titleMap[mode === true ? 'true' : mode];
           if (titleBox){
             var t = titleBox.querySelector('.sy-cfg-title');
@@ -4877,6 +5514,7 @@ const DEPTS = [
           sel.querySelectorAll('.sy-dd-item').forEach(function(x){ x.classList.remove('active'); });
           selItem.classList.add('active');
           sel.querySelector('span').textContent = selItem.textContent;
+          sel.querySelector('span').style.color = '';
           sel.classList.remove('open');
           /* 起始填报节点变更：刷新本行允许调整节点可选范围 */
           if (sel.closest('.sy-cfg-node')){
@@ -5067,6 +5705,7 @@ const DEPTS = [
         if (a === 'cancel') { backFromHazardAdd(); return; }
         if (a === 'datetime') { haToast('原型演示：选择发现时间'); return; }
         if (a === 'deadline') { toggleDeadlinePanel(); return; }
+
         if (a === 'upload-img') { haToast('原型演示：上传/粘贴隐患图片'); return; }
         if (a === 'upload-file') { haToast('原型演示：上传隐患评估报告'); return; }
         if (a === 'save') { haToast('保存成功'); return; }
@@ -5083,6 +5722,75 @@ const DEPTS = [
           }
         }
       });
+      /* ---------- 发现人/发现部门：默认当前用户，弹窗选择后部门随带出 ---------- */
+      var FD_PEOPLE = [
+        { name: '熊辰婷',             dept: 'HSE部',                     phone: '13800138000', no: 'GH1001', pos: 'HSE专员' },
+        { name: '朱孟',               dept: 'HSE运维租户01（模拟统建）',   phone: '18612803485', no: 'GH1002', pos: '运维人员' },
+        { name: 'HSE管理员（模拟统建）', dept: 'HSE部',                   phone: '15718868310', no: 'GH1003', pos: 'HSE管理员' },
+        { name: '陈冠中01',           dept: '线上配置专用组织机构-陈冠中', phone: '15550563508', no: 'GH1004', pos: '操作工' },
+        { name: '潘龙',               dept: '环保车间办公室',             phone: '18811568132', no: 'GH1005', pos: '环保专员' },
+        { name: '张蘅',               dept: 'ZH测试部门',                phone: '15127024117', no: 'GH1006', pos: '安全员' },
+        { name: '李方雷',             dept: 'A李方雷测试专用机构',        phone: '17610990860', no: 'GH1007', pos: '安全员' },
+        { name: '亢华悦',             dept: '08部门',                    phone: '13552333590', no: 'GH1008', pos: '操作工' },
+        { name: '杨楚珺',             dept: '产品汇报演示专用',           phone: '15251855693', no: 'GH1009', pos: '工艺员' },
+        { name: '胡伟玲-01',          dept: 'X-test',                    phone: '18310243201', no: 'GH1010', pos: '系统管理员' },
+        { name: '胡伟玲-02',          dept: 'X-test',                    phone: '18310243202', no: 'GH1011', pos: '操作工' },
+        { name: '胡伟玲-03',          dept: 'X-test',                    phone: '18310243203', no: 'GH1012', pos: '操作工' }
+      ];
+      var haFinderInput = document.getElementById('haFinderInput');
+      var haFinderDeptInput = document.getElementById('haFinderDeptInput');
+      var fdMask = document.createElement('div');
+      fdMask.className = 'fd-mask';
+      fdMask.innerHTML =
+        '<div class="fd-modal" role="dialog" aria-label="发现人">'
+        + '<div class="fd-head"><span class="fd-title">发现人</span><span class="fd-x" id="fdClose" title="关闭">✕</span></div>'
+        + '<div class="fd-tools"><input class="fd-input" id="fdKw" type="text" placeholder="请输入姓名 / 部门 / 工号搜索"></div>'
+        + '<div class="fd-body"><table><thead><tr><th style="width:44px;"></th><th>姓名</th><th>工号</th><th>手机号</th><th>部门</th><th>岗位</th></tr></thead><tbody id="fdTbody"></tbody></table></div>'
+        + '<div class="fd-foot"><button class="fd-btn-plain" id="fdCancel" type="button">取 消</button><button class="fd-btn-primary" id="fdOk" type="button">确 定</button></div>'
+        + '</div>';
+      document.body.appendChild(fdMask);
+      var fdSel = '';
+      function fdRender(){
+        var kw = (fdMask.querySelector('#fdKw').value || '').trim().toLowerCase();
+        var list = FD_PEOPLE.filter(function(p){
+          if (!kw) return true;
+          return (p.name + p.dept + p.no).toLowerCase().indexOf(kw) >= 0;
+        });
+        fdMask.querySelector('#fdTbody').innerHTML = list.length ? list.map(function(p){
+          return '<tr data-name="' + p.name + '"' + (p.name === fdSel ? ' class="sel"' : '') + '>'
+            + '<td style="width:44px;"><span class="fd-radio"></span></td>'
+            + '<td>' + p.name + '</td><td>' + p.no + '</td><td>' + p.phone + '</td><td>' + p.dept + '</td><td>' + p.pos + '</td></tr>';
+        }).join('') : '<tr><td colspan="6"><div class="fd-empty">未找到匹配的人员</div></td></tr>';
+      }
+      function fdOpen(){
+        var cur = haFinderInput.value.trim();
+        fdSel = cur ? cur.split('（')[0] : '';
+        fdMask.querySelector('#fdKw').value = '';
+        fdRender();
+        fdMask.classList.add('show');
+      }
+      function fdCloseFn(){ fdMask.classList.remove('show'); }
+      document.getElementById('haFinderWrap').addEventListener('click', fdOpen);
+      fdMask.querySelector('#fdKw').addEventListener('input', fdRender);
+      fdMask.querySelector('#fdTbody').addEventListener('click', function(e){
+        var tr = e.target.closest('tr');
+        if (!tr || !tr.dataset.name) return;
+        fdSel = tr.dataset.name;
+        fdRender();
+      });
+      fdMask.querySelector('#fdClose').addEventListener('click', fdCloseFn);
+      fdMask.querySelector('#fdCancel').addEventListener('click', fdCloseFn);
+      fdMask.addEventListener('click', function(e){ if (e.target === fdMask) fdCloseFn(); });
+      document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && fdMask.classList.contains('show')) fdCloseFn(); });
+      fdMask.querySelector('#fdOk').addEventListener('click', function(){
+        if (fdSel) {
+          var p = FD_PEOPLE.find(function(x){ return x.name === fdSel; });
+          haFinderInput.value = fdSel;
+          haFinderDeptInput.value = p ? p.dept : ''; /* 发现部门随发现人带出，不可手动维护 */
+        }
+        fdCloseFn();
+      });
+
       /* 整改期限：Element 风格日期面板 */
       var deadlineBox = hazardAddView.querySelector('[data-ha-act=deadline]');
       var dpPanel = null;
@@ -5418,41 +6126,51 @@ const DEPTS = [
           odToastEl.style.pointerEvents = 'none';
         }, 2200);
       }
-      var statusSel = document.getElementById('ovStatusSel');
-      function clearStatus(){
-        if (!statusSel) return;
-        statusSel.querySelector('.ov-sel-label').textContent = '请选择';
-        statusSel.classList.remove('selected', 'open');
-        statusSel.querySelectorAll('.ov-dd-item').forEach(function(it){ it.classList.remove('active'); });
+      /* 可清空下拉（隐患状态 / 是否安全观察项转入）统一处理 */
+      var ovSels = ['ovStatusSel', 'ovObsSel'].map(function(id){ return document.getElementById(id); }).filter(Boolean);
+      function clearOvSel(sel){
+        sel.querySelector('.ov-sel-label').textContent = '请选择';
+        sel.classList.remove('selected', 'open');
+        sel.querySelectorAll('.ov-dd-item').forEach(function(it){ it.classList.remove('active'); });
       }
+      function clearAllOvSels(){ ovSels.forEach(clearOvSel); }
       overdueView.addEventListener('click', function(e){
         if (e.target.closest('.ov-detail')) { odToast('原型演示：跳转隐患详情'); return; }
         if (e.target.closest('.ov-btn-primary')) { odToast('查询成功（原型演示）'); return; }
         if (e.target.closest('.ov-export')) { odToast('导出成功'); return; }
         if (e.target.closest('.ov-btn-plain')) {
           overdueView.querySelectorAll('.ov-input input').forEach(function(inp){ inp.value = ''; });
-          clearStatus();
+          clearAllOvSels();
           odToast('已重置');
           return;
         }
-        /* 隐患状态下拉：清空按钮（不触发展开） */
-        if (e.target.closest('.ov-clear')) { clearStatus(); odToast('已清空隐患状态'); return; }
-        /* 选择枚举项 */
-        var opt = e.target.closest('.ov-dd-item');
-        if (opt && statusSel && statusSel.contains(opt)) {
-          statusSel.querySelector('.ov-sel-label').textContent = opt.textContent;
-          statusSel.classList.add('selected');
-          statusSel.querySelectorAll('.ov-dd-item').forEach(function(it){ it.classList.toggle('active', it === opt); });
-          statusSel.classList.remove('open');
+        /* 下拉清空按钮（不触发展开） */
+        var clearBtn = e.target.closest('.ov-clear');
+        if (clearBtn) {
+          var owner = clearBtn.closest('.ov-select');
+          if (owner && ovSels.indexOf(owner) > -1) { clearOvSel(owner); odToast('已清空'); }
           return;
         }
+        /* 选择枚举项 */
+        var opt = e.target.closest('.ov-dd-item');
+        if (opt) {
+          var selEl = opt.closest('.ov-select');
+          if (selEl && ovSels.indexOf(selEl) > -1) {
+            selEl.querySelector('.ov-sel-label').textContent = opt.textContent;
+            selEl.classList.add('selected');
+            selEl.querySelectorAll('.ov-dd-item').forEach(function(it){ it.classList.toggle('active', it === opt); });
+            selEl.classList.remove('open');
+            return;
+          }
+        }
         /* 点击控件本体：展开/收起 */
-        if (statusSel && e.target.closest('#ovStatusSel')) {
-          statusSel.classList.toggle('open');
+        var trigger = e.target.closest('.ov-select');
+        if (trigger && ovSels.indexOf(trigger) > -1) {
+          trigger.classList.toggle('open');
           return;
         }
         /* 点击其他区域：收起 */
-        if (statusSel && statusSel.classList.contains('open')) statusSel.classList.remove('open');
+        ovSels.forEach(function(sel){ if (sel.classList.contains('open')) sel.classList.remove('open'); });
       });
     }
   })();

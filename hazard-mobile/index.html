@@ -173,6 +173,261 @@
   .msg-item-time { margin: 8px 15px 0 0; text-align: right; font-size: 13px; color: #8d99ad; }
   .msg-empty { text-align: center; color: #8d99ad; font-size: 13px; padding: 46px 0 30px; }
 
+  /* ===== 我的隐患治理列表 ===== */
+  .list-wrap { padding: 10px 12px 24px; }
+  .list-search-card {
+    background: #fff; border-radius: 14px; padding: 12px;
+    box-shadow: 0 2px 10px rgba(80,110,180,.06);
+  }
+  .ls-input {
+    display: flex; align-items: center; gap: 8px;
+    background: #f2f4f8; border-radius: 10px; height: 40px; padding: 0 12px;
+  }
+  .ls-input svg { width: 18px; height: 18px; stroke: #9aa5b5; fill: none; stroke-width: 1.8; stroke-linecap: round; flex-shrink: 0; }
+  .ls-input input { flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-size: 14px; color: #333; }
+  .ls-input input::placeholder { color: #9aa5b5; }
+  .ls-date {
+    display: flex; align-items: center; gap: 10px;
+    background: #f2f4f8; border-radius: 10px; height: 40px; padding: 0 12px;
+    margin-top: 10px; color: #9aa5b5; font-size: 14px;
+  }
+  .ls-date svg { width: 17px; height: 17px; stroke: #9aa5b5; fill: none; stroke-width: 1.8; flex-shrink: 0; }
+  .ls-date span { flex: 1; }
+  .ls-date em { font-style: normal; }
+  .ls-chips { display: flex; gap: 24px; padding: 13px 2px 3px; overflow-x: auto; white-space: nowrap; }
+  .ls-chips::-webkit-scrollbar { display: none; }
+  .ls-chip {
+    flex-shrink: 0; font-size: 14.5px; color: #3a4453;
+    display: inline-flex; align-items: center; gap: 5px; cursor: pointer; user-select: none;
+  }
+  .ls-chip::after {
+    content: ''; width: 0; height: 0; margin-top: 3px;
+    border: 4.5px solid transparent; border-top-color: #8a97ab; border-bottom-width: 0;
+  }
+  .list-count { text-align: center; color: #98a2b3; font-size: 13px; margin: 15px 0 6px; }
+  .hz-card {
+    position: relative; background: #fff; border-radius: 14px;
+    padding: 16px 14px 14px; margin-bottom: 12px;
+    box-shadow: 0 2px 10px rgba(80,110,180,.06); cursor: pointer; overflow: hidden;
+  }
+  .hz-card:active { background: #f7faff; }
+  .hz-title { font-size: 16px; font-weight: 700; color: #1f2d3d; line-height: 1.5; padding-right: 72px; }
+  .hz-time { margin-top: 10px; font-size: 13.5px; color: #5b6880; }
+  .hz-meta { margin-top: 7px; font-size: 13.5px; color: #5b6880; display: flex; align-items: center; gap: 6px; }
+  .hz-meta svg { width: 14px; height: 14px; stroke: #8a97ab; fill: none; stroke-width: 1.7; stroke-linecap: round; flex-shrink: 0; }
+  .hz-meta .vbar { color: #b8c1cf; margin: 0 2px; }
+  .hz-stamp {
+    position: absolute; right: 14px; top: 44%;
+    width: 64px; height: 64px; border: 2.5px solid currentColor; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13.5px; font-weight: 700; letter-spacing: 1px; white-space: nowrap;
+    transform: translateY(-50%) rotate(-18deg); opacity: .72; pointer-events: none;
+  }
+  .hz-stamp.purple { color: #7b5ce5; }
+  .hz-stamp.teal   { color: #14b8a6; }
+  .hz-stamp.orange { color: #fa8c16; }
+  .hz-stamp.blue   { color: #2b6de8; }
+  .hz-empty { text-align: center; color: #8d99ad; font-size: 13px; padding: 46px 0 30px; }
+
+  /* ===== 隐患登记（新增页）===== */
+  .req { color: #e5483f; margin-right: 2px; font-weight: 600; }
+  .fvalue.ph { color: #b0b6bf; cursor: pointer; user-select: none; }
+  .add-dt { position: relative; cursor: pointer; user-select: none; min-height: 22px; }
+  .add-dt input {
+    position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+    opacity: 0; cursor: pointer; border: none; padding: 0;
+  }
+  .add-input {
+    width: 100%; border: none; outline: none;
+    font-size: 15px; color: var(--text-main); background: transparent; padding: 0;
+  }
+  .add-input::placeholder { color: #b0b6bf; }
+  .add-check {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 15px; color: var(--text-main); cursor: pointer; user-select: none;
+  }
+  .add-check .ck {
+    width: 18px; height: 18px; border: 1.5px solid #c9ced6; border-radius: 4px;
+    background: #fff; display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 12px; color: transparent; transition: all .15s;
+  }
+  .add-check.on .ck { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .add-tip {
+    margin: 2px 16px 6px; background: #eef4ff; border-radius: 8px;
+    padding: 10px 12px; font-size: 13px; color: #3a5db0; line-height: 1.7;
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .add-tip .tip-ico { flex-shrink: 0; }
+  .radio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px 8px; }
+  .radio-item {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 14.5px; color: var(--text-main); cursor: pointer; user-select: none;
+  }
+  .radio-item .rd {
+    width: 17px; height: 17px; border: 1.5px solid #c9ced6; border-radius: 50%;
+    flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+    transition: all .15s; background: #fff;
+  }
+  .radio-item.on .rd { border-color: var(--primary); }
+  .radio-item.on .rd::after { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--primary); }
+  .radio-other { margin-top: 13px; display: flex; align-items: center; gap: 7px; }
+  .radio-other .add-input { flex: 1; border-bottom: 1px solid #f0f0f0; padding-bottom: 2px; }
+  .add-bar { gap: 14px; }
+  .add-bar .btn { border-radius: 10px; }
+  .btn-draft { background: #eef1f5; color: #3d4451; }
+  #finderInput { cursor: pointer; }
+  #finderDeptInput { color: var(--text-main); }
+
+  /* ===== 发现人选择弹层 ===== */
+  .person-picker {
+    position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 420px; height: 100vh;
+    background: #f5f6f8; z-index: 60; display: none; flex-direction: column;
+  }
+  .person-picker.open { display: flex; }
+  .pp-nav {
+    height: 48px; background: #fff; display: flex; align-items: center; justify-content: center;
+    position: relative; border-bottom: 1px solid #f0f0f0; flex-shrink: 0;
+  }
+  .pp-close { position: absolute; left: 14px; top: 0; height: 48px; display: flex; align-items: center; cursor: pointer; }
+  .pp-close svg { width: 20px; height: 20px; stroke: #333; stroke-width: 2.2; stroke-linecap: round; }
+  .pp-title { font-size: 17px; font-weight: 600; color: #222; }
+  .pp-dept-bar {
+    margin: 10px 12px 0; background: #eceef2; border-radius: 8px;
+    padding: 11px 12px; font-size: 14.5px; color: #3a4453;
+    display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; flex-shrink: 0;
+  }
+  .pp-caret { font-size: 10px; color: #8a97ab; transition: transform .15s; }
+  .person-picker.dept-open .pp-caret { transform: rotate(90deg); }
+  .pp-dept-list {
+    display: none; margin: 8px 12px 0; background: #fff; border-radius: 10px;
+    padding: 4px; max-height: 180px; overflow-y: auto; flex-shrink: 0;
+  }
+  .person-picker.dept-open .pp-dept-list { display: block; }
+  .pp-dept-item { padding: 9px 12px; font-size: 14px; color: #3a4453; cursor: pointer; border-radius: 6px; }
+  .pp-dept-item.active { background: #e8f1ff; color: var(--primary); font-weight: 500; }
+  .pp-searches { padding: 10px 12px 4px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+  .pp-search {
+    display: flex; align-items: center; gap: 8px;
+    background: #eceef2; border-radius: 10px; height: 40px; padding: 0 12px;
+  }
+  .pp-search svg { width: 17px; height: 17px; stroke: #9aa5b5; fill: none; stroke-width: 1.8; flex-shrink: 0; }
+  .pp-search input { flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-size: 14px; color: #333; }
+  .pp-search input::placeholder { color: #9aa5b5; }
+  .pp-list { flex: 1; overflow-y: auto; padding: 2px 0 92px; }
+  .pp-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 13px 16px 13px 20px; background: #fff;
+    border-bottom: 1px solid #f2f3f5; cursor: pointer;
+  }
+  .pp-item:active { background: #f7faff; }
+  .pp-info { flex: 1; min-width: 0; }
+  .pp-name { font-size: 15.5px; color: #1f2d3d; font-weight: 600; }
+  .pp-name em { font-style: normal; font-weight: 400; color: #9aa5b5; font-size: 13px; margin-left: 4px; }
+  .pp-phone { margin-top: 4px; font-size: 13px; color: #b0b6bf; }
+  .pp-ck {
+    width: 20px; height: 20px; border: 1.5px solid #c9ced6; border-radius: 5px;
+    background: #fff; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; color: transparent; transition: all .15s;
+  }
+  .pp-item.checked .pp-ck { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .pp-footer {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: #fff; border-top: 1px solid var(--line);
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+    display: flex; align-items: center; gap: 10px; z-index: 2;
+  }
+  .pp-chips { flex: 1; display: flex; gap: 8px; overflow-x: auto; }
+  .pp-chips::-webkit-scrollbar { display: none; }
+  .pp-chip {
+    flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px;
+    background: #f2f4f8; border-radius: 6px; padding: 7px 8px 7px 10px;
+    font-size: 13.5px; color: #3a4453; white-space: nowrap;
+  }
+  .pp-chip .x { color: #8a97ab; font-size: 13px; cursor: pointer; padding: 0 2px; }
+  .pp-ok {
+    flex-shrink: 0; border: none; background: var(--primary); color: #fff;
+    font-size: 15px; font-weight: 600; border-radius: 10px; height: 42px;
+    padding: 0 20px; cursor: pointer;
+  }
+  .pp-ok:active { opacity: .88; }
+  .pp-empty { text-align: center; color: #8d99ad; font-size: 13px; padding: 46px 0 30px; background: #fff; }
+
+  /* ===== 隐患验收（验收填报页）===== */
+  .upload-box {
+    width: 96px; height: 96px; border: 1.5px dashed #c9ced6; border-radius: 8px;
+    background: #f7f8fa; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 7px; color: #9aa5b5; font-size: 12.5px;
+    cursor: pointer; user-select: none;
+  }
+  .upload-box:active { background: #f0f2f6; }
+  .upload-box svg { width: 26px; height: 26px; stroke: #b8c1cf; fill: none; stroke-width: 1.6; stroke-linecap: round; }
+  .num-input {
+    width: 100%; border: none; outline: none; background: transparent;
+    font-size: 15px; color: var(--text-main); padding: 0;
+  }
+
+  /* ===== 奖励金额/人次/分配（对齐 PC 端反向统计逻辑，移动端适配样式） ===== */
+  .rw-ro { display: flex; align-items: center; gap: 6px; }
+  .rw-ro input {
+    flex: 1; min-width: 0; border: none; outline: none; background: transparent;
+    font-size: 15px; color: var(--text-main); padding: 0;
+  }
+  .rw-ro input::placeholder { color: #b0b6bf; }
+  .rw-suf { flex-shrink: 0; color: #8a97ab; font-size: 13px; }
+  .rw-auto {
+    flex-shrink: 0; font-size: 11px; line-height: 1; color: var(--primary);
+    background: #e8f1ff; border-radius: 4px; padding: 3px 6px; white-space: nowrap;
+  }
+  .fhint { margin-top: 6px; font-size: 12px; color: #9aa5b5; line-height: 1.5; }
+  .rw-alloc-head { display: flex; align-items: center; justify-content: space-between; }
+  .rw-alloc-add {
+    border: none; background: none; color: var(--primary); font-size: 14px;
+    font-weight: 600; padding: 0; cursor: pointer; user-select: none;
+  }
+  .rw-alloc-add:active { opacity: .8; }
+  .rw-alloc-cnt { font-size: 12.5px; color: #8a97ab; }
+  .rw-alloc-cnt em { font-style: normal; color: var(--primary); font-weight: 600; }
+  .rw-alloc-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+  .rw-alloc-row .idx {
+    flex-shrink: 0; width: 18px; height: 18px; border-radius: 50%;
+    background: #e8f1ff; color: var(--primary); font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .rw-person {
+    flex: 1.35; min-width: 0; height: 38px; border: 1px solid #e2e6ee; border-radius: 8px;
+    background: #f7f8fa; font-size: 13px; color: var(--text-main); padding: 0 10px;
+    display: flex; align-items: center; cursor: pointer; user-select: none;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  }
+  .rw-person.ph { color: #b0b6bf; }
+  .rw-person.err { border-color: #e5483f; background: #fff5f5; }
+  .rw-money-wrap { flex: 1; min-width: 0; display: flex; align-items: center; gap: 4px; }
+  .rw-money {
+    flex: 1; min-width: 0; width: 100%; height: 38px; border: 1px solid #e2e6ee;
+    border-radius: 8px; background: #fff; font-size: 13px; color: var(--text-main);
+    padding: 0 8px; outline: none;
+  }
+  .rw-money::placeholder { color: #b0b6bf; }
+  .rw-money.err { border-color: #e5483f; background: #fff5f5; }
+  .rw-suf2 { flex-shrink: 0; color: #8a97ab; font-size: 12px; }
+  .rw-del {
+    flex-shrink: 0; border: none; background: none; color: #e5483f;
+    font-size: 13px; padding: 4px 2px; cursor: pointer;
+  }
+  .rw-alloc-empty {
+    margin-top: 10px; font-size: 12px; color: #9aa5b5; background: #f7f8fa;
+    border-radius: 8px; padding: 12px; text-align: center; line-height: 1.6;
+  }
+  .rw-alloc-sum {
+    display: none; margin-top: 10px; background: #f2f8ff; border-radius: 8px;
+    padding: 10px 12px; font-size: 12.5px; color: #3a4453; line-height: 1.8;
+  }
+  .rw-alloc-sum.show { display: block; }
+  .rw-alloc-sum b { color: var(--primary); font-weight: 600; }
+  .rw-tip { display: block; font-size: 12px; color: #8a97ab; }
+  .rw-tip.ok { color: #18a058; }
+
   /* ===== 页内 Tab（详情 / 记录）===== */
   .page-tabs {
     display: flex; background: #fff;
@@ -461,6 +716,253 @@
     </div>
   </div>
 
+  <!-- ================= 视图〇点五：我的隐患治理列表 ================= -->
+  <div class="view" id="viewList">
+    <div class="nav">
+      <div class="nav-back" id="listBack">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </div>
+      <div class="nav-title">我的隐患治理</div>
+      <div class="nav-right" id="listAddIcon" title="新增隐患">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#2b6de8" stroke-width="1.7">
+          <circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+    <div class="msg-tabs" id="listTabs">
+      <div class="msg-tab active" data-ltab="mine">待我处理</div>
+      <div class="msg-tab" data-ltab="rel">与我相关</div>
+    </div>
+    <div class="list-wrap">
+      <div class="list-search-card">
+        <div class="ls-input">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+          <input id="listKw" type="text" placeholder="请输入隐患名称或发现人关键字">
+        </div>
+        <div class="ls-date" id="listDate">
+          <svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="14" rx="2"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></svg>
+          <span>开始时间</span><em>至</em><span style="text-align:right;">结束时间</span>
+        </div>
+        <div class="ls-chips" id="listChips">
+          <span class="ls-chip" data-f="所属部门">所属部门</span>
+          <span class="ls-chip" data-f="状态">状态</span>
+          <span class="ls-chip" data-f="级别">级别</span>
+          <span class="ls-chip" data-f="类别">类别</span>
+          <span class="ls-chip" data-f="发现人部门">发现人部门</span>
+        </div>
+      </div>
+      <div class="list-count" id="listCount">共0处隐患</div>
+      <div id="listCards"></div>
+    </div>
+  </div>
+
+  <!-- ================= 视图〇点六：隐患登记（新增） ================= -->
+  <div class="view" id="viewAdd">
+    <div class="nav">
+      <div class="nav-back" id="addBack">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </div>
+      <div class="nav-title">隐患登记</div>
+    </div>
+
+    <!-- 步骤条：当前登记 -->
+    <div class="steps">
+      <div class="steps-row">
+        <div class="step current"><div class="dot"><i></i></div><div class="step-name">登记</div></div>
+        <div class="step pending"><div class="dot"></div><div class="step-name">确认</div></div>
+        <div class="step pending"><div class="dot"></div><div class="step-name">接收</div></div>
+        <div class="step pending"><div class="dot"></div><div class="step-name">整改</div></div>
+        <div class="step pending"><div class="dot"></div><div class="step-name">验收</div></div>
+      </div>
+    </div>
+
+    <!-- 基础信息 -->
+    <div class="fields">
+      <div class="frow"><div class="flabel"><span class="req">*</span>隐患名称</div><div class="fvalue ph" data-pick="隐患名称">请选择</div></div>
+      <div class="frow"><div class="flabel"><span class="req">*</span>所在分析单元</div><div class="fvalue ph" data-pick="所在分析单元">请选择</div></div>
+      <div class="frow"><label class="add-check" id="noUnitCheck"><span class="ck">✓</span>无具体分析对象/单元</label></div>
+      <div class="add-tip"><span class="tip-ico">💡</span><span>当此条隐患无法对应至具体某个分析对象/单元时勾选，如管理缺陷类隐患。</span></div>
+      <div class="frow"><div class="flabel"><span class="req">*</span>所属部门</div><div class="fvalue">HSE部</div></div>
+      <div class="frow"><div class="flabel">隐患部位</div><div class="fvalue"><input class="add-input" type="text" placeholder="请输入内容"></div></div>
+      <div class="frow"><div class="flabel"><span class="req">*</span>隐患等级</div><div class="fvalue ph" data-pick="隐患等级">请选择</div></div>
+      <div class="frow"><div class="flabel"><span class="req">*</span>专业类型</div><div class="fvalue ph" data-pick="专业类型">请选择</div></div>
+      <div class="frow"><div class="flabel"><span class="req">*</span>体系类型</div><div class="fvalue ph" data-pick="体系类型">请选择</div></div>
+      <div class="frow"><div class="flabel"><span class="req">*</span>危害因素类型</div><div class="fvalue ph" data-pick="危害因素类型">请选择</div></div>
+      <div class="frow"><div class="flabel">所属专项排查</div><div class="fvalue ph" data-pick="所属专项排查">请选择</div></div>
+    </div>
+
+    <!-- 环节与发现信息 -->
+    <div class="fields">
+      <div class="frow">
+        <div class="flabel">发生环节</div>
+        <div class="fvalue">
+          <div class="radio-grid">
+            <div class="radio-item" data-group="stage"><span class="rd"></span>设计</div>
+            <div class="radio-item" data-group="stage"><span class="rd"></span>产品质量缺陷</div>
+            <div class="radio-item" data-group="stage"><span class="rd"></span>仓储</div>
+            <div class="radio-item" data-group="stage"><span class="rd"></span>项目施工</div>
+            <div class="radio-item" data-group="stage"><span class="rd"></span>开停车</div>
+            <div class="radio-item" data-group="stage"><span class="rd"></span>使用操作</div>
+            <div class="radio-item" data-group="stage"><span class="rd"></span>维护保养</div>
+            <div class="radio-item" data-group="stage"><span class="rd"></span>维修</div>
+            <div class="radio-item" data-group="stage"><span class="rd"></span>变更</div>
+            <div class="radio-item" data-group="stage"><span class="rd"></span>运输</div>
+          </div>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="flabel"><span class="req">*</span>发现方式</div>
+        <div class="fvalue">
+          <div class="radio-grid">
+            <div class="radio-item" data-group="way"><span class="rd"></span>员工自查</div>
+            <div class="radio-item" data-group="way"><span class="rd"></span>属地排查</div>
+            <div class="radio-item" data-group="way"><span class="rd"></span>专业检查</div>
+            <div class="radio-item" data-group="way"><span class="rd"></span>公司检查</div>
+            <div class="radio-item" data-group="way"><span class="rd"></span>执法检查</div>
+            <div class="radio-item" data-group="way"><span class="rd"></span>专家检查</div>
+            <div class="radio-item" data-group="way"><span class="rd"></span>包保履职</div>
+          </div>
+          <div class="radio-other">
+            <div class="radio-item" data-group="way"><span class="rd"></span>其他</div>
+            <input class="add-input" type="text" placeholder="请输入内容">
+          </div>
+        </div>
+      </div>
+      <div class="frow"><div class="flabel"><span class="req">*</span>发现时间</div><div class="fvalue add-dt"><span id="findTimeText">请选择发现时间</span><input type="datetime-local" id="findTimeInput"></div></div>
+      <div class="frow"><div class="flabel">发现人</div><div class="fvalue"><input class="add-input" type="text" id="finderInput" value="熊辰婷" readonly></div></div>
+      <div class="frow"><div class="flabel">发现部门</div><div class="fvalue"><input class="add-input" type="text" id="finderDeptInput" value="HSE部" readonly></div></div>
+      <div class="frow">
+        <div class="flabel">隐患描述</div>
+        <div class="fvalue"><input class="add-input" type="text" data-counter="500" placeholder="请输入内容"><div class="fcounter">0/500</div></div>
+      </div>
+      <div class="frow">
+        <div class="flabel">检查依据</div>
+        <div class="fvalue"><input class="add-input" type="text" data-counter="500" placeholder="请输入内容"><div class="fcounter">0/500</div></div>
+      </div>
+      <div class="frow">
+        <div class="flabel">整改措施</div>
+        <div class="fvalue"><input class="add-input" type="text" data-counter="500" placeholder="请输入内容"><div class="fcounter">0/500</div></div>
+      </div>
+    </div>
+
+    <div class="bottom-bar add-bar">
+      <button class="btn btn-draft" id="btnDraft" type="button">存草稿</button>
+      <button class="btn btn-primary" id="btnSubmit" type="button">提交</button>
+    </div>
+  </div>
+
+  <!-- ================= 发现人选择弹层 ================= -->
+  <div class="person-picker" id="finderPicker">
+    <div class="pp-nav">
+      <div class="pp-close" id="ppClose">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </div>
+      <div class="pp-title" id="ppTitle">发现人</div>
+    </div>
+    <div class="pp-dept-bar" id="ppDeptToggle"><span class="pp-caret">▶</span>所属部门</div>
+    <div class="pp-dept-list" id="ppDeptList"></div>
+    <div class="pp-searches">
+      <div class="pp-search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+        <input id="ppKw" type="text" placeholder="请输入关键字">
+      </div>
+      <div class="pp-search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+        <input id="ppNo" type="text" placeholder="请输入工号">
+      </div>
+    </div>
+    <div class="pp-list" id="ppList"></div>
+    <div class="pp-footer">
+      <div class="pp-chips" id="ppChips"></div>
+      <button class="pp-ok" id="ppOk" type="button">确定(0)</button>
+    </div>
+  </div>
+
+  <!-- ================= 视图〇点七：隐患验收（验收填报） ================= -->
+  <div class="view" id="viewAccept">
+    <div class="nav">
+      <div class="nav-back" id="acceptBack">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </div>
+      <div class="nav-title">隐患验收</div>
+      <div class="nav-right" id="acceptFlowIcon" title="隐患流程">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#2b6de8" stroke-width="1.8">
+          <circle cx="12" cy="12" r="9.2"/>
+          <circle cx="12" cy="7.6" r="1.7"/><circle cx="7.8" cy="14.6" r="1.7"/><circle cx="16.2" cy="14.6" r="1.7"/>
+          <path d="M12 9.3l-3.2 3.9M12 9.3l3.2 3.9M9.5 14.6h5"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 步骤条：前四步完成，验收进行中 -->
+    <div class="steps">
+      <div class="steps-row">
+        <div class="step"><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 8"/></svg></div><div class="step-name">登记</div></div>
+        <div class="step"><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 8"/></svg></div><div class="step-name">确认</div></div>
+        <div class="step"><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 8"/></svg></div><div class="step-name">接收</div></div>
+        <div class="step"><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 8"/></svg></div><div class="step-name">整改</div></div>
+        <div class="step current"><div class="dot"><i></i></div><div class="step-name">验收</div></div>
+      </div>
+    </div>
+
+    <div class="fields">
+      <div class="frow">
+        <div class="flabel"><span class="req">*</span>验收意见</div>
+        <div class="fvalue">
+          <div class="radio-grid" style="grid-template-columns:auto auto; justify-content:start; column-gap:28px;">
+            <div class="radio-item on" data-group="result"><span class="rd"></span>合格</div>
+            <div class="radio-item" data-group="result"><span class="rd"></span>不合格</div>
+          </div>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="flabel"><span class="req">*</span>验收情况</div>
+        <div class="fvalue"><input class="add-input" type="text" data-counter="500" placeholder="请输入内容"><div class="fcounter">0/500</div></div>
+      </div>
+      <div class="frow">
+        <div class="flabel">验收图片</div>
+        <div class="fvalue"><div class="upload-box" data-upload="验收图片"><svg viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="17" height="13" rx="2"/><circle cx="12" cy="12.5" r="3.2"/><path d="M9 6.5l1.2-2h3.6L15 6.5"/></svg></div></div>
+      </div>
+      <div class="frow">
+        <div class="flabel">验收报告</div>
+        <div class="fvalue"><div class="upload-box" data-upload="验收报告"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>添加文件</div></div>
+      </div>
+      <div class="frow">
+        <div class="flabel"><span class="req">*</span>奖励金额</div>
+        <div class="fvalue">
+          <div class="rw-ro"><input type="text" id="rewardAmount" readonly placeholder="由分配数据统计得出"><span class="rw-auto">自动统计</span><span class="rw-suf">元</span></div>
+          <div class="fhint">金额 = 下方各分配金额合计，无需手动填写</div>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="flabel"><span class="req">*</span>奖励人次</div>
+        <div class="fvalue">
+          <div class="rw-ro"><input type="text" id="rewardCount" readonly placeholder="由分配条数统计得出"><span class="rw-auto">自动统计</span><span class="rw-suf">人次</span></div>
+          <div class="fhint">人次 = 下方分配记录条数，无需手动填写</div>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="flabel"><span class="req">*</span>奖励分配</div>
+        <div class="fvalue">
+          <div class="rw-alloc-head">
+            <button class="rw-alloc-add" id="rwAddAlloc" type="button">＋ 添加分配</button>
+            <span class="rw-alloc-cnt" id="rwAllocCount">已分配 <em>0</em> 条</span>
+          </div>
+          <div id="rwAllocList"></div>
+          <div class="rw-alloc-empty" id="rwAllocEmpty">点击「＋ 添加分配」开始添加奖励分配，金额与人数将自动汇总到上方</div>
+          <div class="rw-alloc-sum" id="rwAllocSum">
+            <span>分配金额合计：<b id="rwAllocTotal">¥0</b>（即奖励总额）　奖励人次：<b id="rwAllocCountEcho">0</b> 人</span>
+            <span class="rw-tip" id="rwAllocTip"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar add-bar">
+      <button class="btn btn-primary" id="btnAcceptSubmit" type="button">提交</button>
+    </div>
+  </div>
+
   <!-- ================= 视图一：隐患详情 ================= -->
   <div class="view" id="viewDetail" data-page-node-id="3PpjWrOJhFJTguLAfhGxhc">
     <div class="nav" data-page-node-id="E0rVOvZHx4F01h5x6vp4xq">
@@ -704,21 +1206,412 @@
 
   /* ================= 视图切换 ================= */
   var viewPortal = document.getElementById('viewPortal');
+  var viewList = document.getElementById('viewList');
+  var viewAdd = document.getElementById('viewAdd');
+  var viewAccept = document.getElementById('viewAccept');
   var viewDetail = document.getElementById('viewDetail');
   var viewFlow = document.getElementById('viewFlow');
   var viewMsg = document.getElementById('viewMsg');
+  var detailFrom = 'list'; // 详情页返回目标：list=列表页 / msg=消息中心
+  var flowFrom = 'detail'; // 流程页返回目标：detail=详情页 / accept=验收页
   function showView(v){
     viewPortal.classList.toggle('active', v === 'portal');
+    viewList.classList.toggle('active', v === 'list');
+    viewAdd.classList.toggle('active', v === 'add');
+    viewAccept.classList.toggle('active', v === 'accept');
     viewDetail.classList.toggle('active', v === 'detail');
     viewFlow.classList.toggle('active', v === 'flow');
     viewMsg.classList.toggle('active', v === 'msg');
     window.scrollTo(0, 0);
   }
-  document.getElementById('toFlowIcon').addEventListener('click', function(){ showView('flow'); switchFlowTab('chart'); });
-  document.getElementById('flowBack').addEventListener('click', function(){ showView('detail'); });
-  document.getElementById('detailBack').addEventListener('click', function(){ showView('portal'); });
+  document.getElementById('toFlowIcon').addEventListener('click', function(){ flowFrom = 'detail'; showView('flow'); switchFlowTab('chart'); });
+  document.getElementById('flowBack').addEventListener('click', function(){ showView(flowFrom === 'accept' ? 'accept' : 'detail'); });
+  document.getElementById('detailBack').addEventListener('click', function(){ showView(detailFrom === 'msg' ? 'msg' : 'list'); });
   document.getElementById('toMsgIcon').addEventListener('click', function(){ showView('msg'); });
   document.getElementById('msgBack').addEventListener('click', function(){ showView('portal'); });
+
+  /* ================= 我的隐患治理列表 ================= */
+  var HZ_MINE = [
+    { level: '重大事故隐患', desc: '异常转隐患',           time: '2026-10-13 20:28:04', dept: 'X-test', person: '胡伟玲-01', extra: '员工自查｜健康/综合管理', stamp: '待审批',   cls: 'purple' },
+    { level: '一般B级隐患', desc: '作业监督检查上报的隐患', time: '2026-10-13 20:22:29', dept: 'X-test', person: '胡伟玲-01', extra: '员工自查｜健康/综合管理', stamp: '待接收',   cls: 'teal' },
+    { level: '一般B级隐患', desc: '二级待审批的隐患-或签',   time: '2026-10-13 20:15:47', dept: 'X-test', person: '胡伟玲-01', extra: '员工自查｜健康/综合管理', stamp: '待审批',   cls: 'purple' },
+    { level: '一般A级隐患', desc: '巡检发现反应釜法兰泄漏',  time: '2026-10-12 09:41:12', dept: 'X-test', person: '胡伟玲-01', extra: '专项排查｜设备/工艺管理', stamp: '待整改',   cls: 'orange' },
+    { level: '一般B级隐患', desc: '平台护栏腐蚀松动',       time: '2026-10-11 16:20:35', dept: 'X-test', person: '胡伟玲-01', extra: '日常排查｜设备/综合管理', stamp: '待整改',   cls: 'orange' },
+    { level: '一般B级隐患', desc: '安全阀校验超期未检',      time: '2026-10-11 10:05:22', dept: 'X-test', person: '胡伟玲-01', extra: '专项排查｜设备/综合管理', stamp: '待验收',   cls: 'blue' },
+    { level: '重大事故隐患', desc: '液氨储罐液位计失灵',     time: '2026-10-10 14:33:08', dept: 'X-test', person: '胡伟玲-01', extra: '员工自查｜健康/综合管理', stamp: '待延期审批', cls: 'purple' },
+    { level: '一般C级隐患', desc: '消防通道被杂物占用',      time: '2026-10-10 08:57:46', dept: 'X-test', person: '胡伟玲-01', extra: '日常排查｜健康/综合管理', stamp: '待接收',   cls: 'teal' },
+    { level: '一般B级隐患', desc: '配电室绝缘垫破损',       time: '2026-10-09 17:12:50', dept: 'X-test', person: '胡伟玲-01', extra: '日常排查｜设备/综合管理', stamp: '待整改',   cls: 'orange' },
+    { level: '一般B级隐患', desc: '仓库应急照明故障',       time: '2026-10-09 11:26:14', dept: 'X-test', person: '胡伟玲-01', extra: '员工自查｜健康/综合管理', stamp: '待验收',   cls: 'blue' },
+    { level: '一般C级隐患', desc: '现场安全标识牌褪色',      time: '2026-10-08 15:40:02', dept: 'X-test', person: '胡伟玲-01', extra: '日常排查｜健康/综合管理', stamp: '' }
+  ];
+  var HZ_REL = [
+    { level: '一般B级隐患', desc: '装置区照明线路老化',      time: '2026-10-13 18:02:11', dept: 'X-test', person: '陈伟霆',   extra: '日常排查｜设备/综合管理', stamp: '待整改',   cls: 'orange' },
+    { level: '一般C级隐患', desc: '检修平台踢脚板松动',      time: '2026-10-12 11:36:40', dept: 'X-test', person: '杨威01',   extra: '专项排查｜设备/工艺管理', stamp: '待接收',   cls: 'teal' },
+    { level: '一般A级隐患', desc: '危废库通风机故障',       time: '2026-10-11 09:15:28', dept: 'X-test', person: '魏芝',     extra: '员工自查｜健康/综合管理', stamp: '待验收',   cls: 'blue' },
+    { level: '一般B级隐患', desc: '管道保温层局部破损',      time: '2026-10-10 16:48:03', dept: 'X-test', person: '陈伟霆',   extra: '日常排查｜设备/综合管理', stamp: '待审批',   cls: 'purple' },
+    { level: '一般C级隐患', desc: '应急集合点标识缺失',      time: '2026-10-09 13:20:55', dept: 'X-test', person: '杨威01',   extra: '日常排查｜健康/综合管理', stamp: '' }
+  ];
+  var curLTab = 'mine';
+  var listCards = document.getElementById('listCards');
+  var listCount = document.getElementById('listCount');
+  function renderList(){
+    var kw = (document.getElementById('listKw').value || '').trim().toLowerCase();
+    var data = curLTab === 'mine' ? HZ_MINE : HZ_REL;
+    var list = data.filter(function(it){
+      if (!kw) return true;
+      return (it.desc + ' ' + it.level + ' ' + it.person).toLowerCase().indexOf(kw) > -1;
+    });
+    listCount.textContent = '共' + list.length + '处隐患';
+    if (!list.length) {
+      listCards.innerHTML = '<div class="hz-empty">未找到匹配的隐患</div>';
+      return;
+    }
+    listCards.innerHTML = list.map(function(it){
+      return '<div class="hz-card">'
+        + '<div class="hz-title">' + it.level + ' – ' + it.desc + '</div>'
+        + '<div class="hz-time">' + it.time + '</div>'
+        + '<div class="hz-meta"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"/></svg>'
+        + it.dept + '<span class="vbar">|</span>' + it.person + '</div>'
+        + '<div class="hz-meta">' + it.extra.replace('｜', '<span class="vbar">|</span>') + '</div>'
+        + (it.stamp ? '<div class="hz-stamp ' + it.cls + '">' + it.stamp + '</div>' : '')
+        + '</div>';
+    }).join('');
+  }
+  document.getElementById('listBack').addEventListener('click', function(){ showView('portal'); });
+  document.getElementById('listTabs').addEventListener('click', function(e){
+    var t = e.target.closest('.msg-tab');
+    if (!t || t.classList.contains('active')) return;
+    this.querySelectorAll('.msg-tab').forEach(function(x){ x.classList.remove('active'); });
+    t.classList.add('active');
+    curLTab = t.getAttribute('data-ltab');
+    renderList();
+  });
+  document.getElementById('listKw').addEventListener('input', renderList);
+  document.getElementById('listChips').addEventListener('click', function(e){
+    var c = e.target.closest('.ls-chip');
+    if (c) showToast('「' + c.getAttribute('data-f') + '」筛选（原型演示）');
+  });
+  document.getElementById('listDate').addEventListener('click', function(){
+    showToast('时间筛选（原型演示）');
+  });
+  document.getElementById('listAddIcon').addEventListener('click', function(){
+    showView('add');
+    initFindTime(); // 每次进入新增页，发现时间默认当前时间
+  });
+
+  /* ================= 隐患登记（新增页） ================= */
+  document.getElementById('addBack').addEventListener('click', function(){ showView('list'); });
+  /* 请选择类字段：选择演示 */
+  document.querySelectorAll('#viewAdd .fvalue.ph').forEach(function(el){
+    el.addEventListener('click', function(){
+      showToast('「' + (el.getAttribute('data-pick') || '') + '」选择（原型演示）');
+    });
+  });
+  /* 无具体分析对象/单元 复选框 */
+  document.getElementById('noUnitCheck').addEventListener('click', function(){
+    this.classList.toggle('on');
+  });
+  /* 单选项：同组互斥（含"其他"行） */
+  document.querySelectorAll('#viewAdd .radio-item').forEach(function(r){
+    r.addEventListener('click', function(){
+      var g = r.getAttribute('data-group');
+      document.querySelectorAll('#viewAdd .radio-item[data-group="' + g + '"]').forEach(function(x){
+        x.classList.remove('on');
+      });
+      r.classList.add('on');
+    });
+  });
+  /* 带计数的输入框 */
+  document.querySelectorAll('#viewAdd .add-input[data-counter]').forEach(function(inp){
+    inp.addEventListener('input', function(){
+      var n = inp.value.length;
+      var max = Number(inp.getAttribute('data-counter')) || 500;
+      if (n > max) { inp.value = inp.value.slice(0, max); n = max; }
+      inp.parentElement.querySelector('.fcounter').textContent = n + '/' + max;
+    });
+  });
+  /* 发现时间：默认当前时间，支持调整 */
+  var findTimeInput = document.getElementById('findTimeInput');
+  var findTimeText = document.getElementById('findTimeText');
+  function pad2(n){ return String(n).padStart(2, '0'); }
+  function fmtTimeText(v){
+    if (!v) return null;
+    var m = v.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
+    return m ? m[1] + '-' + m[2] + '-' + m[3] + ' ' + m[4] + ':' + m[5] : null;
+  }
+  function initFindTime(){
+    var d = new Date();
+    findTimeInput.value = d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate())
+      + 'T' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+    findTimeText.textContent = fmtTimeText(findTimeInput.value);
+    findTimeText.style.color = '';
+  }
+  findTimeInput.addEventListener('change', function(){
+    var t = fmtTimeText(findTimeInput.value);
+    if (t) {
+      findTimeText.textContent = t;
+      findTimeText.style.color = '';
+    } else {
+      findTimeText.textContent = '请选择发现时间';
+      findTimeText.style.color = '#b0b6bf';
+    }
+  });
+  initFindTime();
+  /* ================= 发现人选择弹层 ================= */
+  var PP_PEOPLE = [
+    { name: '熊辰婷',          dept: 'HSE部',                     phone: '13800138000', no: 'GH1001' },
+    { name: '朱孟',            dept: 'HSE运维租户01（模拟统建）',   phone: '18612803485', no: 'GH1002' },
+    { name: 'HSE管理员（模拟统建）', dept: 'HSE部',               phone: '15718868310', no: 'GH1003' },
+    { name: '陈冠中01',        dept: '线上配置专用组织机构-陈冠中', phone: '15550563508', no: 'GH1004' },
+    { name: '潘龙',            dept: '环保车间办公室',             phone: '18811568132', no: 'GH1005' },
+    { name: '张蘅',            dept: 'ZH测试部门',                phone: '15127024117', no: 'GH1006' },
+    { name: '李方雷',          dept: 'A李方雷测试专用机构',        phone: '17610990860', no: 'GH1007' },
+    { name: '亢华悦',          dept: '08部门',                    phone: '13552333590', no: 'GH1008' },
+    { name: '杨楚珺',          dept: '产品汇报演示专用',           phone: '15251855693', no: 'GH1009' },
+    { name: '胡伟玲-01',       dept: 'X-test',                    phone: '18310243201', no: 'GH1010' },
+    { name: '胡伟玲-02',       dept: 'X-test',                    phone: '18310243202', no: 'GH1011' },
+    { name: '胡伟玲-03',       dept: 'X-test',                    phone: '18310243203', no: 'GH1012' }
+  ];
+  var finderPicker = document.getElementById('finderPicker');
+  var ppListEl = document.getElementById('ppList');
+  var ppChipsEl = document.getElementById('ppChips');
+  var ppOkBtn = document.getElementById('ppOk');
+  var ppKwEl = document.getElementById('ppKw');
+  var ppNoEl = document.getElementById('ppNo');
+  var ppDept = '', ppSel = '';
+  function ppGetDept(){
+    var p = PP_PEOPLE.find(function(x){ return x.name === ppSel; });
+    return p ? p.dept : '';
+  }
+  function ppRenderDeptList(){
+    var depts = [];
+    PP_PEOPLE.forEach(function(p){ if (depts.indexOf(p.dept) === -1) depts.push(p.dept); });
+    document.getElementById('ppDeptList').innerHTML = depts.map(function(d){
+      return '<div class="pp-dept-item' + (d === ppDept ? ' active' : '') + '" data-dept="' + d + '">' + d + '</div>';
+    }).join('');
+  }
+  function ppRender(){
+    /* 人员列表 */
+    var kw = (ppKwEl.value || '').trim().toLowerCase();
+    var no = (ppNoEl.value || '').trim().toLowerCase();
+    var list = PP_PEOPLE.filter(function(p){
+      if (ppDept && p.dept !== ppDept) return false;
+      if (kw && p.name.toLowerCase().indexOf(kw) === -1) return false;
+      if (no && p.no.toLowerCase().indexOf(no) === -1) return false;
+      return true;
+    });
+    ppListEl.innerHTML = list.length ? list.map(function(p){
+      return '<div class="pp-item' + (p.name === ppSel ? ' checked' : '') + '" data-name="' + p.name + '">'
+        + '<div class="pp-info"><div class="pp-name">' + p.name + '<em>（' + p.dept + '）</em></div>'
+        + '<div class="pp-phone">' + p.phone + '</div></div>'
+        + '<div class="pp-ck">✓</div></div>';
+    }).join('') : '<div class="pp-empty">未找到匹配的人员</div>';
+    /* 已选 chips */
+    ppChipsEl.innerHTML = ppSel
+      ? '<span class="pp-chip" data-name="' + ppSel + '">' + ppSel + '<span class="x">✕</span></span>'
+      : '';
+    ppOkBtn.textContent = '确定(' + (ppSel ? 1 : 0) + ')';
+  }
+  var ppMode = 'finder', ppAllocRow = null; /* 弹层模式：finder=发现人 / alloc=奖励分配人员 */
+  var ppTitleEl = document.getElementById('ppTitle');
+  function ppOpen(){
+    ppMode = 'finder'; ppAllocRow = null;
+    ppTitleEl.textContent = '发现人';
+    ppSel = document.getElementById('finderInput').value.trim();
+    ppRenderDeptList();
+    ppRender();
+    finderPicker.classList.add('open');
+  }
+  function rwOpenPicker(row){
+    ppMode = 'alloc'; ppAllocRow = row;
+    ppTitleEl.textContent = '奖励人员';
+    var cur = row.querySelector('.rw-person').textContent.trim();
+    ppSel = (cur && cur !== '选择奖励人员') ? cur.split('（')[0] : '';
+    ppRenderDeptList();
+    ppRender();
+    finderPicker.classList.add('open');
+  }
+  function ppCloseFn(){ finderPicker.classList.remove('open'); }
+  document.getElementById('finderInput').addEventListener('click', ppOpen);
+  document.getElementById('ppClose').addEventListener('click', ppCloseFn);
+  document.getElementById('ppDeptToggle').addEventListener('click', function(){
+    finderPicker.classList.toggle('dept-open');
+  });
+  document.getElementById('ppDeptList').addEventListener('click', function(e){
+    var it = e.target.closest('.pp-dept-item');
+    if (!it) return;
+    var d = it.getAttribute('data-dept');
+    ppDept = (ppDept === d) ? '' : d;
+    ppRenderDeptList();
+    ppRender();
+  });
+  ppKwEl.addEventListener('input', ppRender);
+  ppNoEl.addEventListener('input', ppRender);
+  ppListEl.addEventListener('click', function(e){
+    var it = e.target.closest('.pp-item');
+    if (!it) return;
+    var name = it.getAttribute('data-name');
+    ppSel = (ppSel === name) ? '' : name; /* 单选：再次点击取消，点其他人替换 */
+    ppRender();
+  });
+  ppChipsEl.addEventListener('click', function(e){
+    if (e.target.closest('.x')) { ppSel = ''; ppRender(); }
+  });
+  ppOkBtn.addEventListener('click', function(){
+    if (ppSel) {
+      if (ppMode === 'finder') {
+        document.getElementById('finderInput').value = ppSel;
+        document.getElementById('finderDeptInput').value = ppGetDept(); /* 发现部门随发现人带出 */
+      } else if (ppAllocRow) {
+        /* 奖励分配行：回填「姓名（部门）」，格式对齐 PC 端 */
+        var p = PP_PEOPLE.find(function(x){ return x.name === ppSel; });
+        var el = ppAllocRow.querySelector('.rw-person');
+        el.textContent = ppSel + (p ? '（' + p.dept + '）' : '');
+        el.classList.remove('ph', 'err');
+        rwRecompute();
+      }
+    }
+    ppCloseFn();
+  });
+  /* 存草稿 / 提交 */
+  document.getElementById('btnDraft').addEventListener('click', function(){
+    showToast('草稿已保存');
+  });
+  document.getElementById('btnSubmit').addEventListener('click', function(){
+    showToast('提交成功（原型演示）');
+    showView('list');
+  });
+  listCards.addEventListener('click', function(e){
+    var card = e.target.closest('.hz-card');
+    if (!card) return;
+    detailFrom = 'list';
+    var stamp = card.querySelector('.hz-stamp');
+    if (stamp && stamp.textContent.trim() === '待验收') {
+      rwResetAccept(); /* 每次进入验收页重置奖励分配表单 */
+      showView('accept'); /* 待验收数据进入验收填报页 */
+      showToast('已进入隐患验收');
+    } else {
+      showView('detail');
+      showToast('已进入隐患详情');
+    }
+  });
+  renderList();
+
+  /* ================= 隐患验收（验收填报页） ================= */
+  document.getElementById('acceptBack').addEventListener('click', function(){ showView('list'); });
+  document.getElementById('acceptFlowIcon').addEventListener('click', function(){ flowFrom = 'accept'; showView('flow'); switchFlowTab('chart'); });
+  /* 验收意见单选（默认合格） */
+  document.querySelectorAll('#viewAccept .radio-item').forEach(function(r){
+    r.addEventListener('click', function(){
+      var g = r.getAttribute('data-group');
+      document.querySelectorAll('#viewAccept .radio-item[data-group="' + g + '"]').forEach(function(x){
+        x.classList.remove('on');
+      });
+      r.classList.add('on');
+    });
+  });
+  /* 验收情况字数计数 */
+  document.querySelectorAll('#viewAccept .add-input[data-counter]').forEach(function(inp){
+    inp.addEventListener('input', function(){
+      var n = inp.value.length;
+      var max = Number(inp.getAttribute('data-counter')) || 500;
+      if (n > max) { inp.value = inp.value.slice(0, max); n = max; }
+      inp.parentElement.querySelector('.fcounter').textContent = n + '/' + max;
+    });
+  });
+  /* 上传框：演示提示 */
+  document.querySelectorAll('#viewAccept .upload-box').forEach(function(box){
+    box.addEventListener('click', function(){
+      showToast('「' + box.getAttribute('data-upload') + '」上传（原型演示）');
+    });
+  });
+  /* 奖励金额/人次/分配：对齐 PC 端逻辑（分配明细反向统计，金额/人次只读） */
+  var rwAmt = document.getElementById('rewardAmount');
+  var rwCnt = document.getElementById('rewardCount');
+  var rwAllocList = document.getElementById('rwAllocList');
+  function rwFmt(n){
+    var hasDec = Math.abs(n - Math.round(n)) > 0.004;
+    return '¥' + n.toLocaleString('zh-CN', { minimumFractionDigits: hasDec ? 2 : 0, maximumFractionDigits: 2 });
+  }
+  function rwRows(){ return rwAllocList.querySelectorAll('.rw-alloc-row'); }
+  function rwRenumber(){
+    rwRows().forEach(function(r, i){ r.querySelector('.idx').textContent = (i + 1); });
+  }
+  /* 核心：分配数据反向统计总额与人次 */
+  function rwRecompute(){
+    var rows = rwRows(), n = rows.length, total = 0, filled = 0;
+    rows.forEach(function(r){
+      var v = parseFloat(r.querySelector('.rw-money').value);
+      if (!isNaN(v)) total += v;
+      var pt = r.querySelector('.rw-person').textContent.trim();
+      var mv = r.querySelector('.rw-money').value.trim();
+      if (pt && pt !== '选择奖励人员' && mv && !isNaN(Number(mv)) && Number(mv) > 0) filled++;
+    });
+    rwAmt.value = n > 0 ? rwFmt(total) : '';
+    rwCnt.value = n > 0 ? String(n) : '';
+    document.getElementById('rwAllocCount').innerHTML = '已分配 <em>' + n + '</em> 条';
+    document.getElementById('rwAllocEmpty').style.display = n > 0 ? 'none' : 'block';
+    var sum = document.getElementById('rwAllocSum');
+    if (n > 0) {
+      sum.classList.add('show');
+      document.getElementById('rwAllocTotal').textContent = rwFmt(total);
+      document.getElementById('rwAllocCountEcho').textContent = n;
+      var tip = document.getElementById('rwAllocTip');
+      if (filled === n) { tip.textContent = '✓ 全部分配已填写完整'; tip.className = 'rw-tip ok'; }
+      else { tip.textContent = '尚有 ' + (n - filled) + ' 条未填写人员或金额'; tip.className = 'rw-tip'; }
+    } else {
+      sum.classList.remove('show');
+    }
+  }
+  function rwAddRow(){
+    var row = document.createElement('div');
+    row.className = 'rw-alloc-row';
+    row.innerHTML = '<span class="idx"></span>'
+      + '<div class="rw-person ph">选择奖励人员</div>'
+      + '<div class="rw-money-wrap"><input class="rw-money" type="text" placeholder="分配金额"><span class="rw-suf2">元</span></div>'
+      + '<button class="rw-del" type="button">删除</button>';
+    rwAllocList.appendChild(row);
+    row.querySelector('.rw-person').addEventListener('click', function(){ rwOpenPicker(row); });
+    var money = row.querySelector('.rw-money');
+    money.addEventListener('input', function(){
+      money.value = money.value.replace(/[^\d.]/g, '').replace(/(\..*?)\./g, '$1'); /* 仅正数 */
+      money.classList.remove('err');
+      rwRecompute();
+    });
+    row.querySelector('.rw-del').addEventListener('click', function(){
+      row.remove(); rwRenumber(); rwRecompute();
+    });
+    rwRenumber(); rwRecompute();
+  }
+  document.getElementById('rwAddAlloc').addEventListener('click', rwAddRow);
+  function rwResetAccept(){
+    rwAllocList.innerHTML = '';
+    rwAmt.value = '';
+    rwCnt.value = '';
+    rwRecompute();
+  }
+  /* 提交验收：校验分配完整性（对齐 PC 端） */
+  document.getElementById('btnAcceptSubmit').addEventListener('click', function(){
+    var rows = rwRows(), bad = false, total = 0;
+    rows.forEach(function(r){
+      var p = r.querySelector('.rw-person'), m = r.querySelector('.rw-money');
+      p.classList.remove('err'); m.classList.remove('err');
+      var pt = p.textContent.trim();
+      if (!pt || pt === '选择奖励人员') { p.classList.add('err'); bad = true; }
+      var mv = m.value.trim();
+      if (!mv || isNaN(Number(mv)) || Number(mv) <= 0) { m.classList.add('err'); bad = true; }
+      else total += parseFloat(mv);
+    });
+    if (rows.length === 0 || bad || total <= 0) {
+      showToast(rows.length === 0 ? '请添加奖励分配（至少 1 条）' : '请完善奖励分配的人员与金额');
+      return;
+    }
+    var names = [];
+    rows.forEach(function(r){ names.push(r.querySelector('.rw-person').textContent.trim()); });
+    showToast('验收提交成功：奖励 ' + rwFmt(total) + ' / ' + rows.length + ' 人次（' + names.join('、') + '）');
+    rwResetAccept(); /* 重置分配表单 */
+    showView('list');
+  });
 
   /* ================= 门户页（应用中心） ================= */
   var G_DOC     = '<rect x="5" y="4" width="14" height="16" rx="2"/><path d="M9 9h6M9 13h6"/>';
@@ -781,8 +1674,7 @@
     var it = e.target.closest('.app-item');
     if (!it) return;
     if (it.getAttribute('data-app') === '隐患治理') {
-      showView('detail');
-      showToast('已进入隐患治理详情');
+      showView('list');
     } else {
       showToast('「' + it.getAttribute('data-app') + '」模块建设中（演示）');
     }
@@ -859,6 +1751,7 @@
       /* 点击「点击前往」按钮：跳转隐患详情页 */
       renderMsg();
       updateBellDot();
+      detailFrom = 'msg';
       showView('detail');
       showToast('已为您定位到催办的隐患详情');
     } else {
