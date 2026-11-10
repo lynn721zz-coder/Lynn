@@ -140,9 +140,6 @@
   .file-row .fsize { color:#86909C; font-size:12px; }
   .file-row .fdel { margin-left:auto; color:#86909C; cursor:pointer; font-size:12px; }
   .file-row .fdel:hover { color:#F53F3F; }
-  .notice { background:#FFF9E6; border:1px solid #FFE58F; border-radius:4px; padding:10px 12px; color:#874D00; font-size:12px; line-height:1.9; }
-  .notice .n-t { font-weight:600; margin-bottom:2px; }
-  .notice .n-i { text-indent:-0.5em; padding-left:0.5em; }
   .res-actions { display:flex; align-items:center; flex-wrap:wrap; gap:8px 10px; margin-top:14px; padding-top:14px; border-top:1px dashed #E5E6EB; }
   .res-actions a { text-decoration:none; }
   .res-hint { color:#86909C; font-size:12px; flex:1; min-width:0; }
@@ -313,7 +310,7 @@
           <div class="step-ico" data-page-node-id="9ndRFd7Cvm9kM9vFRnUfLW">2</div>
           <div class="step-c" data-page-node-id="KLxdOP9io4rm8KCONmDRJQ">
             <div class="step-t" data-page-node-id="k24ldrI8E88dyuBAeCEfMF">上传填好的模板</div>
-            <div class="step-d" data-page-node-id="abws7ZFBm4WwZ4iGVMtcAG">仅支持 .xlsx / .xls 格式文件，文件大小不超过 10MB，单次最多导入 500 条数据。</div>
+            <div class="step-d" data-page-node-id="abws7ZFBm4WwZ4iGVMtcAG">仅支持 .xlsx / .xls 格式文件，文件大小不超过 10MB，单次最多导入 5000 条数据。</div>
             <div class="up-zone" id="upZone" onclick="document.getElementById('fileInput').click()" data-page-node-id="7fVA6EVuoacBTkItInO80j">
               <div class="up-ico" data-page-node-id="GKtei6ZWt1n4upAzMjdC38">⇧</div>
               <div class="hint" data-page-node-id="LMBXIdZ0ZUBVqxHBOZAEV4">将文件拖到此处，或 <b data-page-node-id="pMnBhTuWBEmWbV3mBHLJwy">点击上传</b></div>
@@ -324,14 +321,6 @@
               <span class="fdel" onclick="clearFile(event)" data-page-node-id="pZkOTen3Uv7rvxjA8HkBvx">删除</span>
             </div>
           </div>
-        </div>
-        <div class="notice" data-page-node-id="y7qhA7OKCrM71lv7pG2xnl">
-          <div class="n-t" data-page-node-id="3gavqvIh4VhgCvkHaUS3gc">注意事项</div>
-          <div class="n-i" data-page-node-id="IBvyZOyn4HqSQ7H55t7oLp">① 带 * 为必填项（问题类型、问题类别、问题概要、报告人、所属系统、问题分类、问题所属单位、问题发现时间），关联任务三个字段为选填；</div>
-          <div class="n-i" data-page-node-id="cP7dqd64Dw1pLUVVrKhnIL">② 「问题分类」需先确定「所属系统」后按级联关系填写；</div>
-          <div class="n-i" data-page-node-id="G89sQqi9otWUe7EWWL24Nn">③ 「问题发现时间」须早于当前时间，格式：YYYY-MM-DD HH:mm；</div>
-          <div class="n-i" data-page-node-id="VH1AXVd1lZWRiQdgA9oYXu">④ 「二级单位」由企业简称自动带出，无需填写；</div>
-          <div class="n-i" data-page-node-id="mGsGJXiGFpn6k3tPVrOiVc">⑤ 校验失败的数据将在「错误报告」中标出错误行及错误原因，下载修正后可重新导入。</div>
         </div>
       </div>
       <!-- 结果视图 -->
