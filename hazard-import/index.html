@@ -313,7 +313,7 @@
           <div class="step-ico" data-page-node-id="9ndRFd7Cvm9kM9vFRnUfLW">2</div>
           <div class="step-c" data-page-node-id="KLxdOP9io4rm8KCONmDRJQ">
             <div class="step-t" data-page-node-id="k24ldrI8E88dyuBAeCEfMF">上传填好的模板</div>
-            <div class="step-d" data-page-node-id="abws7ZFBm4WwZ4iGVMtcAG">仅支持 .xlsx / .xls 格式文件，文件大小不超过 10MB，单次最多导入 5000 条数据。</div>
+            <div class="step-d" data-page-node-id="abws7ZFBm4WwZ4iGVMtcAG">仅支持 .xlsx / .xls 格式文件，单次最多导入 5000 条数据。</div>
             <div class="up-zone" id="upZone" onclick="document.getElementById('fileInput').click()" data-page-node-id="7fVA6EVuoacBTkItInO80j">
               <div class="up-ico" data-page-node-id="GKtei6ZWt1n4upAzMjdC38">⇧</div>
               <div class="hint" data-page-node-id="LMBXIdZ0ZUBVqxHBOZAEV4">将文件拖到此处，或 <b data-page-node-id="pMnBhTuWBEmWbV3mBHLJwy">点击上传</b></div>
@@ -409,7 +409,6 @@ upZone.addEventListener("drop", function(e){ var f = e.dataTransfer.files[0]; if
 
 function setFile(f){
   if(!/\.(xlsx|xls)$/i.test(f.name)){ toast("仅支持 .xlsx / .xls 格式文件"); return; }
-  if(f.size > 10*1024*1024){ toast("文件大小不能超过 10MB"); return; }
   fileReady = true;
   upZone.classList.add("has");
   upZone.querySelector(".hint").innerHTML = "已选择文件，可点击重新上传替换";
