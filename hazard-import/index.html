@@ -75,6 +75,9 @@
   .btn:hover { border-color:#1668DC; color:#1668DC; }
   .btn.primary { background:#1668DC; border-color:#1668DC; color:#fff; }
   .btn.primary:hover { background:#3C7FE2; }
+  /* 禁用态：未上传文件 / 导入处理中，统一置灰且不可点击 */
+  .btn:disabled, .btn.primary:disabled { background:#F2F3F5; border-color:#E5E6EB; color:#C0C4CC; cursor:not-allowed; }
+  .btn:disabled:hover, .btn.primary:disabled:hover { background:#F2F3F5; border-color:#E5E6EB; color:#C0C4CC; }
   .btn.small { height:28px; padding:0 12px; font-size:12px; }
   .fold { color:#4E5969; cursor:pointer; display:flex; align-items:center; gap:4px; }
   .fold:hover { color:#1668DC; }
