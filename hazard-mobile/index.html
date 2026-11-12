@@ -566,6 +566,21 @@
     font-size: 11px; background: var(--primary-light); color: var(--primary); vertical-align: 1px;
   }
 
+  /* ===== 催办回复：关联催办信息 + 虚线分割 + 回复内容（对齐 PC） ===== */
+  .tl-item.tl-reply { background: #fafbfd; }
+  .tl-item.tl-reply .tl-dot { background: #9dbcf0; }
+  .rp-box { margin-top: 7px; }
+  .rp-ref {
+    background: #f2f6fd; border-left: 3px solid #9dbcf0;
+    border-radius: 0 3px 3px 0; padding: 6px 10px;
+  }
+  .rp-ref-tag { display: inline-block; font-size: 12px; color: var(--primary); font-weight: 600; margin-bottom: 3px; }
+  .rp-ref-line { font-size: 12.5px; color: #6b7686; line-height: 1.6; overflow-wrap: anywhere; }
+  .rp-k { color: #8a94a6; margin-right: 6px; }
+  .rp-split { border-top: 1px dashed #c9d3e3; margin: 8px 0 7px; }
+  .rp-reply { font-size: 13px; color: #3d4453; line-height: 1.7; overflow-wrap: anywhere; }
+  .urge-reply-split { border-top: 1px dashed #c9d3e3; margin: 10px 0 8px; }
+
   /* ===== 弹窗（底部抽屉式）===== */
   .mask {
     position: fixed; inset: 0; background: rgba(0,0,0,.45);
@@ -1163,6 +1178,7 @@
         + '<div class="urge-line">催办对象：<b>' + esc(r.object) + '</b></div>'
         + '<div class="urge-line">通知方式：' + esc(r.ways) + '</div>'
         + '<div class="urge-line">催办内容：' + esc(r.content) + '</div>';
+      if ((r.replies || []).length) html += '<div class="urge-reply-split"></div>';
       (r.replies || []).forEach(function(rp){
         html += '<div class="urge-reply-box"><b>' + esc(rp.by) + '</b>（' + esc(rp.time) + '）回复：' + esc(rp.content) + '</div>';
       });
@@ -1189,17 +1205,23 @@
         + '　<span class="link-btn" data-reply="' + i + '">回复</span></div>';
       items.push({ time: r.time, html: html });
       (r.replies || []).forEach(function(rp){
-        items.push({ time: rp.time, html:
+        items.push({ time: rp.time, cls: 'tl-reply', html:
           '<div class="tl-title"><b>隐患催办 - 催办回复</b><span class="tl-tag">回复</span></div>'
           + '<div class="tl-meta"><span>' + ICON_USER + esc(rp.by) + '</span><span>' + ICON_DATE + esc(rp.time) + '</span></div>'
-          + '<div class="tl-detail">回复内容：' + esc(rp.content) + '</div>'
+          + '<div class="rp-box">'
+          + '<div class="rp-ref"><span class="rp-ref-tag">关联催办信息</span>'
+          + '<div class="rp-ref-line"><span class="rp-k">催办时间</span>' + esc(r.time) + '</div>'
+          + '<div class="rp-ref-line"><span class="rp-k">催办内容</span>' + esc(r.content) + '</div></div>'
+          + '<div class="rp-split"></div>'
+          + '<div class="rp-reply"><span class="rp-k">回复内容</span>' + esc(rp.content) + '</div>'
+          + '</div>'
         });
       });
     });
     items.sort(function(a, b){ return a.time < b.time ? -1 : 1; });
     var box = document.getElementById('processTimeline');
     box.innerHTML = items.map(function(it){
-      return '<div class="tl-item"><span class="tl-dot"></span><div class="tl-body">' + it.html + '</div></div>';
+      return '<div class="tl-item ' + (it.cls || '') + '"><span class="tl-dot"></span><div class="tl-body">' + it.html + '</div></div>';
     }).join('');
   }
   buildTimeline();

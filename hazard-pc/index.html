@@ -536,6 +536,16 @@
   }
   #detailView a.reply-btn:hover { text-decoration: underline; }
 
+  /* 催办回复：关联催办信息 + 虚线分割 + 回复内容 */
+  #detailView table.d-table tr.rp-row td { background: #fafbfd; }
+  .rp-box { padding: 2px 0; }
+  .rp-ref { background: #f2f6fd; border-left: 3px solid #9dbcf0; border-radius: 0 3px 3px 0; padding: 6px 10px; }
+  .rp-ref-tag { display: inline-block; font-size: 12px; color: #2b6de8; font-weight: 600; margin-bottom: 3px; }
+  .rp-ref-line { font-size: 12.5px; color: #6b7686; line-height: 1.6; }
+  .rp-k { color: #8a94a6; margin-right: 6px; }
+  .rp-split { border-top: 1px dashed #c9d3e3; margin: 8px 0 7px; }
+  .rp-reply { font-size: 13px; color: #3d4453; line-height: 1.7; }
+
   /* 催办详情弹窗：回复记录列表 */
   .ud-replies { display: flex; flex-direction: column; gap: 6px; }
   .ud-r { background: #f7f9fc; border: 1px solid #eef2f8; border-radius: 4px; padding: 6px 10px; }
@@ -3069,14 +3079,20 @@
           + '　<a class="reply-btn" data-idx="' + i + '">回复</a></td>'
           + '</tr>';
         (r.replies || []).forEach(function(rp){
-          rows += '<tr>'
+          rows += '<tr class="rp-row">'
             + '<td class="t-time">' + esc(rp.time) + '</td>'
             + '<td>催办回复</td>'
             + '<td>回复</td>'
             + '<td>' + esc(rp.by) + '</td>'
             + '<td>—</td>'
             + '<td>—</td>'
-            + '<td>回复内容：' + esc(rp.content) + '</td>'
+            + '<td><div class="rp-box">'
+            + '<div class="rp-ref"><span class="rp-ref-tag">关联催办信息</span>'
+            + '<div class="rp-ref-line"><span class="rp-k">催办时间</span>' + esc(r.time) + '</div>'
+            + '<div class="rp-ref-line"><span class="rp-k">催办内容</span>' + esc(r.content) + '</div></div>'
+            + '<div class="rp-split"></div>'
+            + '<div class="rp-reply"><span class="rp-k">回复内容</span>' + esc(rp.content) + '</div>'
+            + '</div></td>'
             + '</tr>';
         });
       });
