@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="Yk8P5zVJR9PLzDjkBfqAMu"><head data-page-node-id="uskSwbAcDWJRLd5efeSzmh">
+<meta charset="UTF-8" data-page-node-id="D7WASGZ0G9qoeQYsDs6ixx">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="9gpyHxf6Htm484TwCZrmOm">
+<title>问题管理 - HSE在线巡查</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { height:100%; }
+  body { font-family:"PingFang SC","Microsoft YaHei",sans-serif; font-size:13px; color:#333; background:#F5F7FA; overflow:hidden; }
+  ::-webkit-scrollbar{ width:6px; height:6px; } ::-webkit-scrollbar-thumb{ background:#C9D4E5; border-radius:3px; }
+
+  /* ===== 顶部栏 ===== */
+  .topbar { height:48px; background:#1D2129; display:flex; align-items:center; padding:0 16px; color:#fff; }
+  .logo { display:flex; align-items:center; gap:8px; width:210px; flex-shrink:0; }
+  .logo-mark { width:26px; height:26px; border-radius:4px; background:linear-gradient(135deg,#1668DC,#0E42A0); color:#fff; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .logo-name { font-size:15px; font-weight:600; letter-spacing:1px; color:#fff; font-family:"PingFang SC",serif; }
+  .sys-tabs { display:flex; align-items:center; gap:4px; margin-left:8px; }
+  .sys-tab { display:flex; align-items:center; gap:8px; height:30px; padding:0 12px; border-radius:4px; font-size:13px; color:#C9CDD4; cursor:pointer; }
+  .sys-tab.active { background:rgba(255,255,255,.12); color:#fff; }
+  .sys-tab .x { font-size:12px; opacity:.55; }
+  .topbar-right { margin-left:auto; display:flex; align-items:center; gap:18px; }
+  .corp-switch { display:flex; align-items:center; gap:6px; font-size:13px; color:#E5E6EB; cursor:pointer; }
+  .corp-switch .caret { font-size:10px; opacity:.7; }
+  .avatar-chip { display:flex; align-items:center; gap:8px; cursor:pointer; }
+  .avatar { width:26px; height:26px; border-radius:50%; background:#4080FF; color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; }
+  .bell { position:relative; font-size:16px; cursor:pointer; }
+  .bell .dot { position:absolute; top:-2px; right:-4px; width:7px; height:7px; border-radius:50%; background:#F53F3F; border:1px solid #1D2129; }
+
+  /* ===== 布局 ===== */
+  .layout { display:flex; height:calc(100vh - 48px); }
+  .sidebar { width:210px; flex-shrink:0; background:#fff; border-right:1px solid #E5E6EB; display:flex; flex-direction:column; }
+  .side-brand { display:flex; align-items:center; gap:8px; padding:14px 16px 10px; }
+  .side-brand .cube { width:22px; height:22px; border-radius:4px; background:#1668DC; color:#fff; font-size:12px; display:flex; align-items:center; justify-content:center; font-weight:700; }
+  .side-brand .name { font-size:14px; font-weight:600; color:#1D2129; }
+  .side-search { margin:4px 12px 10px; }
+  .side-search input { width:100%; height:30px; border:1px solid #E5E6EB; border-radius:4px; padding:0 10px; font-size:12px; color:#333; background:#F7F8FA; outline:none; }
+  .side-search input:focus { border-color:#1668DC; background:#fff; }
+  .menu { flex:1; overflow-y:auto; padding:0 8px 12px; }
+  .mi { display:flex; align-items:center; justify-content:space-between; height:38px; padding:0 10px; border-radius:4px; color:#4E5969; font-size:13px; cursor:pointer; margin-bottom:2px; }
+  .mi:hover { background:#F2F7FF; }
+  .mi .lft { display:flex; align-items:center; gap:8px; }
+  .mi .ico { width:16px; text-align:center; font-size:13px; opacity:.85; }
+  .mi .arrow { font-size:10px; color:#86909C; transition:transform .2s; }
+  .mi.open .arrow { transform:rotate(180deg); }
+  .mi.active { background:#E8F3FF; color:#1668DC; font-weight:600; }
+  .submenu { margin:2px 0 6px; }
+  .smi { display:flex; align-items:center; height:34px; padding:0 10px 0 34px; border-radius:4px; color:#4E5969; font-size:13px; cursor:pointer; position:relative; }
+  .smi:hover { background:#F2F7FF; color:#1668DC; }
+  .smi.active { color:#1668DC; font-weight:600; background:#E8F3FF; }
+  .smi.active::before { content:""; position:absolute; left:22px; top:50%; transform:translateY(-50%); width:4px; height:4px; border-radius:50%; background:#1668DC; }
+
+  .main { flex:1; overflow-y:auto; padding:0 16px 24px; }
+
+  /* ===== 页签 ===== */
+  .page-tabs { display:flex; gap:28px; background:#fff; padding:0 16px; border-bottom:1px solid #E5E6EB; border-radius:4px 4px 0 0; margin-top:12px; }
+  .ptab { height:42px; display:flex; align-items:center; font-size:14px; color:#4E5969; cursor:pointer; border-bottom:2px solid transparent; }
+  .ptab:hover { color:#1668DC; }
+  .ptab.active { color:#1668DC; font-weight:600; border-bottom-color:#1668DC; }
+
+  /* ===== 筛选区 ===== */
+  .filter-card { background:#fff; padding:16px 16px 4px; border-radius:0 0 4px 4px; }
+  .frow { display:flex; align-items:center; flex-wrap:wrap; row-gap:12px; }
+  .fitem { display:flex; align-items:center; margin-right:24px; margin-bottom:12px; }
+  .fitem label { width:88px; text-align:right; color:#4E5969; margin-right:8px; flex-shrink:0; }
+  .fitem .req::before { content:"*"; color:#F53F3F; margin-right:2px; }
+  .ipt, .sel { height:32px; border:1px solid #E5E6EB; border-radius:4px; padding:0 10px; font-size:13px; color:#333; outline:none; background:#fff; min-width:180px; }
+  .ipt::placeholder, .sel { color:#86909C; }
+  .ipt:focus, .sel:focus { border-color:#1668DC; }
+  .sel { appearance:none; -webkit-appearance:none; background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2386909C' fill='none' stroke-width='1.2'/%3E%3C/svg%3E") no-repeat right 10px center; padding-right:26px; cursor:pointer; }
+  .chk { display:flex; align-items:center; gap:6px; color:#4E5969; cursor:pointer; margin-left:-8px; }
+  .chk input { width:14px; height:14px; accent-color:#1668DC; cursor:pointer; }
+  .date-sep { margin:0 6px; color:#86909C; }
+  .fbtns { margin-left:auto; display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+  .btn { height:32px; padding:0 15px; border-radius:4px; border:1px solid #E5E6EB; background:#fff; color:#4E5969; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:5px; }
+  .btn:hover { border-color:#1668DC; color:#1668DC; }
+  .btn.primary { background:#1668DC; border-color:#1668DC; color:#fff; }
+  .btn.primary:hover { background:#3C7FE2; }
+  /* 禁用态：未上传文件 / 导入处理中，统一置灰且不可点击 */
+  .btn:disabled, .btn.primary:disabled { background:#F2F3F5; border-color:#E5E6EB; color:#C0C4CC; cursor:not-allowed; }
+  .btn:disabled:hover, .btn.primary:disabled:hover { background:#F2F3F5; border-color:#E5E6EB; color:#C0C4CC; }
+  .btn.small { height:28px; padding:0 12px; font-size:12px; }
+  .fold { color:#4E5969; cursor:pointer; display:flex; align-items:center; gap:4px; }
+  .fold:hover { color:#1668DC; }
+
+  /* ===== 列表 ===== */
+  .list-card { background:#fff; border-radius:4px; margin-top:12px; padding:16px; }
+  .list-head { display:flex; align-items:center; margin-bottom:14px; }
+  .list-title { font-size:15px; font-weight:600; color:#1D2129; }
+  .list-tip { color:#86909C; margin-left:16px; }
+  .list-tip a { color:#1668DC; text-decoration:none; }
+  .list-btns { margin-left:auto; display:flex; gap:8px; }
+  table { width:100%; border-collapse:collapse; table-layout:fixed; }
+  thead th { background:#F7F8FA; color:#4E5969; font-weight:600; text-align:left; padding:10px 12px; border-bottom:1px solid #E5E6EB; white-space:nowrap; }
+  thead th:first-child { width:36px; }
+  tbody td { padding:12px; border-bottom:1px solid #F2F3F5; color:#1D2129; vertical-align:top; }
+  tbody tr:hover td { background:#F7FBFF; }
+  .cell-sum { line-height:1.6; color:#1D2129; }
+  .num { color:#4E5969; }
+  .tag-ok { display:inline-flex; align-items:center; gap:4px; background:#E8FFEA; color:#00B42A; border:1px solid #AFF0B5; height:24px; padding:0 8px; border-radius:3px; font-size:12px; white-space:nowrap; }
+  .tag-ok .c { width:13px; height:13px; border-radius:50%; background:#00B42A; color:#fff; font-size:9px; display:flex; align-items:center; justify-content:center; }
+  .txt-muted { color:#86909C; }
+  .ops { display:flex; gap:10px; }
+  .op { width:26px; height:26px; border:1px solid #E5E6EB; border-radius:3px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#4E5969; font-size:13px; }
+  .op:hover { border-color:#1668DC; color:#1668DC; }
+  .pager { display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-top:14px; color:#4E5969; font-size:13px; }
+  .pg { min-width:28px; height:28px; border:1px solid #E5E6EB; border-radius:3px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:#fff; padding:0 6px; }
+  .pg:hover { border-color:#1668DC; color:#1668DC; }
+  .pg.on { background:#1668DC; border-color:#1668DC; color:#fff; }
+  .pg.dis { color:#C9CDD4; cursor:not-allowed; }
+  .pg-size { height:28px; border:1px solid #E5E6EB; border-radius:3px; padding:0 6px; font-size:12px; color:#4E5969; }
+  .pager input { width:44px; height:28px; border:1px solid #E5E6EB; border-radius:3px; text-align:center; outline:none; }
+  .pager input:focus { border-color:#1668DC; }
+
+  /* ===== 导入弹窗 ===== */
+  .mask { position:fixed; inset:0; background:rgba(29,33,41,.5); display:none; align-items:flex-start; justify-content:center; z-index:100; padding-top:10vh; }
+  .mask.show { display:flex; }
+  .modal { width:560px; background:#fff; border-radius:8px; box-shadow:0 8px 40px rgba(29,33,41,.18); animation:pop .18s ease; }
+  @keyframes pop { from{ transform:translateY(-8px); opacity:0; } to{ transform:none; opacity:1; } }
+  .m-head { display:flex; align-items:center; padding:16px 20px; border-bottom:1px solid #F2F3F5; }
+  .m-title { font-size:15px; font-weight:600; color:#1D2129; }
+  .m-close { margin-left:auto; width:26px; height:26px; border:none; background:none; font-size:16px; color:#86909C; cursor:pointer; border-radius:4px; }
+  .m-close:hover { background:#F2F3F5; color:#1D2129; }
+  .m-body { padding:20px; }
+  .m-foot { padding:12px 20px 18px; display:flex; justify-content:flex-end; gap:8px; }
+  .step { display:flex; gap:12px; margin-bottom:18px; }
+  .step-ico { width:24px; height:24px; border-radius:50%; background:#E8F3FF; color:#1668DC; font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+  .step.done .step-ico { background:#E8FFEA; color:#00B42A; }
+  .step-c { flex:1; }
+  .step-t { font-size:13px; font-weight:600; color:#1D2129; margin-bottom:4px; }
+  .step-d { color:#86909C; font-size:12px; line-height:1.7; margin-bottom:8px; }
+  .dl-row { display:flex; align-items:center; gap:10px; }
+  .tpl-chip { display:flex; align-items:center; gap:6px; background:#F7F8FA; border:1px solid #E5E6EB; border-radius:4px; padding:5px 10px; font-size:12px; color:#4E5969; display:none; }
+  .tpl-chip.show { display:inline-flex; }
+  .tpl-chip .fn { color:#1668DC; }
+  .up-zone { border:1px dashed #C9CDD4; border-radius:6px; height:96px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:#86909C; cursor:pointer; transition:border-color .2s, background .2s; }
+  .up-zone:hover, .up-zone.drag { border-color:#1668DC; background:#F7FBFF; }
+  .up-zone .up-ico { font-size:22px; color:#1668DC; }
+  .up-zone .hint b { color:#1668DC; font-weight:600; }
+  .up-zone.has { border-style:solid; border-color:#1668DC; background:#F7FBFF; }
+  .file-row { display:none; align-items:center; gap:8px; background:#F7F8FA; border:1px solid #E5E6EB; border-radius:4px; padding:8px 12px; margin-top:8px; }
+  .file-row.show { display:flex; }
+  .file-row .fname { color:#1D2129; }
+  .file-row .fsize { color:#86909C; font-size:12px; }
+  .file-row .fdel { margin-left:auto; color:#86909C; cursor:pointer; font-size:12px; }
+  .file-row .fdel:hover { color:#F53F3F; }
+  .res-actions { display:flex; align-items:center; flex-wrap:wrap; gap:8px 10px; margin-top:14px; padding-top:14px; border-top:1px dashed #E5E6EB; }
+  .res-actions a { text-decoration:none; }
+  .res-hint { color:#86909C; font-size:12px; flex:1; min-width:0; }
+  .btn-dl { display:inline-flex; align-items:center; gap:7px; height:34px; padding:0 16px; border-radius:4px; border:1px solid #1668DC; color:#1668DC; background:#F7FBFF; font-size:13px; font-weight:500; cursor:pointer; transition:all .2s; white-space:nowrap; flex-shrink:0; }
+  .btn-dl:hover { background:#1668DC; color:#fff; }
+  .btn-dl svg { flex-shrink:0; }
+  .m-result { display:none; }
+  .res-banner { display:flex; align-items:center; gap:10px; border-radius:6px; padding:14px 16px; margin-bottom:14px; }
+  .res-banner.ok { background:#E8FFEA; border:1px solid #AFF0B5; color:#00B42A; font-size:14px; font-weight:600; }
+  .res-banner .big { font-size:20px; }
+  .res-detail { border:1px solid #F2F3F5; border-radius:6px; overflow:hidden; }
+  .res-detail .rd-h { background:#F7F8FA; padding:8px 12px; color:#4E5969; font-weight:600; font-size:12px; }
+  .res-detail .rd-r { padding:8px 12px; border-top:1px solid #F2F3F5; font-size:12px; color:#86909C; display:flex; gap:10px; }
+  .res-detail .rd-r .no { color:#F53F3F; }
+
+  /* ===== 回到顶部 ===== */
+  .to-top { position:fixed; right:28px; bottom:56px; width:44px; height:44px; border-radius:50%; background:#1668DC; color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; cursor:pointer; box-shadow:0 4px 12px rgba(22,104,220,.35); z-index:50; line-height:1.2; text-align:center; }
+  .to-top:hover { background:#3C7FE2; }
+
+  /* ===== 轻提示 ===== */
+  .toast { position:fixed; top:64px; left:50%; transform:translateX(-50%); background:#1D2129; color:#fff; font-size:13px; padding:9px 18px; border-radius:4px; z-index:200; display:none; }
+</style>
+<style id="__dm_no_drag_style__">* { -webkit-user-drag: none !important; }</style><style id="__dm_bindable_badge_style__">[data-sp-bindable="database"]{outline:1px dashed #0088ff;outline-offset:2px;border-radius:4px;}[data-sp-bindable="database"] *{pointer-events:none !important;transition:none !important;animation:none !important;}[data-sp-bindable="database"]{transition:none !important;animation:none !important;}</style></head>
+<body data-page-node-id="CoZ1rgTvDBHDmej87qKnSd" style="">
+
+<!-- 顶部栏 -->
+<div class="topbar" data-page-node-id="FDWjrXZKU5fLnnU9BpTlPu" style="background-color: rgb(47, 84, 150);">
+  <div class="logo" data-page-node-id="NTqH21b581ED8X4YZmXd8v">
+    <div class="logo-mark" data-page-node-id="4lL2lYLzdoL87iIP24EHdx" style="color: rgb(255, 255, 255);">中化</div>
+    <div class="logo-name" data-page-node-id="SeQVjNW0Vz89LN5FLiazPx">中国中化</div>
+  </div>
+  <div class="sys-tabs" data-page-node-id="MmgvYvd2yhdFUFK7GGrjjp">
+    <div class="sys-tab" data-page-node-id="JSi5yeEWZa3ob6n5QawAHq">工作台 <span class="x" data-page-node-id="FfBzRKI33h96gpneDqh8bC">✕</span></div>
+    <div class="sys-tab active" data-page-node-id="QGThQwmGcWkf05vtQ1Rlg9">问题管理 <span class="x" data-page-node-id="5wwF2JoDdTBowASyQco3MK">✕</span></div>
+  </div>
+  <div class="topbar-right" data-page-node-id="98l5DXVGjc480TZ210uP0C">
+    <div class="corp-switch" data-page-node-id="aR0hFMHSmiA55VwqTZWB30">中国中化 <span class="caret" data-page-node-id="lR2CsJxdc3QTRSbn8Q5sSs">▾</span></div>
+    <div class="bell" data-page-node-id="nFA4cfoarKE8N9YDvYvdpu">🔔<span class="dot" data-page-node-id="MFFhTHxM4iU6wrlXfhTfsL"></span></div>
+    <div class="avatar-chip" data-page-node-id="ORjK3wzsESycx2eFmXYxlK"><div class="avatar" data-page-node-id="79qLdvhb7qDoHBAwEj7N1V">运</div>运营管理员</div>
+  </div>
+</div>
+
+<div class="layout" data-page-node-id="U1rIpyvNaKQkkh3mpyaKmA">
+  <!-- 左侧菜单 -->
+  <div class="sidebar" data-page-node-id="TMN0WeRgLYpoOhGfQ5bfai">
+    <div class="side-brand" data-page-node-id="dvrErFv0ZLneZEEs5tnDha"><div class="cube" data-page-node-id="ZYN33WcoWd832wCy9B07NC">H</div><div class="name" data-page-node-id="jlj7AFg1zWvAIBICqY7rH7">HSE在线巡查</div></div>
+    <div class="side-search" data-page-node-id="oCvnJBHuYPvxxAbGRJ4TFL"><input placeholder="搜索" data-page-node-id="cat968lnKUSnffMQLMAZHe"></div>
+    <div class="menu" data-page-node-id="u7LrjxXO8AIpkztSWdLX4R">
+      <div class="mi" data-page-node-id="46nW2N3IQUSzOefdWWb7ZN"><span class="lft" data-page-node-id="xBBJTUtwVQZvgDyz6KsJLG"><span class="ico" data-page-node-id="sxy7wAweQvNawVtRvU6ITV">▦</span>运营驾驶舱</span></div>
+      <div class="mi" data-page-node-id="YUPB7L2xchIRDMlEaHhE0k"><span class="lft" data-page-node-id="7Dn7irNbvzGK5aumAiuKOJ"><span class="ico" data-page-node-id="GNsUGA1QYFlFoz7QcqKUVG">👤</span>人工巡查</span><span class="arrow" data-page-node-id="97buXa2j9bGSS0Cpy6KWIZ">▾</span></div>
+      <div class="mi open active" data-page-node-id="XQNVRny2KQ7OiyRZOIzXpg"><span class="lft" data-page-node-id="wHt9BXBQdK12w6RWhEPchS"><span class="ico" data-page-node-id="6hNAm4E6f80HhOCKRhHjC7">🤖</span>智能巡查</span><span class="arrow" data-page-node-id="nP1t7g6MOY96ZVunuKaCvP">▴</span></div>
+      <div class="submenu" data-page-node-id="etPMIGpPfnAPSDsRXgsrzN">
+        <div class="smi" data-page-node-id="27Ay5kWurNBDTtkSzBu9wD">巡查任务配置</div>
+        <div class="smi active" data-page-node-id="WeFC0mTJ8VWhn8Tq75AkJ1">巡查问题清单</div>
+        <div class="smi" data-page-node-id="vzLToJimxIwv2Auld9yipc">任务运营记录</div>
+      </div>
+      <div class="mi" data-page-node-id="iWtD8JnWP9BSfiv8F0GW1z"><span class="lft" data-page-node-id="6BrUSdsliHUdm8uilWSSCs"><span class="ico" data-page-node-id="6DP9v7r3bc0T6hCDgblySh">⚙</span>审查配置</span><span class="arrow" data-page-node-id="YJnMF3CV9CHzt6oIMA2X7n">▾</span></div>
+      <div class="mi" data-page-node-id="EAdKzKv6gDhBVblELWRgWW"><span class="lft" data-page-node-id="Z46oKPjdweoWlkaspndPFK"><span class="ico" data-page-node-id="1zWmsetAYSHZdX8v2NusFD">⇪</span>数据导出与纠错</span></div>
+      <div class="mi" data-page-node-id="u6o3jQvtqoxu8J5qPaNnbY"><span class="lft" data-page-node-id="36HfgnZviVPzljrdaVqmQB"><span class="ico" data-page-node-id="PmBem30ImbX5ORGNMT1EwN">📄</span>巡检报告</span></div>
+      <div class="mi" data-page-node-id="9ZOktCPMB8ADaKkWmc1Pz4"><span class="lft" data-page-node-id="8hbj3hKFNTJ3gG9UGKlPqY"><span class="ico" data-page-node-id="M1O3DPT98PrYkAMwidNR8p">🧭</span>运维配置</span><span class="arrow" data-page-node-id="JGFEoGyl7Y8rr8eFKESW0a">▾</span></div>
+    </div>
+  </div>
+
+  <!-- 主内容 -->
+  <div class="main" data-page-node-id="lIdrIAmtACxRfxC8hVm6Dd">
+    <div class="page-tabs" data-page-node-id="ZTKC4QtoEuF1jCF2AmCQ8j">
+      <div class="ptab" data-tab="智能巡查" data-page-node-id="4oowXwgtiEaR1hFe6DdXa9">智能巡查</div>
+      <div class="ptab active" data-tab="人工巡查" data-page-node-id="I9aiSbuajNFEW4YQtzGAFH">人工巡查</div>
+      <div class="ptab" data-tab="AI视频" data-page-node-id="hdoBVjVlaSXWM5lmrxcptd">AI视频</div>
+    </div>
+
+    <!-- 筛选 -->
+    <div class="filter-card" id="filterCard" data-page-node-id="T7GYjJP7fTisb3fqHlKG78">
+      <div class="frow" data-page-node-id="npSaKlRF0J6uvoRkotqxEo">
+        <div class="fitem" data-page-node-id="emLgBYk4YZlqHqRVxTtC4U">
+          <label data-page-node-id="kvUskuYR4ACm64ZuG2hwvs">问题所属单位</label>
+          <select class="sel" style="min-width:200px;" data-page-node-id="vPfRWUzagvijCAldMPG1Rl"><option data-page-node-id="VLc9qjBlfEMavGQPsyOPuS">中国中化</option><option data-page-node-id="Ah0b5Pws97NiBt28TJW2lF">沧州大化</option><option data-page-node-id="ToEJcIgRGTjQqrVdZAaHRB">昊华科技</option><option data-page-node-id="UBYwIO9zGcqSxabScinXP9">中化蓝天</option><option data-page-node-id="yJzfe2lcLNDdPgGe1po4p1">扬农集团</option></select>
+        </div>
+        <label class="chk" data-page-node-id="pPnRufDPy4L4LkLICEdbQ9"><input type="checkbox" checked="" data-page-node-id="wmm7F2MFihhIHwinuqeD9S">包含下级所有企业</label>
+      </div>
+      <div class="frow" data-fold="1" data-page-node-id="F4gZD4Qcm8GgSBE9bl1Omy">
+        <div class="fitem" data-page-node-id="8UahM2TmxBfBFUQvCBDrJk"><label data-page-node-id="4OxyAyRgqHwRmDRkBYsRj6">问题编号</label><input class="ipt" placeholder="请输入问题编号" data-page-node-id="cw4UCR5TW6c0TeQwb1KphE"></div>
+        <div class="fitem" data-page-node-id="8hfHz0nmLWy4auEkLNvQjX"><label data-page-node-id="7vxeVSOoA1aGOn8aGyESNh">检查单位</label><select class="sel" data-page-node-id="xCru2D2thrZomfBrWKBM43"><option data-page-node-id="Ynkvk9pH0CcWygI2ZP2bWo">请选择</option></select></div>
+        <div class="fitem" data-page-node-id="lD7D0nAk3ZehmjG09aDrAU"><label data-page-node-id="yG1GxyF0gBeFw783ax7Rs1">问题概要</label><input class="ipt" placeholder="请输入问题概要" data-page-node-id="zFAVCrJOQcnEgQKZYl4b0V"></div>
+        <div class="fitem" data-page-node-id="7GMoshIdlvl7AXj0vBJ1tu"><label data-page-node-id="IPZ4mxmkdUR2zrWCsEJLfg">处理状态</label><select class="sel" data-page-node-id="HWduMErbGnyEzPBMfoJ2Vs"><option data-page-node-id="rH7WD5tfz4KjP5pmZeECKR">请选择</option><option data-page-node-id="3EPmuYhoHZx42akMCSbeA6">已整改</option><option data-page-node-id="girBpPFXiv62Phs9pX8oej">未整改</option></select></div>
+      </div>
+      <div class="frow" data-fold="1" data-page-node-id="XUUMqXica90bdZHOii94Ee">
+        <div class="fitem" data-page-node-id="Amaa314zSOZxSGyR0BKOqu"><label data-page-node-id="V8BOrjL1FO19iHHrHobWvB">所属系统</label><select class="sel" data-page-node-id="1HVkJj3f7BPE9SRhYdLfPS"><option data-page-node-id="zKWpvXEDwrO1wWg9lzZwCu">请选择所属系统</option><option data-page-node-id="O0rHSIXWa1VjddmcfjhG0k">重大危险源系统</option><option data-page-node-id="DDl2zZGSh50Gp2nqxNVHBk">非常规作业系统</option><option data-page-node-id="Viy1bGL7k8jAGuChSqRNJ8">双重预防系统</option><option data-page-node-id="zSJZl6psUVAGDpov2f0ZT1">智能巡检系统</option><option data-page-node-id="NAmENJMh3Y8qLa6dBEVifs">人员定位系统</option><option data-page-node-id="kw7YyBYfawt4QVBL2I1NEX">视频监控系统</option><option data-page-node-id="cYuH48az9Kh7AwDo0Afud1">智慧HSE系统</option><option data-page-node-id="JCRlG7OLd0MfSCa14kquar">承包商HSE管理系统</option></select></div>
+        <div class="fitem" data-page-node-id="Kx7a1Xs9WnOYIahEeGz4z8"><label data-page-node-id="i34HasJDRFXgNOBYwt2bGQ">检查层级</label><select class="sel" data-page-node-id="TNEVRHxRPXVFtPqjjypsfQ"><option data-page-node-id="30VLc5iSzRlsCUCazzSMyE">请选择</option></select></div>
+        <div class="fitem" data-page-node-id="vFEG3pJwOAttpUYYn6ARsh"><label data-page-node-id="YBWGjXxk0HSmsl8662WauU">是否隐患</label><select class="sel" data-page-node-id="3rD45CtwtuJ9gBu1CGO3LM"><option data-page-node-id="FXNiOiokNY5TUKOsCbfa68">请选择</option><option data-page-node-id="eqRB614Vs3XaCV12yAA92v">是</option><option data-page-node-id="yP9SuUTngngbDiHgo76WXd">否</option></select></div>
+        <div class="fitem" data-page-node-id="MRlV3YcBDa3I7wJ0mVbHJM">
+          <label data-page-node-id="X84qofy7pnuiAGFAfo5EMW">发现时间</label>
+          <input class="ipt" style="min-width:130px;" value="2026-06-01" data-page-node-id="PX2CyzsptPGBeXmKcl9cDi">
+          <span class="date-sep" data-page-node-id="C2MDh9jIiyFNEsG9QpBmM1">至</span>
+          <input class="ipt" style="min-width:130px; margin-left:0;" value="2026-06-02" data-page-node-id="Ad1mqRAGJ3jUQtCq0HqXdY">
+        </div>
+      </div>
+      <div class="frow" data-fold="1" data-page-node-id="JPbZNi7cINTVcBH45ssbXD">
+        <div class="fitem" data-page-node-id="D65SeTP1D92VPOxKGKzM5b"><label data-page-node-id="tEjWhHj55FAQtg3pQwaNK6">通报状态</label><select class="sel" data-page-node-id="7hxKgsOxkEAXREJ1Q8NLdD"><option data-page-node-id="3khq1CL2eSr5vX2fWuI8NS">请选择</option></select></div>
+        <div class="fitem" data-page-node-id="JsPlPT0aEe7X6dOblfuX1f"><label data-page-node-id="jah8WaQEtmywA5nng5JnrD">报告人</label><input class="ipt" placeholder="请输入问题报告人" data-page-node-id="mEvbK5BACNuH2eKHLm79sS"></div>
+        <div class="fitem" data-page-node-id="GwfSkz5aNR3atdOuJLzGNq"><label data-page-node-id="6vhjvUq5Id9SiP73BeFKEB">关联任务</label><select class="sel" data-page-node-id="FTbr7KlHkDw5x2m2dbvQfw"><option data-page-node-id="4gMpg1CmnHBE5lPHlfPFGf">请选择</option></select></div>
+        <div class="fbtns" data-page-node-id="VhWAcDsmEf4UugbOyIBTM9">
+          <span class="fold" id="foldBtn" data-page-node-id="boRlcHi1MpgW785aqJIGWK">隐藏 <span style="font-size:10px;" data-page-node-id="KfyBYwADN2i8DU3g2oBOb6">▴</span></span>
+          <button class="btn primary" data-page-node-id="EQAYIZ7UyRRCNLxQjjtUlV">查询</button>
+          <button class="btn" data-page-node-id="Qgi80zzFJef74e7dDFaQCW">重置</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 列表 -->
+    <div class="list-card" data-page-node-id="YPtN3WjdiolJNoDGaQQ1s5">
+      <div class="list-head" data-page-node-id="5yZuuouzYq6S0ztqxZSvLL">
+        <span class="list-title" data-page-node-id="8DCiu0gewPwoK6zTHq46CD">巡查问题清单</span>
+        <span class="list-tip" data-page-node-id="EOD8ZfiWEjSrfCohLdMflT">自系统投运近半年的人工巡查问题清单，更多数据请<a href="javascript:;" data-page-node-id="FMwGnVwlNarexxhcY7rzLh">点击查看&gt;&gt;</a></span>
+        <div class="list-btns" data-page-node-id="KQ20B6UXaCOSIyUOB7kOOH">
+          <button class="btn small" onclick="toast('演示原型：导出当前筛选结果')" data-page-node-id="cq5MtOSv20RY2EAH9XMwl2">导出</button>
+          <button class="btn small" onclick="toast('请先勾选需要批量删除的问题')" data-page-node-id="iG3DNOYy4Bykdi4EhEXNIQ">批量删除</button>
+          <button class="btn small primary" onclick="openImport()" data-page-node-id="mn5NF9B504cJZzVsQFKzkv">导入</button>
+          <button class="btn small primary" onclick="toast('演示原型：新增问题登记')" data-page-node-id="63zIfJRaVpKZewQFI50whN">新建</button>
+        </div>
+      </div>
+      <table data-page-node-id="aKCV8LHWE0xS7yJHFbqcgC">
+        <colgroup data-page-node-id="aN9VbpOmCkJ2idqOEZvnDU">
+          <col data-page-node-id="Fu8iTEb2nHrUGXC89CnTei"><col style="width:44px" data-page-node-id="M060DxuWMffS9uSDtT1KZ8"><col style="width:120px" data-page-node-id="qjTyxQGcGM7sVPgaENyesO"><col data-page-node-id="sZ4Rn4FNmaE0AdSLWKMQFg"><col style="width:76px" data-page-node-id="hcByeMoQWY9kE5fnFHQF5o"><col style="width:92px" data-page-node-id="MNnoCC0AsDNtbu8mCbuJjB"><col style="width:150px" data-page-node-id="A89DswOc3KHGHrqV0cquGg"><col style="width:84px" data-page-node-id="f0aBZrnd7fjK0VoRoI4wbZ"><col style="width:88px" data-page-node-id="YVSKs1RgKPwiO3OoX7LwtP"><col style="width:96px" data-page-node-id="0gIBVPRoHmVg88mAiImiF6"><col style="width:96px" data-page-node-id="IW10A15EAbyGZ0wVFpD9TA"><col style="width:70px" data-page-node-id="ggVGR6FRwvqEsA9Xt718RO">
+        </colgroup>
+        <thead data-page-node-id="PhkFMC4HZPGqNxmcNBCvCv">
+          <tr data-page-node-id="oxN15YmXmPtBch8XHNEVbb">
+            <th data-page-node-id="PXDEVe9n4vlGGKIXyPl6a4"><input type="checkbox" data-page-node-id="rxsBqssAZSMP5biI01ARiH"></th>
+            <th data-page-node-id="GECSpPJf7tOdHgrO78bGwY">序号</th><th data-page-node-id="AxpM0TV8ArHJDeDAlFKjRD">所属系统</th><th data-page-node-id="EwZYI9H4ZGMD8ZrDKCKcx9">问题概要</th><th data-page-node-id="a9a4Av8LiJ0zvPA9mphJe7">是否隐患</th><th data-page-node-id="zZRsEqIPg5eUnNHK75tfXU">处理状态</th><th data-page-node-id="4GZEWOxS8jQ6sBot4luzxF">发现时间</th><th data-page-node-id="3PeNO4l66rw0LhDjQaKQFR">追踪状态</th><th data-page-node-id="d8PdfaJ3Gj7klacX0pCWgQ">检查单位</th><th data-page-node-id="M9SZV9I6Auen2pAMXOhqzr">关联任务</th><th data-page-node-id="mPHOgCn3nxEvcB8QsdcUpG">报告人</th><th data-page-node-id="OGkDAxqMYG94c9VXS3BHk4">操作</th>
+          </tr>
+        </thead>
+        <tbody id="tbody" data-page-node-id="NM6JkCCULI3et3nVZuMTJV"><tr><td><input type="checkbox"></td><td class="num">5</td><td>重大危险源系统</td><td><div class="cell-sum">检查重大危险源储罐区，发现重大危险源储罐"液氯罐区单元"储罐"2号液氯储罐"的工艺报警"液位高高联锁"于 2026-06-01 20:53:02 触发，持续时长 199 分钟，未及时预警处置。</div></td><td>是</td><td><span class="tag-ok"><span class="c">✓</span>已整改</span></td><td class="num">2026-06-02 00:00:00</td><td class="txt-muted">未追踪</td><td>中国中化</td><td class="txt-muted">—</td><td>运营管理员</td><td><div class="ops"><span class="op" title="查看"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span class="op" title="详情">🗎</span></div></td></tr><tr><td><input type="checkbox"></td><td class="num">4</td><td>人员定位系统</td><td><div class="cell-sum">企业接入人员定位系统中，未查询到巡检任务【原材料研究所风合合集-水源阳合集室】执行时间【2026-05-31 06:51:25 至 2026-05-31 06:52:23】前后 20 分钟巡检人员"不断扩"的人员轨迹，未按规定确认人员应到位情况。</div></td><td>是</td><td><span class="tag-ok"><span class="c">✓</span>已整改</span></td><td class="num">2026-06-02 00:00:00</td><td class="txt-muted">未追踪</td><td>中国中化</td><td class="txt-muted">—</td><td>运营管理员</td><td><div class="ops"><span class="op" title="查看"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span class="op" title="详情">🗎</span></div></td></tr><tr><td><input type="checkbox"></td><td class="num">3</td><td>人员定位系统</td><td><div class="cell-sum">企业接入人员定位系统中，未查询到巡检任务【原材料研究所风合合集-水源阳合集室】执行时间【2026-06-02 04:32:11 至 2026-06-02 04:33:01】起点为"开工"定位卡人员轨迹数据，巡检到位率统计缺失。</div></td><td>是</td><td><span class="tag-ok"><span class="c">✓</span>已整改</span></td><td class="num">2026-06-02 00:00:00</td><td class="txt-muted">未追踪</td><td>中国中化</td><td class="txt-muted">—</td><td>运营管理员</td><td><div class="ops"><span class="op" title="查看"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span class="op" title="详情">🗎</span></div></td></tr><tr><td><input type="checkbox"></td><td class="num">2</td><td>视频监控系统</td><td><div class="cell-sum">检查视频监控系统，2026-06-02 03:37 巡查定点位置"星星-硝基-201 车间-528"现场有浓烟及白烟频繁出现，摄像机未联动智能识别算法产生告警。</div></td><td>是</td><td><span class="tag-ok"><span class="c">✓</span>已整改</span></td><td class="num">2026-06-02 00:00:00</td><td class="txt-muted">未追踪</td><td>中国中化</td><td class="txt-muted">—</td><td>运营管理员</td><td><div class="ops"><span class="op" title="查看"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span class="op" title="详情">🗎</span></div></td></tr><tr><td><input type="checkbox"></td><td class="num">1</td><td>视频监控系统</td><td><div class="cell-sum">检查视频监控系统，2026-06-02 03:38 巡查定点位置"星星-硝基-201 出口"发现烟火频繁误报，AI 识别算法阈值设置不合理，需现场核实。</div></td><td>是</td><td><span class="tag-ok"><span class="c">✓</span>已整改</span></td><td class="num">2026-06-02 00:00:00</td><td class="txt-muted">未追踪</td><td>中国中化</td><td class="txt-muted">—</td><td>运营管理员</td><td><div class="ops"><span class="op" title="查看"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span class="op" title="详情">🗎</span></div></td></tr><tr><td><input type="checkbox"></td><td class="num">3</td><td>双重预防系统</td><td><div class="cell-sum">检查双重预防系统，发现名称为"高处作业未佩戴安全带"、"空压机空气管压力表损坏未及时更换"的隐患已完成整改，整改时间【2026-05-31】，状态处于"整改待验收"，验收流程停滞。</div></td><td>是</td><td><span class="tag-ok"><span class="c">✓</span>已整改</span></td><td class="num">2026-06-02 00:00:00</td><td class="txt-muted">未追踪</td><td>中国中化</td><td class="txt-muted">—</td><td>运营管理员</td><td><div class="ops"><span class="op" title="查看"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span class="op" title="详情">🗎</span></div></td></tr><tr><td><input type="checkbox"></td><td class="num">1</td><td>非常规作业系统</td><td><div class="cell-sum">高危作业【高风险作业 编号GW-05-060007】，作业类型属受限空间作业，作业现场只配置 1 名监护人【174272197182044221】，监护人无特种作业证信息，企业系统未查询到监护人资质记录。</div></td><td>是</td><td><span class="tag-ok"><span class="c">✓</span>已整改</span></td><td class="num">2026-06-02 00:00:00</td><td class="txt-muted">未追踪</td><td>中国中化</td><td class="txt-muted">—</td><td>运营管理员</td><td><div class="ops"><span class="op" title="查看"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span class="op" title="详情">🗎</span></div></td></tr></tbody>
+      </table>
+      <div class="pager" data-page-node-id="nQzoakzXV3nBa5faekPGwO">
+        <span data-page-node-id="xF7tZT0Uk9tRxPsFhOiPht">共46条记录</span>
+        <select class="pg-size" data-page-node-id="h48iNZPZUDRZ64E2bij2dW"><option data-page-node-id="TPmbCccregEsrKMDt4Sxyr">10条/页</option><option data-page-node-id="Z4fNVkDOR6P6mNvTeFPOSy">20条/页</option><option data-page-node-id="w8I6BUPCzqE19QDA8lYDUa">50条/页</option></select>
+        <span class="pg dis" data-page-node-id="pRE6D7yQhbVPwavEARPV8V">‹</span>
+        <span class="pg on" data-page-node-id="E2uF7oA6wgnKEc4KPKgsSe">1</span><span class="pg" data-page-node-id="3qx7PwHwXLFeWyKKTVYHuV">2</span><span class="pg" data-page-node-id="mb1bFqOH2DKv2vVz3mNAUT">3</span><span class="pg" data-page-node-id="L3g9KTD0i4hFM0PEPejR2e">4</span><span class="pg" data-page-node-id="QSnt4PyW4rpKAA3WoRAA6E">5</span>
+        <span class="pg" data-page-node-id="UJWyVHePYB5txQ10Q8xB3p">›</span>
+        <span data-page-node-id="H67Eqv5wClcWJjOGNyptHW">跳至</span><input value="1" data-page-node-id="YvAuoFbLwdcTwi0pNMJF76"><span data-page-node-id="ecjcYfptUXqGUtecJd5Uue">页</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 导入弹窗 -->
+<div class="mask" id="importMask" data-page-node-id="ie3aXYrItwHaQh1fB5QBxP">
+  <div class="modal" data-page-node-id="OGYoCEWkxF94lJYbRLRE4J">
+    <div class="m-head" data-page-node-id="HNLVChPv2ftjrFB7Btr0VB">
+      <span class="m-title" data-page-node-id="VGVeQTpIJwfr8jfNw1Eid4">数据导入</span>
+      <button class="m-close" onclick="closeImport()" data-page-node-id="uu3br2GMsp8jQomSF0oxjC">✕</button>
+    </div>
+    <div class="m-body" data-page-node-id="O1ew2pTnTU9lZYCLyUBkh0">
+      <!-- 步骤视图 -->
+      <div id="importSteps" data-page-node-id="ktInycafZjTklTNu7kBssb">
+        <div class="step" id="step1" data-page-node-id="gLnaq0T6AEgdsDIAWOykOl">
+          <div class="step-ico" data-page-node-id="qykAmT786u9f58JDbww98k">1</div>
+          <div class="step-c" data-page-node-id="QprDXO9Q6uIrmHFerVSuyT">
+            <div class="step-t" data-page-node-id="kXU8Aq3odRDIVbLWvKTNaB">下载导入模板</div>
+            <div class="step-d" data-page-node-id="xiyaPXbKZJ2zGwD0lTFVqE">请先下载导入模板，并按模板中的填写说明录入问题数据（含各下拉枚举与级联字段）。</div>
+            <div class="dl-row" data-page-node-id="eJUPMmyEQ8cLCe6UblJgYb">
+              <a class="btn small" href="人工巡查问题导入模板.xlsx" download="人工巡查问题导入模板.xlsx" onclick="tplDownloaded()" data-page-node-id="0qoi1T40ygWsWwMaPH3K6f">⬇ 下载导入模板</a>
+              <span class="tpl-chip" id="tplChip" data-page-node-id="7CmFxk62expZeQamqo1Aw3">✅ <span class="fn" data-page-node-id="F4beHC4RYgVTkuvVq3qUHB">人工巡查问题导入模板.xlsx</span> 已下载</span>
+            </div>
+          </div>
+        </div>
+        <div class="step" id="step2" data-page-node-id="NEbLt6gIBEK8nEVjrOT3qy">
+          <div class="step-ico" data-page-node-id="9ndRFd7Cvm9kM9vFRnUfLW">2</div>
+          <div class="step-c" data-page-node-id="KLxdOP9io4rm8KCONmDRJQ">
+            <div class="step-t" data-page-node-id="k24ldrI8E88dyuBAeCEfMF">上传填好的模板</div>
+            <div class="step-d" data-page-node-id="abws7ZFBm4WwZ4iGVMtcAG">仅支持 .xlsx / .xls 格式文件，文件大小不超过 20MB，单次最多导入 5000 条数据。</div>
+            <div class="up-zone" id="upZone" onclick="document.getElementById('fileInput').click()" data-page-node-id="7fVA6EVuoacBTkItInO80j">
+              <div class="up-ico" data-page-node-id="GKtei6ZWt1n4upAzMjdC38">⇧</div>
+              <div class="hint" data-page-node-id="LMBXIdZ0ZUBVqxHBOZAEV4">将文件拖到此处，或 <b data-page-node-id="pMnBhTuWBEmWbV3mBHLJwy">点击上传</b></div>
+            </div>
+            <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" data-page-node-id="r6KEBCnNDrDphflUI9CADJ">
+            <div class="file-row" id="fileRow" data-page-node-id="oVElFdQGWPck4BsXs24jj9">
+              <span data-page-node-id="TddftCTH3cB4wu2ijIqEB8">📄</span><span class="fname" id="fileName" data-page-node-id="ACMeh7txjG6FIfJ7efV6H5"></span><span class="fsize" id="fileSize" data-page-node-id="fIpppJPRvydlD10ShsHNZV"></span>
+              <span class="fdel" onclick="clearFile(event)" data-page-node-id="pZkOTen3Uv7rvxjA8HkBvx">删除</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 结果视图 -->
+      <div class="m-result" id="importResult" data-page-node-id="a53livJDtsddGWDlaAco22">
+        <div class="res-banner ok" data-page-node-id="OlTjvgrKmafBSUubBhA8lM"><span class="big" data-page-node-id="lGaWMtWp6gzt2BcoJpNJ7u">✅</span>导入完成：成功 5 条，失败 1 条</div>
+        <div class="res-actions" data-page-node-id="0m5jlPeSiu3XxLPhmJZzxq">
+          <a class="btn-dl" href="导入错误报告-示例.xlsx" download="导入错误报告-示例.xlsx" data-page-node-id="uPbzxIuFAthlANWfnkKvST"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="vshQ6zThPQDchbRHnySJtJ"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" data-page-node-id="wTPVfDvyhGhw8YURQfX0uC"></path><polyline points="7 10 12 15 17 10" data-page-node-id="ZheSs05DmsedvYRF47ooPm"></polyline><line x1="12" y1="15" x2="12" y2="3" data-page-node-id="KSLlLfSKW9zAhAHS1v1WJa"></line></svg>下载错误报告</a>
+          <span class="res-hint" data-page-node-id="5nCM4TVHCjnQqxnQXBD9b5">仅包含失败记录：错误行红色标注 + 首列「校验结果/错误原因」，修正后可重新上传</span>
+        </div>
+      </div>
+    </div>
+    <div class="m-foot" id="mFoot" data-page-node-id="3WN6GHjdvclr907SCXCBrf">
+      <button class="btn" onclick="closeImport()" data-page-node-id="mPYR1nw1GSZ9uTneFiRfPG">取消</button>
+      <button class="btn primary" id="doImportBtn" disabled="" onclick="doImport()" data-page-node-id="1CAcGt5mEHZEWrFJQzdndB">开始导入</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="toast" id="toast" data-page-node-id="cUKLKALyOEwXEZDw9UAFe0"></div>
+
+<script>
+/* ===== 表格数据（按截图还原） ===== */
+var rows = [
+  {no:5, sys:"重大危险源系统", sum:"检查重大危险源储罐区，发现重大危险源储罐\"液氯罐区单元\"储罐\"2号液氯储罐\"的工艺报警\"液位高高联锁\"于 2026-06-01 20:53:02 触发，持续时长 199 分钟，未及时预警处置。", hid:"是", st:"ok", time:"2026-06-02 00:00:00", track:"未追踪", unit:"中国中化", task:"", rep:"运营管理员"},
+  {no:4, sys:"人员定位系统", sum:"企业接入人员定位系统中，未查询到巡检任务【原材料研究所风合合集-水源阳合集室】执行时间【2026-05-31 06:51:25 至 2026-05-31 06:52:23】前后 20 分钟巡检人员\"不断扩\"的人员轨迹，未按规定确认人员应到位情况。", hid:"是", st:"ok", time:"2026-06-02 00:00:00", track:"未追踪", unit:"中国中化", task:"", rep:"运营管理员"},
+  {no:3, sys:"人员定位系统", sum:"企业接入人员定位系统中，未查询到巡检任务【原材料研究所风合合集-水源阳合集室】执行时间【2026-06-02 04:32:11 至 2026-06-02 04:33:01】起点为\"开工\"定位卡人员轨迹数据，巡检到位率统计缺失。", hid:"是", st:"ok", time:"2026-06-02 00:00:00", track:"未追踪", unit:"中国中化", task:"", rep:"运营管理员"},
+  {no:2, sys:"视频监控系统", sum:"检查视频监控系统，2026-06-02 03:37 巡查定点位置\"星星-硝基-201 车间-528\"现场有浓烟及白烟频繁出现，摄像机未联动智能识别算法产生告警。", hid:"是", st:"ok", time:"2026-06-02 00:00:00", track:"未追踪", unit:"中国中化", task:"", rep:"运营管理员"},
+  {no:1, sys:"视频监控系统", sum:"检查视频监控系统，2026-06-02 03:38 巡查定点位置\"星星-硝基-201 出口\"发现烟火频繁误报，AI 识别算法阈值设置不合理，需现场核实。", hid:"是", st:"ok", time:"2026-06-02 00:00:00", track:"未追踪", unit:"中国中化", task:"", rep:"运营管理员"},
+  {no:3, sys:"双重预防系统", sum:"检查双重预防系统，发现名称为\"高处作业未佩戴安全带\"、\"空压机空气管压力表损坏未及时更换\"的隐患已完成整改，整改时间【2026-05-31】，状态处于\"整改待验收\"，验收流程停滞。", hid:"是", st:"ok", time:"2026-06-02 00:00:00", track:"未追踪", unit:"中国中化", task:"", rep:"运营管理员"},
+  {no:1, sys:"非常规作业系统", sum:"高危作业【高风险作业 编号GW-05-060007】，作业类型属受限空间作业，作业现场只配置 1 名监护人【174272197182044221】，监护人无特种作业证信息，企业系统未查询到监护人资质记录。", hid:"是", st:"ok", time:"2026-06-02 00:00:00", track:"未追踪", unit:"中国中化", task:"", rep:"运营管理员"}
+];
+document.getElementById("tbody").innerHTML = rows.map(function(r){
+  return "<tr>"+
+    '<td><input type="checkbox"></td>'+
+    '<td class="num">'+r.no+'</td>'+
+    '<td>'+r.sys+'</td>'+
+    '<td><div class="cell-sum">'+r.sum+'</div></td>'+
+    '<td>'+r.hid+'</td>'+
+    '<td><span class="tag-ok"><span class="c">✓</span>已整改</span></td>'+
+    '<td class="num">'+r.time+'</td>'+
+    '<td class="txt-muted">'+r.track+'</td>'+
+    '<td>'+r.unit+'</td>'+
+    '<td class="txt-muted">'+(r.task||'—')+'</td>'+
+    '<td>'+r.rep+'</td>'+
+    '<td><div class="ops"><span class="op" title="查看"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></span><span class="op" title="详情">🗎</span></div></td>'+
+  "</tr>";
+}).join("");
+
+/* ===== 页签 / 菜单轻交互 ===== */
+document.querySelectorAll(".ptab").forEach(function(t){
+  t.addEventListener("click", function(){
+    if(t.dataset.tab !== "人工巡查") toast("演示原型：当前仅实现「人工巡查」页签");
+  });
+});
+document.querySelectorAll(".mi, .smi").forEach(function(m){
+  m.addEventListener("click", function(){ toast("演示原型：菜单跳转「"+m.textContent.replace(/[▾▴]/g,"").trim()+"」"); });
+});
+/* 筛选折叠 */
+var folded = false;
+document.getElementById("foldBtn").addEventListener("click", function(){
+  folded = !folded;
+  document.querySelectorAll('[data-fold="1"]').forEach(function(r){ r.style.display = folded ? "none" : "flex"; });
+  this.innerHTML = folded ? '展开 <span style="font-size:10px;">▾</span>' : '隐藏 <span style="font-size:10px;">▴</span>';
+});
+
+/* ===== 导入弹窗 ===== */
+var mask = document.getElementById("importMask");
+var fileInput = document.getElementById("fileInput");
+var upZone = document.getElementById("upZone");
+var tplReady = false, fileReady = false;
+
+function openImport(){ mask.classList.add("show"); resetImport(); }
+function closeImport(){ mask.classList.remove("show"); }
+mask.addEventListener("click", function(e){ if(e.target === mask) closeImport(); });
+
+function tplDownloaded(){ tplReady = true; document.getElementById("tplChip").classList.add("show"); document.getElementById("step1").classList.add("done"); }
+
+fileInput.addEventListener("change", function(){ if(fileInput.files[0]) setFile(fileInput.files[0]); });
+["dragover","dragenter"].forEach(function(ev){ upZone.addEventListener(ev, function(e){ e.preventDefault(); upZone.classList.add("drag"); }); });
+["dragleave","drop"].forEach(function(ev){ upZone.addEventListener(ev, function(e){ e.preventDefault(); upZone.classList.remove("drag"); }); });
+upZone.addEventListener("drop", function(e){ var f = e.dataTransfer.files[0]; if(f) setFile(f); });
+
+function setFile(f){
+  if(!/\.(xlsx|xls)$/i.test(f.name)){ toast("仅支持 .xlsx / .xls 格式文件"); return; }
+  if(f.size > 20*1024*1024){ toast("文件大小不能超过 20MB"); return; }
+  fileReady = true;
+  upZone.classList.add("has");
+  upZone.querySelector(".hint").innerHTML = "已选择文件，可点击重新上传替换";
+  document.getElementById("fileName").textContent = f.name;
+  document.getElementById("fileSize").textContent = "(" + (f.size/1024).toFixed(1) + " KB)";
+  document.getElementById("fileRow").classList.add("show");
+  document.getElementById("doImportBtn").disabled = false;
+  document.getElementById("step2").classList.add("done");
+}
+function clearFile(e){
+  e.stopPropagation();
+  fileReady = false; fileInput.value = "";
+  upZone.classList.remove("has");
+  upZone.querySelector(".hint").innerHTML = '将文件拖到此处，或 <b>点击上传</b>';
+  document.getElementById("fileRow").classList.remove("show");
+  document.getElementById("doImportBtn").disabled = true;
+  document.getElementById("step2").classList.remove("done");
+}
+function doImport(){
+  var btn = document.getElementById("doImportBtn");
+  btn.disabled = true; btn.textContent = "导入中...";
+  setTimeout(function(){
+    document.getElementById("importSteps").style.display = "none";
+    document.getElementById("importResult").style.display = "block";
+    document.getElementById("mFoot").innerHTML =
+      '<button class="btn" onclick="resetImport()">继续导入</button>' +
+      '<button class="btn primary" onclick="closeImport()">完成</button>';
+  }, 900);
+}
+function resetImport(){
+  document.getElementById("importSteps").style.display = "block";
+  document.getElementById("importResult").style.display = "none";
+  document.getElementById("mFoot").innerHTML =
+    '<button class="btn" onclick="closeImport()">取消</button>' +
+    '<button class="btn primary" id="doImportBtn" '+(fileReady?"":"disabled")+' onclick="doImport()">开始导入</button>';
+  if(!tplReady){ document.getElementById("tplChip").classList.remove("show"); document.getElementById("step1").classList.remove("done"); }
+  clearFileProxy();
+}
+function clearFileProxy(){
+  fileReady = false; fileInput.value = "";
+  upZone.classList.remove("has");
+  upZone.querySelector(".hint").innerHTML = '将文件拖到此处，或 <b>点击上传</b>';
+  document.getElementById("fileRow").classList.remove("show");
+  var b = document.getElementById("doImportBtn");
+  if(b) b.disabled = true;
+  document.getElementById("step2").classList.remove("done");
+}
+
+/* ===== 轻提示 ===== */
+var toastTimer;
+function toast(msg){
+  var t = document.getElementById("toast");
+  t.textContent = msg; t.style.display = "block";
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.style.display = "none"; }, 1800);
+}
+</script>
+
+
+
+</body></html>
