@@ -2161,10 +2161,202 @@
           <div class="rm-btns"><button class="rm-btn rm-btn-primary" type="button">查询</button><button class="rm-btn rm-btn-plain" type="button">重置</button></div>
         </div>
       </div>
-      <div class="rm-table-card">
-        <div class="rm-table-head"><div class="rm-table-title">提醒配置</div><button class="rm-add" type="button">+ 新增</button></div>
-        <table>
-          <thead><tr><th>序号</th><th>提醒事项名称</th><th>所属业务</th><th>所属场景</th><th>通知形式</th><th>隐患等级</th><th>适用部门</th><th>启停状态</th><th>更新时间</th><th>更新人</th><th>操作</th></tr></thead>
+    </div>
+    <div class="modal-foot" data-page-node-id="8CwlGCPxjV4Tm59SvYFJM0">
+      <button class="btn-cancel" id="ai-modal-cancel" data-page-node-id="22bdSF7QmP1SlNT8j9APoK">取消</button>
+      <button class="btn-modal-go" id="ai-modal-go" data-page-node-id="rkOTutm9VPPak2MlK8gaCQ">开始分析</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= 数据 ================= */
+const TYPES=[
+  {code:'EQUIP_DEFECT',no:'一',name:'设备本体及附件缺陷',count:484,ratio:'30.2%',risk:'设备完整性下降',hot:true,
+   examples:['打酸平台梯子腐蚀','西一氟碳三楼水碱洗区域隔间门锁坏','氟碳装置四楼南 R116 工段混合蒸发器夹套蒸汽疏水阀检测口阀门内漏','工程技术中心中试基地 8# 平台东南角房间静电地板破损','西区酸罐区盐酸储罐液位计显示不准'],risks:['设备长期带缺陷运行，腐蚀减薄、构件松动可能扩展为泄漏甚至火灾爆炸事故','承压设备附件（安全附件、阀门、液位计）失效易引发物料突发性大量泄漏'],advice:['强化设备完整性管理：对腐蚀严重部位建立专项台账，加密测厚与防腐检测频次','对疏水阀、液位计等易损附件推行周期性预防性更换，变"坏了再修"为"到期即换"'],fb:12,rate:0.33},
+  {code:'PHYS_GUARD',no:'二',name:'物理安全防护设施缺失',count:174,ratio:'10.8%',risk:'护栏/盖板/防护罩',
+   examples:['防火门关不到位','东区仓储部储配工段卸料区域','罐区三联锁未及时投用','动力二四楼机柜间 R142b_SIS_SC2 柜缺少保险丝','西一氟碳二楼平台护栏立柱松动'],risks:['护栏、盖板、防护罩缺失或失效，高处坠落、机械伤害风险显著上升','安全联锁未及时投用导致保护层失效，异常工况下失去自动保护能力'],advice:['开展防护设施专项普查，缺失损坏设施限期恢复并验收销号','建立安全联锁投用确认制度，摘除联锁须逐级审批并限期恢复'],fb:3,rate:0},
+  {code:'ELEC_HAZARD',no:'三',name:'电气设备设施隐患',count:157,ratio:'9.8%',risk:'配电箱/电缆/防爆',
+   examples:['西区机修大厅的切割机电源线破损','总配 10kV 高压配电室南侧空调漏水','PVDF 配电室 1AA8 柜测温巡检环境温度未填写','05700022 在线测温测振防爆箱底部孔洞未封堵','西区仓库配电箱内接线端子过热变色'],risks:['电缆破损、端子过热是电气火灾的主要诱因，可能引燃周边可燃物','防爆区域电气密封失效形成点火源，遇泄漏介质可能引发爆炸'],advice:['定期开展配电回路红外测温，对过热缺陷即查即修','将防爆密封点纳入防爆检查清单逐台核查，孔洞未封堵严禁投用'],fb:4,rate:0.10},
+  {code:'SIGN_IDENT',no:'四',name:'现场标识与信息识别',count:151,ratio:'9.4%',risk:'标识牌/警示标志',
+   examples:['西一车间 R113a 装置四楼危化品标识牌掉落','产品罐组 HSE 宣传栏内设备容积信息有误','五楼氯化 2# 干燥器就地压力表缺少合格证','西八操作室气体报警 GZA-41017 描述错误','东罐区消防通道地面标识线模糊不清'],risks:['标识缺失、信息错误易导致误操作、误进入，应急状态下延误判断与疏散','报警点位描述错误使操作人员无法快速定位异常来源，延长处置时间'],advice:['按标准统一排查更新现场标识，建立标识台账并纳入日常巡检','对报警点位名称、描述开展专项校核，确保与 DCS/消防控制室信息一致'],fb:6,rate:0.20},
+  {code:'MEDIA_LEAK',no:'五',name:'介质泄漏/密封点失效',count:147,ratio:'9.2%',risk:'法兰/软管/阀门',
+   examples:['西一氟碳 7 楼南 115HCL 分离塔顶冷凝器至气液分离罐法兰面渗漏','酸碱罐区液碱输送泵渗漏','除氟系统渗漏','西一氟碳一楼北分馏区域隔膜压缩机东侧洗眼器水管接头损坏','西一氟碳二楼 R113a 冷媒系统视镜处微渗'],risks:['危化介质持续泄漏可能造成人员中毒、化学灼伤，并形成爆炸性混合气体','泄漏物料进入雨排、土壤引发环境污染事件，处置成本高'],advice:['推行 LDAR（泄漏检测与修复）管理，对渗漏点建档、跟踪、限期消漏','对高风险法兰、软管、密封件按周期检测更换，关键部位升级材质与密封形式'],fb:8,rate:0.25},
+  {code:'OPS_CONTROL',no:'六',name:'作业管控与管理闭环',count:127,ratio:'7.9%',risk:'巡检/作业票/台账',
+   examples:['西区维保中心固定动火区域灭火器漏检','作业票中作业单位监护人未选择','外检回来的钢瓶皮重与实际皮重严重不符','东仓储罐区一北面','受限空间作业票气体分析数据未填写'],risks:['作业票审批把关不严、气体分析缺失，直接作业环节风险失控','巡检漏检、台账不符暴露管理闭环失效，隐患发现与整改链条断点'],advice:['严格作业票审批与现场监护核查，对气体分析数据真实性开展抽查','建立"检查—整改—验收—销号"闭环机制，将漏检、超期问题纳入考核'],fb:2,rate:0},
+  {code:'INSTRUMENT',no:'七',name:'仪表及监测附件缺陷',count:101,ratio:'6.3%',risk:'压力表/温度计/DCS',
+   examples:['5 号盐酸进料切断阀损坏','西一氟碳 3 楼南 1# 预热器出口管路温度计线管三通断裂','综合仓库机柜间供电机架故障','西区仓储部原料及成品罐区仪表接地圆钢未焊接连接','罐区一可燃气体报警器校验超期'],risks:['关键仪表失准、失效使工艺参数失去监控，超温超压工况无法及时报警联锁','可燃气体报警器校验超期导致泄漏探测灵敏度不可信，预警防线失效'],advice:['严格执行仪表周期检定校验制度，超期设备立即停用并限期校准','对关键联锁回路的仪表定期开展功能测试，确保"测得准、联得上"'],fb:3,rate:0.05},
+  {code:'FIRE_RESP',no:'八',name:'消防与应急设施不足',count:92,ratio:'5.7%',risk:'灭火器/消火栓',
+   examples:['东区机修大厅 43 号消防手报无显示','东区钢瓶充装间消火栓阀口破损','动力三后 5# 变门口消防箱底部破损','消防箱遮挡','西仓储灭火器箱内压力表指针位于黄区'],risks:['灭火器材失效、消防设施遮挡损坏，初起火灾时无法有效处置，贻误最佳扑救时机','手报无显示使火灾报警链路中断，延误人员疏散与应急联动'],advice:['落实消防设施月度点检与年度专业维保，失效器材即查即换','开展消防通道、设施遮挡专项清理，严禁占用堵塞并纳入常态化检查'],fb:1,rate:0},
+  {code:'STATIC_GROUND',no:'九',name:'静电接地/防雷防静电',count:81,ratio:'5.0%',risk:'接地线/跨接线',
+   examples:['罐区一卸料区域 R152a 鹤管气相管静电跨接脱落','仓储卸料区','HF 罐区尾气吸收装置碱洗塔备用泵基座缺少静电接地线','R113a 装置一楼热水回收泵出口压力表接线盒损坏','装卸车台静电接地夹钳口氧化接触不良'],risks:['静电跨接脱落、接地不良使装卸可燃介质时静电积聚，放电火花可能引燃物料','接地设施锈蚀氧化造成"形同虚设"，防雷防静电体系隐性失效'],advice:['装卸车台、罐区等重点部位静电接地设施纳入班前点检确认','定期开展接地电阻检测，对氧化锈蚀接头及时除锈处理或更换'],fb:2,rate:0},
+  {code:'ENV_POLLUTE',no:'十',name:'现场环境与污染控制',count:73,ratio:'4.5%',risk:'场地杂乱/孔洞',
+   examples:['西一 R113a 装置一楼东面楼梯口固废满溢未及时处理','维保中心办公楼进门口安全出口灯上方孔洞未封堵','氟碳装置二楼氟化反应器存在孔洞','维保中心动力一 DCS 机柜间照明灯损坏','西一装置区雨排口周边油污未及时清理'],risks:['平台孔洞、封堵缺失导致高处坠落、小动物进入电气设施引发短路','油污、固废清理不及时污染雨排系统，存在环保处罚与次生风险'],advice:['推行现场定置管理与"工完、料尽、场地清"要求，纳入班组考核','对平台孔洞、封堵缺失建立排查清单，限期封堵并验收销号'],fb:1,rate:0},
+  {code:'HUMAN_ACT',no:'十一',name:'人的不安全行为',count:16,ratio:'1.0%',risk:'高处作业/违章',
+   examples:['人员高处作业未规范系挂安全带','监护人临时离开作业现场','叉车超速行驶且未鸣笛示警','操作工未按规程佩戴安全帽','检修作业时擅自拆除安全联锁'],risks:['违章作业是事故的直接触发因素，高处坠落、物体打击等事故多由此引起','监护人脱岗使作业风险管控出现真空，异常发生时无法及时处置'],advice:['强化作业前安全交底与行为观察（BBS），对典型违章开展警示教育','将违章行为与绩效考核联动，推行违章记分与约谈机制'],fb:0,rate:0},
+  {code:'PPE_LACK',no:'十二',name:'个体防护不足',count:2,ratio:'0.1%',risk:'防护用品',
+   examples:['作业人员未佩戴护目镜','防爆区域未穿防静电工服','酸区操作人员防护面屏缺失','粉尘作业未佩戴防尘口罩','噪音区域员工未佩戴耳塞'],risks:['防护用品缺失使人员在有毒、腐蚀、粉尘环境中直接暴露，造成急性伤害与职业病隐患','防爆区域防静电装备缺失，人体静电成为潜在点火源'],advice:['按岗位风险评估结果配齐配足防护用品，建立发放与更换台账','强化现场佩戴监督，同时改进装备舒适性与可用性，提升主动佩戴率'],fb:0,rate:0}
+];
+/* 各类型反馈按 赞/踩/意见 拆分（l=赞 d=踩 c=意见），未配置的类型按比例推导 */
+const FB_SPLIT={EQUIP_DEFECT:[5,4,3],PHYS_GUARD:[2,1,0],ELEC_HAZARD:[2,1,1],SIGN_IDENT:[3,2,1],MEDIA_LEAK:[4,2,2],OPS_CONTROL:[1,1,0],INSTRUMENT:[2,1,0],FIRE_RESP:[0,1,0],STATIC_GROUND:[1,1,0],ENV_POLLUTE:[1,0,0]};
+TYPES.forEach(t=>{const s=FB_SPLIT[t.code];if(s){t.l=s[0];t.d=s[1];t.c=s[2];}else{t.l=Math.round(t.fb*0.4);t.d=Math.round(t.fb*0.3);t.c=Math.max(0,t.fb-t.l-t.d);}});
+/* 悬停明细的意见示例（真实反馈不足时补充展示，标注「示例」） */
+const FB_TIP_SAMPLES={
+  EQUIP_DEFECT:['设备腐蚀类隐患的整改建议可细化到具体防腐工艺与检测周期','同类阀门内漏反复出现，建议增加备件寿命预测分析'],
+  PHYS_GUARD:['护栏缺失位置建议标注到具体楼层与轴线','防护罩拆除后未复位的责任追溯建议补充'],
+  ELEC_HAZARD:['配电室空调漏水与电气安全关联分析建议加强','防爆封堵类隐患建议给出规范依据条款'],
+  SIGN_IDENT:['标识牌缺失建议关联点位编号便于核查','报警点位描述错误建议增加与 DCS 位号比对'],
+  MEDIA_LEAK:['法兰渗漏建议细分密封点失效形式，便于 LDAR 定向治理','软管老化更换周期建议给出量化建议'],
+  OPS_CONTROL:['作业票气体分析缺失的环节定位建议更精确','监护人未选择问题建议关联培训记录分析'],
+  INSTRUMENT:['仪表超期校验建议联动审批流程提醒','关键联锁仪表建议标注失效影响范围'],
+  FIRE_RESP:['消防设施遮挡问题建议结合巡检路线分析','灭火器压力异常的整改闭环建议跟踪'],
+  STATIC_GROUND:['静电跨接脱落建议结合装卸车频次分析风险','接地电阻检测数据建议纳入趋势对比'],
+  ENV_POLLUTE:['场地孔洞类隐患建议补充临边防护要求','杂乱问题建议与 6S 管理联动分析']
+};
+const TAGS=['分析不准确','漏报','分类错误','部位定位不准','风险分析不对','整改建议不可行','其他'];
+const ORGS=['中国昊华','蓝天氟材料','中化蓝天','中化新材料','中化环境','中化装备'];
+const state={}; TYPES.forEach(t=>state[t.code]={type:null,tags:new Set(),comment:'',submitted:false});
+
+/* ================= 菜单 ================= */
+const IC={
+  wrench:'<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4L15 12l-3-3 2.7-2.7z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>',
+  radar:'<circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="1" fill="currentColor"/>',
+  shield:'<path d="M12 3l8 3v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>',
+  briefcase:'<rect x="3" y="7" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="1.6"/>',
+  upload:'<path d="M12 16V4m0 0l-4 4m4-4l4 4M4 20h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>'
+};
+const MENU=[
+  {id:'unconventional',icon:IC.wrench,name:'非常规作业',children:[
+    {id:'uc-apply',name:'作业申请'},{id:'uc-approve',name:'作业审批'}]},
+  {id:'inspection',icon:IC.radar,name:'智能巡检',children:[
+    {id:'insp-task',name:'巡检任务'},{id:'insp-record',name:'巡检记录'}]},
+  {id:'dual',icon:IC.shield,name:'双重预防',open:true,children:[
+    {id:'dual-check',name:'双重预防驾驶舱'},
+    {id:'board',name:'数据看板'},
+    {id:'risk-list',name:'风险清单'},
+    {id:'risk-report',name:'风险排查清单'},
+    {id:'hazard-list',name:'隐患清单'},
+    {id:'hazard-urge',name:'隐患督办'},
+    {id:'hazard-stat',name:'隐患统计分析',children:[{id:'stat-trend',name:'隐患趋势分析'},{id:'stat-dist',name:'隐患分布分析'}]},
+    {id:'dpr-report',name:'双重预防运行报告'},
+    {id:'hazard-report',name:'隐患分析报告',report:true},
+    {id:'fb-dashboard',name:'反馈统计看板'},
+    {id:'duty-report',name:'履职任务报表'}]},
+  {id:'contractor',icon:IC.briefcase,name:'承包商HSE管理',children:[
+    {id:'ct-info',name:'承包商档案'},{id:'ct-eval',name:'承包商评价'}]},
+  {id:'upload',icon:IC.upload,name:'数据上报情况',children:[
+    {id:'up-log',name:'上报日志'},{id:'up-check',name:'上报核查'}]}
+];
+const PAGE_TITLES={}; MENU.forEach(m=>{PAGE_TITLES[m.id]=m.name;(m.children||[]).forEach(c=>{PAGE_TITLES[c.id]=c.name;(c.children||[]).forEach(g=>PAGE_TITLES[g.id]=g.name);});});
+
+function renderMenu(){
+  const nav=document.getElementById('menu');
+  nav.innerHTML=MENU.map(m=>{
+    const open=m.open?' data-open="true"':'';
+    const arrow=m.children&&m.children.length?'<svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>':'';
+    const kids=(m.children||[]).map(c=>{
+      if(c.children){
+        const gkids=c.children.map(g=>`<div class="menu-l2" style="padding-left:48px" data-page="${g.id}" tabindex="0" role="button">${g.name}</div>`).join('');
+        return `<div class="menu-group" data-open="false" data-sub="true"><div class="menu-l2" data-subtoggle="${c.id}" tabindex="0" role="button" style="padding-left:32px">${c.name}<svg class="arrow" viewBox="0 0 24 24" fill="none" style="margin-left:auto;width:12px;height:12px"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><div class="menu-children">${gkids}</div></div>`;
+      }
+      return `<div class="menu-l2${c.report?' active':''}" data-page="${c.id}" tabindex="0" role="button" style="${c.report?'font-weight:500':''}">${c.name}</div>`;
+    }).join('');
+    return `<div class="menu-group"${open}><div class="menu-l1${m.open?' active-arrow':''}" data-grouptoggle="${m.id}" tabindex="0" role="button"><svg class="icon" viewBox="0 0 24 24" fill="none">${m.icon}</svg>${m.name}${arrow}</div><div class="menu-children">${kids}</div></div>`;
+  }).join('');
+  bindMenu();
+}
+
+function bindMenu(){
+  document.querySelectorAll('[data-grouptoggle]').forEach(el=>{
+    const go=()=>{const g=el.closest('.menu-group');g.dataset.open=g.dataset.open==='true'?'false':'true';el.classList.toggle('active-arrow');};
+    el.onclick=go;
+    el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};
+  });
+  document.querySelectorAll('[data-subtoggle]').forEach(el=>{
+    const go=()=>{const g=el.closest('.menu-group');g.dataset.open=g.dataset.open==='true'?'false':'true';};
+    el.onclick=go;
+    el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};
+  });
+  document.querySelectorAll('[data-page]').forEach(el=>{
+    const go=()=>{const id=el.dataset.page;openPage(id,PAGE_TITLES[id]);};
+    el.onclick=go;
+    el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};
+  });
+}
+
+/* ================= 页签 & 页面 ================= */
+let openTabs=[{id:'workbench',name:'工作台',fixed:true},{id:'dual-check',name:'双重预防驾驶舱'},{id:'hazard-report',name:'隐患分析报告'}];
+let activePage='hazard-report';
+const pageCache={};
+
+function renderTabs(){
+  const wrap=document.getElementById('page-tabs');
+  wrap.innerHTML=openTabs.map(t=>`
+    <span class="page-tab${t.id===activePage?' active':''}" role="tab" aria-selected="${t.id===activePage}" data-tab="${t.id}" tabindex="0">${t.name}${t.fixed?'':'<span class="x" data-close="'+t.id+'" role="button" aria-label="关闭 '+t.name+'">×</span>'}</span>`).join('');
+  wrap.querySelectorAll('.page-tab').forEach(el=>{
+    el.onclick=e=>{
+      if(e.target.dataset.close){closeTab(e.target.dataset.close);return;}
+      activatePage(el.dataset.tab);
+    };
+    el.onkeydown=e=>{if(e.key==='Enter'){activatePage(el.dataset.tab);}};
+  });
+}
+
+/* ================= 隐患清单页面 ================= */
+const HZ_NAME='可燃气体检测报警装置隐患，可燃气体检测报警装置隐患或可燃气体检测报警装置隐患检测失效';
+const HZ_ROWS=[
+  {lv:'major',level:'重大事故隐患',status:'doing',statusTxt:'整改中',overdue:'是',danger:true},
+  {lv:'major',level:'重大事故隐患',status:'doing',statusTxt:'整改中',overdue:'否'},
+  {lv:'major',level:'重大事故隐患',status:'doing',statusTxt:'整改中',overdue:'否'},
+  {lv:'a',level:'一级A级隐患',status:'fixed',statusTxt:'已整改',overdue:'否'},
+  {lv:'a',level:'一级A级隐患',status:'fixed',statusTxt:'已整改',overdue:'否'},
+  {lv:'a',level:'一级A级隐患',status:'fixed',statusTxt:'已整改',overdue:'否'},
+  {lv:'b',level:'一级B级隐患',status:'accepted',statusTxt:'已验收',overdue:'否'},
+  {lv:'b',level:'一级B级隐患',status:'accepted',statusTxt:'已验收',overdue:'否'},
+  {lv:'b',level:'一级B级隐患',status:'accepted',statusTxt:'已验收',overdue:'否'},
+  {lv:'b',level:'一级B级隐患',status:'accepted',statusTxt:'已验收',overdue:'否'}
+];
+function fiSel(label,ph){return `<div class="fi"><span class="fi-label">${label}:</span><span class="fi-ctrl"><select class="fi-select"><option value="">${ph}</option></select><svg class="fi-ico" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></div>`;}
+function fiTxt(label,ph){return `<div class="fi"><span class="fi-label">${label}:</span><span class="fi-ctrl"><input class="fi-input" placeholder="${ph}"><svg class="fi-ico" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span></div>`;}
+function hazardListHTML(){
+  return `
+  <div class="list-page">
+    <div class="filter-card">
+      <div class="filter-grid">
+        ${fiTxt('所属单位','请选择所属单位')}
+        ${fiTxt('隐患名称','请输入隐患名称/隐患描述关键字')}
+        ${fiSel('隐患等级','请选择隐患等级')}
+        ${fiSel('隐患类型（专业类型）','请选择隐患类型（专业...')}
+        ${fiSel('排查级别','请选择排查级别')}
+      </div>
+      <div class="filter-grid">
+        <div class="fi"><span class="fi-label">登记时间:</span><span class="fi-ctrl" style="display:flex;align-items:center;gap:6px"><input class="fi-input" value="2025-12-01" style="padding:0 8px"><span style="color:var(--text-tertiary);flex-shrink:0">→</span><input class="fi-input" value="2025-12-31" style="padding:0 8px"></span></div>
+        ${fiSel('隐患状态','请选择隐患状态')}
+        ${fiSel('是否整改逾期','请选择逾期状态')}
+        ${fiSel('排查类型(一)','请选择排查类型（一）')}
+      </div>
+      <div class="filter-grid filter-more" id="filter-more">
+        ${fiSel('排查类型(二)','请选择排查类型（二）')}
+        ${fiSel('隐患来源','请选择隐患来源')}
+        ${fiSel('整改期限','请选择整改期限')}
+        ${fiSel('验证状态','请选择验证状态')}
+      </div>
+      <div class="filter-foot">
+        <span class="fi-link" id="more-filter"><span id="more-filter-txt">更多筛选</span><svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <button class="btn-query" id="hz-query">查询</button>
+        <span class="fi-link" id="hz-reset">重置</span>
+      </div>
+    </div>
+    <div class="tool-row">
+      <button class="btn-listmode" id="hz-listmode"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h2M4 12h2M4 18h2M9 6h11M9 12h11M9 18h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>列配置</button>
+      <button class="btn-listmode btn-ai" id="hz-ai"><svg viewBox="0 0 24 24" fill="none"><path d="M12 4l1.6 4.4L18 10l-4.4 1.6L12 16l-1.6-4.4L6 10l4.4-1.6z" fill="currentColor"/><path d="M6 4l.7 1.6L8.3 6.3 6.7 7l-.7 1.6L5.3 7 3.7 6.3 5.3 5.6z" fill="currentColor" opacity=".7"/><circle cx="18.5" cy="5.5" r="1.2" fill="currentColor" opacity=".6"/></svg>AI辅助分析</button>
+    </div>
+    <div class="table-card">
+      <div class="table-scroll">
+        <table class="hz-table">
+          <thead><tr>
+            <th style="width:52px">序号</th><th>所属单位</th><th>二级单位</th><th>隐患名称</th><th>隐患等级</th><th>排查级别</th><th>排查类型(一)</th><th>排查类型(二)</th><th>隐患类型（专业类型）</th><th>是否整改逾期</th><th>隐患状态</th><th>隐患类型</th><th>操作</th>
+          </tr></thead>
           <tbody>
             <tr><td>1</td><td><span class="rm-ell">隐患自动催办提醒-待整改超期</span></td><td>隐患治理</td><td>隐患自动催办提醒</td><td>待办事项</td><td><span class="rm-ell">重大事故隐患,一般A级隐患</span></td><td><span class="rm-ell">X-test、08部门</span></td><td><span class="rm-switch on"><span class="rm-knob"></span></span></td><td><span class="rm-ell">2026-10-08 14:30</span></td><td>胡伟玲 -01</td><td><span class="rm-act">详情</span><span class="rm-act">编辑</span><span class="rm-act">删除</span></td></tr>
             <tr><td>2</td><td><span class="rm-ell">整改逾期提醒-待...</span></td><td>隐患治理</td><td>整改逾期提醒</td><td>待办事项</td><td><span class="rm-ell">重大事故隐患,一般A级隐患...</span></td><td><span class="rm-ell">X-test</span></td><td><span class="rm-switch on"><span class="rm-knob"></span></span></td><td><span class="rm-ell">2026-08-26 10:0...</span></td><td>胡伟玲 -01</td><td><span class="rm-act">详情</span><span class="rm-act">编辑</span><span class="rm-act">删除</span></td></tr>
@@ -2188,25 +2380,703 @@
         <div class="ra-title">新增提醒配置</div>
         <div class="ra-actions"><button class="ra-btn ra-btn-primary ra-save" type="button">保存</button><button class="ra-btn ra-btn-plain ra-back" type="button">返回</button></div>
       </div>
-      <div class="ra-form-card">
-        <div class="ra-grid">
-          <div class="ra-fi"><label><i>*</i>提醒事项名称：</label><div class="ra-input"><input id="raNameInput" placeholder="请输入提醒事项名称" maxlength="200"><span class="ra-count">0/200</span></div></div>
-          <div class="ra-fi"><label><i>*</i>通知形式：</label><div class="ra-radio-group"><label class="ra-radio checked"><span class="ra-dot"></span>待办事项</label><label class="ra-radio"><span class="ra-dot"></span>系统消息</label></div></div>
-          <div class="ra-fi"><label><i>*</i>适用部门：</label><div class="ra-select"><span data-ph="请选择适用部门">请选择适用部门</span><svg class="ra-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ra-dd"><div class="ra-dd-item">X-test</div><div class="ra-dd-item">08部门</div><div class="ra-dd-item">线上配置专用组织</div><div class="ra-dd-item">A李方雷测试专用部门</div><div class="ra-dd-item">gpk测试斑驳车间</div></div></div></div>
-          <div class="ra-fi"><label><i>*</i>启停状态：</label><span class="ra-switch on"><span class="ra-knob"></span></span></div>
-          <div class="ra-fi"><label><i>*</i>所属业务：</label><div class="ra-input filled"><span>隐患治理</span></div></div>
-          <div class="ra-fi"><label><i>*</i>隐患等级：</label><div class="ra-select"><span data-ph="请选择隐患等级">请选择隐患等级</span><svg class="ra-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ra-dd"><div class="ra-dd-item">重大事故隐患</div><div class="ra-dd-item">一般A级隐患</div><div class="ra-dd-item">一般B级隐患</div></div></div></div>
-          <div class="ra-fi"><label><i>*</i>所属场景：</label><div class="ra-select selected" id="raSceneSel"><span data-ph="请选择所属场景">隐患自动催办提醒</span><svg class="ra-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ra-dd"><div class="ra-dd-item">整改逾期提醒</div><div class="ra-dd-item">新增隐患提醒</div><div class="ra-dd-item active">隐患自动催办提醒</div></div></div></div>
-          <div class="ra-fi"><label><i>*</i>通知频率：</label><div class="ra-select"><span data-ph="请选择通知频率">请选择通知频率</span><svg class="ra-arrow" viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#86909C" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg><div class="ra-dd"><div class="ra-dd-item">每日提醒</div><div class="ra-dd-item">每周提醒</div><div class="ra-dd-item">每月一次</div><div class="ra-dd-item">仅提醒一次</div></div></div></div>
-          <div class="ra-fi"><label><i>*</i>通知时间：</label><div class="ra-time"><div class="ra-ts-ctrl" id="raTimeCtrl"></div><div class="ra-input"><input id="raDaysInput" type="number" min="1" step="1" placeholder="请输入"></div><span class="ra-unit">天</span></div></div>
-          <div class="ra-fi ra-empty"></div>
-          <div class="ra-tip-cell" id="raTimeTip"></div>
-          <div class="ra-fi"><label><i>*</i>通知方式：</label><div class="ra-check-group"><label class="ra-check checked"><span class="ra-box"></span>站内通知</label><label class="ra-check"><span class="ra-box"></span>短信</label><label class="ra-check"><span class="ra-box"></span>APP推送</label><label class="ra-check"><span class="ra-box"></span>邮件</label></div></div>
-          <div class="ra-fi ra-empty"></div>
-          <div class="ra-fi ra-target-fi" id="raTargetFi"><label><i>*</i>通知对象：</label>
-            <div class="ra-target-todo" id="raTargetTodo">
-              <div class="ra-input filled"><span>当前隐患处置节点处理人</span></div>
-              <div class="ra-target-hint">待办事项默认推送给当前隐患处置节点的处理人，不可修改</div>
+    </div>
+  </div>`;
+}
+function bindHazardList(){
+  const more=document.getElementById('more-filter'),moreGrid=document.getElementById('filter-more');
+  more.addEventListener('click',()=>{
+    const open=moreGrid.classList.toggle('open');
+    more.classList.toggle('open',open);
+    document.getElementById('more-filter-txt').textContent=open?'收起筛选':'更多筛选';
+  });
+  const q=document.getElementById('hz-query');
+  q.addEventListener('click',()=>{
+    q.disabled=true;q.textContent='查询中…';
+    setTimeout(()=>{q.disabled=false;q.textContent='查询';showToast('查询完成，共 6496 条记录');},500);
+  });
+  document.getElementById('hz-reset').addEventListener('click',()=>{
+    document.querySelectorAll('#page-hazard-list .fi-input,#page-hazard-list .fi-select').forEach(el=>{if(!el.closest('.pager'))el.value='';});
+    showToast('筛选条件已重置');
+  });
+  document.getElementById('hz-listmode').addEventListener('click',()=>showToast('列配置面板（原型演示）'));
+  const aiModal=document.getElementById('ai-modal');
+  function openAIModal(){
+    /* 候选类型与生成配置共用同一候选池（含用户新增类型），每次打开动态渲染；悬浮标签显示类型说明 */
+    const wrap=document.getElementById('ai-tags');
+    if(wrap)wrap.innerHTML=cfgTypeOptions.map(t=>`<span class="tag-pick"${cfgTypeDesc[t]?` data-tip="${t}|${cfgTypeDesc[t]}"`:''}>${t}</span>`).join('');
+    bindAITagSelect();
+    aiModal.hidden=false;requestAnimationFrame(()=>aiModal.classList.add('show'));
+  }
+  function closeAIModal(){aiModal.classList.remove('show');setTimeout(()=>{aiModal.hidden=true;},220);}
+  document.getElementById('hz-ai').addEventListener('click',openAIModal);
+  document.getElementById('ai-modal-close').addEventListener('click',closeAIModal);
+  document.getElementById('ai-modal-cancel').addEventListener('click',closeAIModal);
+  aiModal.addEventListener('click',e=>{if(e.target===aiModal)closeAIModal();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!aiModal.hidden)closeAIModal();});
+  function syncAICnt(){const c=document.getElementById('ai-type-cnt');if(c)c.textContent='已选 '+aiModal.querySelectorAll('#ai-tags .tag-pick.on').length+'/'+MAX_RPT_TYPES;}
+  function bindAITagSelect(){
+    aiModal.querySelectorAll('#ai-tags .tag-pick').forEach(t=>t.addEventListener('click',()=>{
+      if(!t.classList.contains('on')&&aiModal.querySelectorAll('#ai-tags .tag-pick.on').length>=MAX_RPT_TYPES){
+        showToast('每份报告最多可选择 '+MAX_RPT_TYPES+' 种隐患类型');
+        syncAICnt();return;
+      }
+      t.classList.toggle('on');
+      syncAICnt();
+    }));
+  }
+  document.getElementById('ai-modal-go').addEventListener('click',(e)=>{
+    eventShiftFired=!!(e&&e.shiftKey); /* Shift+点击：演示失败与自动重试场景 */
+    const picked=[...aiModal.querySelectorAll('#ai-tags .tag-pick.on')].map(t=>t.textContent.trim());
+    if(picked.length===0){showToast('请至少选择一个关注的隐患类型');return;}
+    const listPage=document.getElementById('page-hazard-list');
+    const inputs=listPage?[...listPage.querySelectorAll('.fi-input')].map(i=>i.value.trim()):[];
+    const dates=inputs.filter(v=>/^\d{4}-\d{2}-\d{2}$/.test(v));
+    const timeDim=dates.length>=2?dates[0]+' ~ '+dates[1]:'2025-12-01 ~ 2025-12-31';
+    const sels=listPage?[...listPage.querySelectorAll('.fi-select')].filter(el=>!el.closest('.pager')).map(s=>s.value.trim()):[];
+    const orgDim=sels.find(v=>v)||'蓝天氟材料';
+    closeAIModal();
+    const now=new Date(),pad=n=>String(n).padStart(2,'0');
+    const time=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes());
+    const rpt=(()=>{ /* 报告标题及文件名格式：【所属单位】隐患AI辅助分析报告（隐患数据范围），如【中国中化】隐患AI辅助分析报告（2026年10月5日至2026年10月11日） */
+      const fmtCn=s=>{const m=/^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(s);return m?m[1]+'年'+parseInt(m[2],10)+'月'+parseInt(m[3],10)+'日':s;};
+      const cnRange=timeDim.split('~').map(s=>fmtCn(s.trim())).join('至');
+      return {id:'AI-'+now.getTime(),type:'ai',status:'generating',genStart:Date.now(),retries:0,title:'【'+orgDim+'】隐患AI辅助分析报告（'+cnRange+'）',time,range:timeDim,count:6496,desc:'基于当前清单，围绕所关注类型进行 AI 聚焦分析与风险洞察',focus:picked,timeDim,orgDim,owner:CUR_USER_NAME};
+    })();
+    aiReports.unshift(rpt);
+    /* 异步任务：分阶段进度展示；失败自动重试最多 3 次，仍失败提供「重新发起」（原型以秒级模拟真实 5-10 分钟耗时；按住 Shift 点击可演示失败场景） */
+    scheduleAIGen(rpt.id);
+    showToast('已提交 AI 分析任务，预计 5-10 分钟完成，完成后将通知您');
+    setTimeout(()=>{
+      openPage('hazard-report','隐患分析报告');
+      /* 跳转后重置查询条件，确保新提交的"生成中"任务对用户可见 */
+      ['rq-from','rq-to','rq-org','rq-type','rq-owner'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+      renderReportList('all');
+    },600);
+  });
+  /* 模拟 AI 报告异步生成任务：排队中→AI 分析→报告组装 */
+  let eventShiftFired=false;
+  const GEN_STAGES=['排队中','AI 分析','报告组装'];
+  /* 各阶段"AI 思考思路"文案池（{N} 会替换为隐患总数数量），按时间轮换播报 */
+  const GEN_THOUGHTS=[
+    ['正在等待分析资源就绪，任务已进入生成队列','已受理分析请求，即将开始处理'],
+    ['正在读取清单中的 {N} 条隐患记录…','正在对隐患描述做分词与语义向量化','正在过滤重复与无效记录，锁定有效分析样本','正在基于隐患描述归纳风险模式，定位高频失效场景…','正在对比各类型隐患的分布与关联关系…','正在评估各类型的典型风险，并匹配历史治理经验…','正在梳理治理建议，优先参考整改成效良好的做法…'],
+    ['正在组织分析结论，按类型装配方报告结构…','正在生成汇总统计与趋势解读，即将完成']
+  ];
+  const GEN_RETRY_MAX=3;
+  function scheduleAIGen(id,attemptStart){
+    const r=aiReports.find(x=>x.id===id);
+    if(!r)return;
+    if(!attemptStart){
+      r.genStart=Date.now();r.retries=0;
+      r.genFail=eventShiftFired||Math.random()<0.12;
+      eventShiftFired=false;
+    }
+    const dur=attemptStart?(4000+Math.random()*3000):(8000+Math.random()*10000);
+    r.genDur=dur;
+    setTimeout(()=>{
+      const cur=aiReports.find(x=>x.id===id);
+      if(!cur||cur.status!=='generating')return;
+      const lp=document.getElementById('page-hazard-report');
+      if(cur.genFail){
+        if(cur.retries<GEN_RETRY_MAX){
+          /* 自动重试过程静默进行，不打扰用户；仅在卡片标签显示"已自动重试 N/3" */
+          cur.retries++;
+          if(lp&&!lp.hidden)renderReportList(currentRFilter);
+          scheduleAIGen(id,true);
+        }else{
+          cur.status='failed';
+          if(lp&&!lp.hidden)renderReportList(currentRFilter);
+          showToast('「'+cur.title+'」自动重试 '+GEN_RETRY_MAX+' 次仍失败，请点击「重新发起」');
+          /* 生成失败：消息中心通知（点击跳转报告列表并定位该失败报告） */
+          notifications.unshift({id:'MSG-'+(++msgSeq),title:'AI 辅助分析报告生成失败提醒',content:'【AI 辅助分析报告】您发起的《'+cur.title+'》自动重试 '+GEN_RETRY_MAX+' 次仍失败，请前往报告列表点击「重新发起」。',time:nowStr(),read:false,rid:cur.id,fail:true});
+          updateBellBubble();
+        }
+      }else{
+        cur.status='ready';
+        cur.time=nowStr();
+        const cntTxt='共 '+cur.count.toLocaleString()+' 条';
+        notifications.unshift({id:'MSG-'+(++msgSeq),title:'AI 辅助分析报告生成提醒',content:'【AI 辅助分析报告】您发起的《'+cur.title+'》（聚焦 '+((cur.focus||[]).length)+' 类隐患，'+cntTxt+'）已生成完成，请查看报告详情。',time:cur.time,read:false,rid:cur.id});
+        updateBellBubble();
+        if(lp&&!lp.hidden)renderReportList(currentRFilter);
+        showToast('通知：「'+cur.title+'」已生成完成，可在报告列表中查看');
+      }
+    },r.genFail?dur*0.55:dur);
+  }
+  /* 手动重试（自动重试耗尽后提供） */
+  function retryAIGen(id,e){
+    if(e)e.stopPropagation();
+    const r=aiReports.find(x=>x.id===id);
+    if(!r)return;
+    r.status='generating';r.retries=0;r.genFail=false;
+    renderReportList(currentRFilter);
+    showToast('已重新发起 AI 分析任务，预计 5-10 分钟完成，完成后将通知您');
+    scheduleAIGen(id);
+  }
+  window.retryAIGen=retryAIGen; /* 列表卡片内联 onclick 调用 */
+  /* "生成中"卡片：已等待时间 + 分阶段进度（排队中→AI 分析→报告组装） */
+  setInterval(()=>{
+    document.querySelectorAll('.gen-elapsed[data-start]').forEach(el=>{
+      const s=Math.max(0,Math.floor((Date.now()-Number(el.dataset.start))/1000));
+      el.textContent='已等待 '+String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+    });
+    document.querySelectorAll('.gen-think[data-start][data-dur]').forEach(el=>{
+      const start=Number(el.dataset.start),dur=Number(el.dataset.dur)||12000;
+      const p=Math.min(97,Math.max(0,(Date.now()-start)/dur*100));
+      const si=Math.min(2,Math.floor(p/33.34));
+      el.querySelectorAll('.gen-step').forEach(st=>{
+        const i=Number(st.dataset.si);
+        st.classList.toggle('done',i<si);
+        st.classList.toggle('cur',i===si);
+        const t=st.querySelector('.gen-step-txt');
+        if(t)t.textContent=(i<si?'✓ ':'')+GEN_STAGES[i];
+      });
+      const th=el.querySelector('.gen-thought-txt');
+      if(th){
+        const cnt=el.dataset.cnt||'';
+        const pool=GEN_THOUGHTS[si];
+        const k=Math.floor((Date.now()-start)/2600)%pool.length;
+        const msg=pool[k].replace('{N}',cnt);
+        if(th.textContent!==msg){th.style.opacity='0';setTimeout(()=>{th.textContent=msg;th.style.opacity='1';},180);}
+      }
+    });
+  },600);
+  document.getElementById('hz-export').addEventListener('click',()=>showToast('导出任务已创建，请在下载中心查看'));
+  document.querySelectorAll('#page-hazard-list .link-detail').forEach(el=>{
+    el.addEventListener('click',e=>{e.stopPropagation();showToast('隐患详情 HL-2025-'+el.dataset.detail+'（原型演示）');});
+  });
+  document.querySelectorAll('#page-hazard-list tbody tr').forEach(tr=>{
+    tr.addEventListener('click',()=>showToast('隐患详情 HL-2025-'+tr.dataset.hz+'（原型演示）'));
+  });
+  document.querySelectorAll('#page-hazard-list .pg-btn').forEach(b=>{
+    b.addEventListener('click',()=>{
+      if(b.dataset.pg)return;
+      document.querySelectorAll('#page-hazard-list .pg-btn').forEach(x=>x.classList.remove('cur'));
+      b.classList.add('cur');
+    });
+  });
+}
+
+/* ================= 双重预防运行报告 ================= */
+/* 双重预防（风险分级管控 + 隐患排查治理）双体系综合运行评价报告；
+   报告详情内容待模板接入，当前详情页为占位展示 */
+const DPR_DESC='风险分级管控与隐患排查治理双体系综合运行评价';
+const dprReports=[
+  {id:'DPR-2025-M10',type:'scheduled',status:'ready',title:'【中国中化】双重预防运行报告（2025年10月1日至2025年10月31日）',time:'2025-11-01 00:00',range:'2025-10-01 ~ 2025-10-31',count:5620,desc:DPR_DESC,org:'中国中化',owner:'张伟'},
+  {id:'DPR-2025-W45',type:'scheduled',status:'ready',title:'【中国昊华】双重预防运行报告（2025年11月3日至2025年11月9日）',time:'2025-11-10 00:00',range:'2025-11-03 ~ 2025-11-09',count:1286,desc:DPR_DESC,org:'中国昊华',owner:'李敏'},
+  {id:'DPR-2025-W44',type:'scheduled',status:'ready',title:'【中国中化】双重预防运行报告（2025年10月27日至2025年11月2日）',time:'2025-11-03 00:00',range:'2025-10-27 ~ 2025-11-02',count:1194,desc:DPR_DESC,org:'中国中化',owner:'张伟'},
+  {id:'DPR-2025-M09',type:'scheduled',status:'ready',title:'【中化蓝天】双重预防运行报告（2025年9月1日至2025年9月30日）',time:'2025-10-01 00:00',range:'2025-09-01 ~ 2025-09-30',count:5318,desc:DPR_DESC,org:'中化蓝天',owner:'王强'},
+  {id:'DPR-2025-W43',type:'scheduled',status:'ready',title:'【蓝天氟材料】双重预防运行报告（2025年10月20日至2025年10月26日）',time:'2025-10-27 00:00',range:'2025-10-20 ~ 2025-10-26',count:1102,desc:DPR_DESC,org:'蓝天氟材料',owner:'张伟'}
+];
+let dprFilter='all',dprPage=1,dprRole='user',dprSeq=0,dprCurrent=null;
+const DPR_PAGE_SIZE=5;
+function dprVisible(){return dprRole==='admin'?dprReports:dprReports.filter(r=>(r.owner||CUR_USER_NAME)===CUR_USER_NAME);}
+function dprHTML(){
+  return `
+  <section id="dpr-list-view" class="rpt-list-view">
+    <div class="rpt-head-row">
+      <div class="rpt-list-head">
+        <h1>双重预防运行报告</h1>
+        <div class="sub" id="dpr-list-sub">查看您名下的报告：AI 按周期对风险分级管控与隐患排查治理双体系运行情况进行综合分析生成</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-shrink:0;align-items:center">
+        <select id="dpr-role" class="fi-select" style="appearance:auto;padding-right:10px" aria-label="切换用户角色视角">
+          <option value="user">业务用户视角（仅我的报告）</option>
+          <option value="admin">管理用户视角（查看全部报告）</option>
+        </select>
+      </div>
+    </div>
+    <div class="rpt-query" role="search" aria-label="运行报告查询">
+      <div class="rq-field"><label for="dpr-from">生成时间</label><input type="date" id="dpr-from"></div>
+      <span class="rq-sep">至</span>
+      <div class="rq-field"><label for="dpr-to">&nbsp;</label><input type="date" id="dpr-to"></div>
+      <div class="rq-field"><label for="dpr-org">所属单位</label><span class="rq-input-wrap"><input type="text" id="dpr-org" list="dpr-org-list" placeholder="输入单位名称，支持模糊" style="width:170px"><button type="button" class="rq-clear" data-target="dpr-org" title="清除所选单位" aria-label="清除所属单位输入"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="currentColor"/><path d="M9 9l6 6M15 9l-6 6" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></button></span><datalist id="dpr-org-list"><option value="中国中化"></option><option value="中国昊华"></option><option value="中化蓝天"></option><option value="蓝天氟材料"></option><option value="中化新材料"></option><option value="中化装备"></option></datalist></div>
+      <span class="rq-spacer"></span>
+      <button class="rq-btn primary" id="dpr-start-btn"><svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"><path d="M12 4l1.6 4.4L18 10l-4.4 1.6L12 16l-1.6-4.4L6 10l4.4-1.6z" fill="currentColor"/></svg>开始分析</button>
+      <button class="rq-btn" id="dpr-reset">重置</button>
+    </div>
+    <div class="rpt-filter-tabs" role="tablist" aria-label="报告类型筛选">
+      <button class="on" data-dfilter="all" role="tab" aria-selected="true">全部</button>
+      <button data-dfilter="scheduled" role="tab" aria-selected="false">周期定时报告</button>
+      <button data-dfilter="ai" role="tab" aria-selected="false">AI 辅助分析报告</button>
+    </div>
+    <div id="dpr-list"></div>
+  </section>
+  <section id="dpr-detail-view" class="rpt-detail-view" hidden>
+    <span class="rpt-back" id="dpr-back" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>返回报告列表</span>
+    <header class="report-header" role="banner">
+      <div class="top">
+        <div>
+          <h1 id="dpr-d-title">双重预防运行报告</h1>
+          <div class="subtitle" id="dpr-d-sub"></div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+          <button class="btn-rpt-cfg" id="dpr-d-excel" title="下载当前报告覆盖的双体系运行原始数据"><svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"><path d="M4 3h16v18H4zM4 9h16M9 9v12M4 15h16" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>下载原始数据</button>
+          <button class="btn-rpt-cfg" id="dpr-d-export" title="以 Word 文档导出当前报告"><svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"><path d="M12 3v12M7 10l5 5 5-5M4 21h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>导出报告（Word）</button>
+        </div>
+      </div>
+      <div class="meta" id="dpr-d-meta"></div>
+    </header>
+    <section class="metrics" aria-label="运行报告统计概览">
+      <div class="metric"><div class="label">运行数据总量</div><div class="value" id="dpr-d-count">0<span class="unit">条</span></div><div class="hint" id="dpr-d-count-hint"></div></div>
+      <div class="metric accent"><div class="label">评价维度</div><div class="value">5<span class="unit">项</span></div><div class="hint">风险管控 + 隐患治理双体系</div></div>
+      <div class="metric warn"><div class="label">分析模型</div><div class="value" style="font-size:15px;line-height:38px">FORUS 化工安全大模型</div><div class="hint">双体系综合运行评价</div></div>
+      <div class="metric danger"><div class="label">报告周期</div><div class="value" id="dpr-d-days">0<span class="unit">天</span></div><div class="hint" id="dpr-d-range"></div></div>
+    </section>
+    <div id="dpr-d-placeholder" style="border:1px dashed var(--border);border-radius:12px;background:var(--gray-50);padding:56px 24px;text-align:center;margin-top:16px">
+      <svg viewBox="0 0 24 24" fill="none" style="width:40px;height:40px;color:var(--text-tertiary)"><path d="M12 3l8 3v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8.5 12l2.4 2.4L15.5 9.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div style="font-size:14px;font-weight:600;color:var(--text-secondary);margin-top:12px">报告详情内容模板待接入</div>
+      <div style="font-size:12.5px;color:var(--text-tertiary);margin-top:6px">将按「风险分级管控 + 隐患排查治理」双体系综合运行评价模板渲染分析结论，模板确认后开放</div>
+    </div>
+  </section>`;
+}
+function renderDprList(filter){
+  const wrap=document.getElementById('dpr-list');
+  if(filter&&filter!==dprFilter){dprFilter=filter;dprPage=1;}
+  let list=dprVisible();
+  const sub=document.getElementById('dpr-list-sub');
+  if(sub)sub.textContent=dprRole==='admin'
+    ?'管理用户视角：可查看全部单位的双重预防运行报告'
+    :'查看您名下的报告：AI 按周期对风险分级管控与隐患排查治理双体系运行情况进行综合分析生成';
+  if(dprFilter!=='all')list=list.filter(r=>r.type===dprFilter);
+  const qFrom=document.getElementById('dpr-from'),qTo=document.getElementById('dpr-to'),qOrg=document.getElementById('dpr-org');
+  if(qFrom&&qFrom.value){const from=qFrom.value;list=list.filter(r=>!r.time||r.time.slice(0,10)>=from);}
+  if(qTo&&qTo.value){const to=qTo.value;list=list.filter(r=>!r.time||r.time.slice(0,10)<=to);}
+  if(qOrg&&qOrg.value.trim()){const kw=qOrg.value.trim().toLowerCase();list=list.filter(r=>(r.org||'').toLowerCase().includes(kw));}
+  if(!list.length){dprPage=1;wrap.innerHTML='<div class="rpt-empty">暂无符合条件的运行报告，请调整查询条件</div>';return;}
+  const total=list.length,pages=Math.max(1,Math.ceil(total/DPR_PAGE_SIZE));
+  dprPage=Math.min(Math.max(1,dprPage),pages);
+  wrap.innerHTML=list.slice((dprPage-1)*DPR_PAGE_SIZE,dprPage*DPR_PAGE_SIZE).map(r=>{
+    const isAI=r.type==='ai';
+    const isGen=r.status==='generating';
+    const isFail=r.status==='failed';
+    const ico='<path d="M12 3l8 3v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/>';
+    const tag=isAI?'<span class="rpt-tag ai">AI 辅助分析</span>':'<span class="rpt-tag sc">周期定时</span>';
+    const genTag=isGen?' <span class="rpt-tag gen"><span class="gen-spin"></span>生成中</span>'+(r.retries>0?` <span class="rpt-tag gen">已自动重试 ${r.retries}/3</span>`:''):'';
+    const failTag=isFail?' <span class="rpt-tag fail">生成失败</span> <span class="rpt-tag gen">已自动重试 3/3</span>':'';
+    const org=r.org||'—';
+    const ownerStr=dprRole==='admin'?`<span class="dot"></span><span>归属：${r.owner||CUR_USER_NAME}</span>`:'';
+    const chips=isGen
+      ?`<span class="rpt-desc">AI 正在对 ${r.count.toLocaleString()} 条双体系运行数据进行综合分析…</span>`
+      :(isFail
+        ?`<span class="rpt-desc">AI 分析任务失败：自动重试 3 次仍未成功，请点击「重新发起」重新提交任务</span>`
+        :`<span class="rpt-desc">${r.desc}</span>`);
+    const genBar=isGen?`<div class="gen-think">
+      <div class="gen-steps">
+        <span class="gen-step cur" ><span class="gen-step-txt">排队中</span></span>
+        <span class="gen-step"><span class="gen-step-arrow">→</span><span class="gen-step-txt">AI 分析</span></span>
+        <span class="gen-step"><span class="gen-step-arrow">→</span><span class="gen-step-txt">报告组装</span></span>
+      </div>
+      <div class="gen-thought"><span class="think-dot"><i></i><i></i><i></i></span><span class="gen-thought-txt">正在等待分析资源就绪，任务已进入生成队列</span></div>
+    </div>`:'';
+    return `<div class="rpt-card ${r.type}" data-drid="${r.id}" ${isGen?'data-gen="1"':''} ${isFail?'data-fail="1"':''} role="button" tabindex="0">
+      <div class="rpt-ico"><svg viewBox="0 0 24 24">${ico}</svg></div>
+      <div class="rpt-body">
+        <div class="rpt-title">${r.title}${tag}${genTag}${failTag}</div>
+        <div class="rpt-types">${chips}</div>
+        ${genBar}
+        <div class="rpt-meta">${(isGen||isFail)?'':`<span>${r.time}</span><span class="dot"></span>`}<span>${org}</span><span class="dot"></span><span>${r.range}</span><span class="dot"></span><span>运行数据 ${r.count.toLocaleString()} 条</span>${ownerStr}</div>
+      </div>
+      <div class="rpt-side">
+        ${isGen
+          ?'<span class="rpt-go" style="color:var(--text-tertiary)">AI 分析中…</span>'
+          :(isFail
+            ?`<button class="fb-btn" title="重新发起 AI 分析任务" onclick="dprRetry('${r.id}',event)">↻ 重新发起</button>`
+            :'<span class="rpt-go">查看详情 ›</span>')}
+      </div>
+    </div>`;
+  }).join('')+pagerHTML(dprPage,total,DPR_PAGE_SIZE);
+  bindPager(wrap,p=>{dprPage=p;renderDprList();});
+  wrap.querySelectorAll('.rpt-card').forEach(c=>{
+    const rid=c.dataset.drid;
+    const go=()=>showDprDetail(rid);
+    c.onclick=c.dataset.gen?()=>showToast('报告生成中（预计 5-10 分钟），完成后将通知您'):(c.dataset.fail?()=>showToast('任务生成失败，请点击右侧「重新发起」重新提交'):go);
+    c.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();c.onclick();}};
+  });
+}
+/* 发起分析：三阶段生成演示（Shift+点击 或 12% 随机失败，自动重试 3 次） */
+function dprStart(ev){
+  const r={id:'DPR-AI-'+(++dprSeq),type:'ai',status:'generating',retries:0,
+    title:'【中国中化】双重预防运行报告（生成中）',time:'',range:'2025-11-01 ~ 2025-11-30',count:1236,
+    desc:DPR_DESC,org:'中国中化',owner:CUR_USER_NAME,dur:12000};
+  r.forceFail=!!(ev&&ev.shiftKey)||Math.random()<0.12;
+  dprReports.unshift(r);
+  dprFilter='all';dprPage=1;
+  renderDprList();
+  dprRunGen(r);
+  showToast('已发起双重预防运行分析，任务进入生成队列');
+}
+function dprRetry(id,ev){
+  ev&&ev.stopPropagation();
+  const r=dprReports.find(x=>x.id===id);
+  if(!r)return;
+  r.status='generating';r.retries=0;r.forceFail=!!(ev&&ev.shiftKey)||Math.random()<0.12;r.dur=12000;
+  renderDprList();
+  dprRunGen(r);
+}
+function dprRunGen(r){
+  requestAnimationFrame(()=>{
+    const card=document.querySelector(`.rpt-card[data-drid="${r.id}"]`);
+    if(!card)return;
+    const steps=card.querySelectorAll('.gen-step');
+    const txt=card.querySelector('.gen-thought-txt');
+    const msgs=['正在等待分析资源就绪，任务已进入生成队列','FORUS 化工安全大模型正在分析双体系运行数据','正在组装运行报告结构与评价结论'];
+    const t0=Date.now(),dur=r.dur;
+    let si=0;
+    const timer=setInterval(()=>{
+      const el=Date.now()-t0;
+      if(el>=dur){
+        clearInterval(timer);
+        if(r.forceFail){
+          r.retries=(r.retries||0)+1;
+          if(r.retries<3){
+            r.dur=3000;
+            renderDprList();dprRunGen(r);
+          }else{
+            r.status='failed';
+            renderDprList();
+            showToast('运行报告分析任务失败，已通知消息中心');
+          }
+        }else{
+          r.status='ready';
+          r.time=(()=>{const d=new Date();const p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;})();
+          r.title=`【${r.org}】双重预防运行报告（2025年11月1日至2025年11月30日）`;
+          renderDprList();
+          showToast('双重预防运行报告生成完成');
+        }
+        return;
+      }
+      const idx=Math.min(2,Math.floor(el/(dur/3)));
+      if(idx!==si){si=idx;steps.forEach((s,i)=>s.classList.toggle('cur',i<=si));}
+      if(txt)txt.textContent=msgs[si];
+    },400);
+  });
+}
+function showDprDetail(id){
+  const r=dprReports.find(x=>x.id===id);
+  if(!r)return;
+  dprCurrent=id;
+  document.getElementById('dpr-list-view').hidden=true;
+  const dv=document.getElementById('dpr-detail-view');
+  dv.hidden=false;
+  document.getElementById('dpr-d-title').textContent=r.title;
+  document.getElementById('dpr-d-sub').textContent='风险分级管控 + 隐患排查治理 · 双体系综合运行评价';
+  document.getElementById('dpr-d-meta').innerHTML=`<span>生成时间 ${r.time}</span><span>所属单位 ${r.org}</span><span>报告周期 ${r.range}</span>`;
+  document.getElementById('dpr-d-count').innerHTML=r.count.toLocaleString()+'<span class="unit">条</span>';
+  document.getElementById('dpr-d-count-hint').textContent='排查任务、风险管控措施、隐患整改等运行记录';
+  const days=Math.round((new Date(r.range.split(' ~ ')[1])-new Date(r.range.split(' ~ ')[0]))/86400000)+1;
+  document.getElementById('dpr-d-days').innerHTML=days+'<span class="unit">天</span>';
+  document.getElementById('dpr-d-range').textContent=r.range;
+  document.getElementById('content').scrollTop=0;
+}
+function bindDprReport(){
+  renderDprList();
+  const role=document.getElementById('dpr-role');
+  role.addEventListener('change',()=>{dprRole=role.value;dprPage=1;renderDprList();});
+  document.querySelectorAll('[data-dfilter]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('[data-dfilter]').forEach(x=>x.classList.toggle('on',x===b));
+      renderDprList(b.dataset.dfilter);
+    });
+  });
+  document.getElementById('dpr-start-btn').addEventListener('click',dprStart);
+  document.getElementById('dpr-reset').addEventListener('click',()=>{
+    document.getElementById('dpr-from').value='';
+    document.getElementById('dpr-to').value='';
+    document.getElementById('dpr-org').value='';
+    dprPage=1;renderDprList();
+  });
+  const applyQ=()=>{dprPage=1;renderDprList();};
+  document.querySelector('#page-dpr-report .rpt-query').addEventListener('change',applyQ);
+  document.querySelectorAll('.rq-clear[data-target^="dpr-"]').forEach(b=>b.addEventListener('click',()=>{document.getElementById(b.dataset.target).value='';applyQ();}));
+  document.getElementById('dpr-back').onclick=()=>{
+    document.getElementById('dpr-detail-view').hidden=true;
+    document.getElementById('dpr-list-view').hidden=false;
+    renderDprList();
+  };
+  document.getElementById('dpr-back').onkeydown=e=>{if(e.key==='Enter'){document.getElementById('dpr-back').onclick();}};
+  const tip=()=>showToast('报告详情内容模板待接入，导出能力将随模板一并开放');
+  document.getElementById('dpr-d-excel').addEventListener('click',tip);
+  document.getElementById('dpr-d-export').addEventListener('click',tip);
+}
+
+function getPage(id){
+  if(pageCache[id])return pageCache[id];
+  const div=document.createElement('div');
+  div.className='page';div.id='page-'+id;
+  if(id==='hazard-report'){div.classList.add('report-page');div.innerHTML=reportHTML();}
+  else if(id==='dpr-report'){div.classList.add('report-page');div.innerHTML=dprHTML();}
+  else if(id==='hazard-list'){div.innerHTML=hazardListHTML();}
+  else if(id==='fb-dashboard'){div.innerHTML=fbDashboardHTML();}
+  else{
+    const title=PAGE_TITLES[id]||id;
+    div.innerHTML=`<div class="placeholder">
+      <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M3 9h18M8 4V2.5M16 4V2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      <div class="ph-title">${title}</div>
+      <div class="ph-sub">页面原型建设中，当前演示聚焦「隐患分析报告」</div>
+    </div>`;
+  }
+  document.getElementById('content').appendChild(div);
+  pageCache[id]=div;
+  if(id==='hazard-report'){bindReport();}
+  if(id==='dpr-report'){bindDprReport();}
+  if(id==='hazard-list'){bindHazardList();}
+  if(id==='fb-dashboard'){bindFbDashboard();}
+  return div;
+}
+
+function activatePage(id){
+  activePage=id;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  getPage(id).classList.add('active');
+  document.querySelectorAll('.menu-l2').forEach(m=>m.classList.toggle('active',m.dataset.page===id));
+  renderTabs();
+}
+
+function openPage(id,name){
+  if(!openTabs.find(t=>t.id===id))openTabs.push({id,name});
+  activatePage(id);
+}
+
+function closeTab(id){
+  const idx=openTabs.findIndex(t=>t.id===id);
+  if(idx<0||openTabs[idx].fixed)return;
+  openTabs.splice(idx,1);
+  if(activePage===id){const next=openTabs[Math.min(idx,openTabs.length-1)];activatePage(next.id);}
+  else renderTabs();
+}
+
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar'),main=document.getElementById('main');
+  const collapsed=sb.classList.toggle('collapsed');
+  main.classList.toggle('expanded',collapsed);
+  document.getElementById('collapse-text').textContent=collapsed?'展开菜单':'收起菜单';
+}
+
+/* ================= 报告原型 ================= */
+function pct(n){return Math.round(n*100)+'%';}
+const REPORTS=[
+  {id:'RPT-202512-M',type:'scheduled',title:'【中国昊华】隐患AI辅助分析报告（2025年1月1日至2025年12月31日）',time:'2025-12-01 00:00',range:'2025-01-01 ~ 2025-12-31',count:1605,desc:'基于全部隐患描述识别安全屏障失效模式',org:'中国昊华',owner:'李敏'},
+  {id:'RPT-202512-W48',type:'scheduled',title:'【蓝天氟材料】隐患AI辅助分析报告（2025年11月24日至2025年11月30日）',time:'2025-11-30 00:00',range:'2025-11-24 ~ 2025-11-30',count:412,desc:'本周新增隐患语义归类与风险洞察',org:'蓝天氟材料',owner:'张伟'},
+  {id:'RPT-202512-W47',type:'scheduled',title:'【中国昊华】隐患AI辅助分析报告（2025年11月17日至2025年11月23日）',time:'2025-11-23 00:00',range:'2025-11-17 ~ 2025-11-23',count:381,desc:'本周新增隐患语义归类与风险洞察',org:'中国昊华',owner:'张伟'},
+  {id:'RPT-202512-W46',type:'scheduled',title:'【中化蓝天】隐患AI辅助分析报告（2025年11月10日至2025年11月16日）',time:'2025-11-16 00:00',range:'2025-11-10 ~ 2025-11-16',count:365,desc:'本周新增隐患语义归类与风险洞察',org:'中化蓝天',owner:'王强'},
+  {id:'RPT-202511-M',type:'scheduled',title:'【中国昊华】隐患AI辅助分析报告（2025年11月1日至2025年11月30日）',time:'2025-12-01 00:00',range:'2025-11-01 ~ 2025-11-30',count:1532,desc:'上月隐患语义归类与趋势分析',org:'中国昊华',owner:'张伟'}
+];
+/* 用户角色：业务用户仅可查看自己名下的报告；管理用户（HSE 管理员）可查看全部报告内容 */
+const CUR_USER_NAME='张伟';
+let curRole='user';
+function roleVisibleReports(){return curRole==='admin'?getAllReports():getAllReports().filter(r=>(r.owner||CUR_USER_NAME)===CUR_USER_NAME);}
+let aiReports=[],currentReport=null,pendingAIReport=null,currentRFilter='all',currentFocusSet=null,currentRPage=1;const RPT_PAGE_SIZE=5;
+let rptFbState={};
+let rptFbTarget=null,rptFbFrom=null;
+/* 报告生成配置：每位用户仅能配置自身所需的报告，配置数据按登录用户隔离存储（原型中默认当前用户） */
+let rptConfig={period:'每周 + 每月',periods:['每周','每月'],org:'中国中化',types:['设备本体及附件缺陷','电气设备设施隐患','介质泄漏/密封点失效'],custom:null};
+let cfgTypeOptions=['设备本体及附件缺陷','物理安全防护设施缺失','电气设备设施隐患','介质泄漏/密封点失效','现场标识与信息识别','个体防护不足','人的不安全行为','现场环境与污染控制'];
+/* 默认通用隐患类型：系统内置候选，仅管理员可删除；每份报告最多可选择 15 种隐患类型 */
+const DEFAULT_TYPE_NAMES=cfgTypeOptions.slice();
+const MAX_RPT_TYPES=15;
+/* 自定义隐患类型的说明（名称→说明），新增类型时必填，用于 AI 分析时辅助理解该类型的分析口径 */
+const cfgTypeDesc={};
+/* 系统默认类型的说明（悬浮标签可见） */
+Object.assign(cfgTypeDesc,{
+  '设备本体及附件缺陷':'泵、压缩机、阀门等设备本体及附件发生故障、损坏或功能失效',
+  '物理安全防护设施缺失':'护栏、罩壳、防坠落等物理防护设施缺失、损坏或不符合规范要求',
+  '电气设备设施隐患':'电气线路、配电设施、防爆电气等存在老化、破损、接地不良等问题',
+  '介质泄漏/密封点失效':'法兰、阀门、机泵等密封点发生工艺介质泄漏或渗漏',
+  '现场标识与信息识别':'安全警示标识缺失、污损、错误，或信息展示不清晰难以识别',
+  '个体防护不足':'未按规定配备或正确佩戴防护服、呼吸器等个体防护用品',
+  '人的不安全行为':'违章操作、无证作业、监护人缺失等人员行为类问题',
+  '现场环境与污染控制':'现场跑冒滴漏、卫生脏乱、危废存放不规范等环境管理问题'
+});
+let cfgTypeSel=[];
+let rptCfgHistory=[{time:'2025-12-01 08:00',action:'initial',changes:[],period:'每周 + 每月',org:'中国中化',types:['设备本体及附件缺陷','电气设备设施隐患','介质泄漏/密封点失效']}];
+/* 历史已完成的 AI 辅助分析报告（供消息中心提醒与详情跳转演示） */
+aiReports.push(
+  {id:'AI-1013',type:'ai',status:'ready',title:'【中国中化】隐患AI辅助分析报告（2025年11月1日至2025年11月30日）',time:'2026-10-13 16:40',range:'2025-11-01 ~ 2025-11-30',count:2387,desc:'基于当前隐患清单，围绕所关注类型进行 AI 聚焦分析与风险洞察',focus:['设备本体及附件缺陷','电气设备设施隐患','介质泄漏/密封点失效'],timeDim:'2025-11',orgDim:'中国中化',owner:'张伟'},
+  {id:'AI-1012',type:'ai',status:'ready',title:'【中国中化】隐患AI辅助分析报告（2025年10月1日至2025年10月31日）',time:'2026-10-12 10:15',range:'2025-10-01 ~ 2025-10-31',count:1204,desc:'基于当前隐患清单，围绕所关注类型进行 AI 聚焦分析与风险洞察',focus:['现场标识与信息识别','个体防护不足','人的不安全行为'],timeDim:'2025-10',orgDim:'中国中化',owner:'张伟'},
+  /* 生成失败的报告（供失败提醒跳转定位与「重新发起」演示） */
+  {id:'AI-1011',type:'ai',status:'failed',title:'【中国中化】隐患AI辅助分析报告（2025年9月1日至2025年9月30日）',time:'2026-10-09 08:00',range:'2025-09-01 ~ 2025-09-30',count:1985,desc:'AI 分析任务失败：自动重试 3 次仍未成功',focus:['人的不安全行为','个体防护不足'],timeDim:'2025-09',orgDim:'中国中化',owner:'张伟'},
+  {id:'AI-1010',type:'ai',status:'failed',title:'【中国中化】隐患AI辅助分析报告（2025年8月1日至2025年8月31日）',time:'2026-09-01 08:00',range:'2025-08-01 ~ 2025-08-31',count:1763,desc:'AI 分析任务失败：自动重试 3 次仍未成功',focus:['设备本体及附件缺陷','介质泄漏/密封点失效'],timeDim:'2025-08',orgDim:'中国中化',owner:'张伟'}
+);
+/* 消息中心数据：消息标题与内容均按 AI 辅助分析报告生成提醒展示，点击消息跳转对应报告详情 */
+let notifications=[];let msgPage=1;const MSG_PAGE_SIZE=10;let msgSeq=0;
+function makeAIMsg(rid,time,focusN,count,read,rtitle){
+  return {id:'MSG-'+(++msgSeq),title:'AI 辅助分析报告生成提醒',content:'【AI 辅助分析报告】您发起的《'+(rtitle||'隐患AI辅助分析报告')+'》（聚焦 '+focusN+' 类隐患，共 '+count.toLocaleString()+' 条）已生成完成，请查看报告详情。',time:time,read:!!read,rid:rid};
+}
+notifications=[
+  {id:'MSG-'+(++msgSeq),title:'AI 辅助分析报告生成失败提醒',content:'【AI 辅助分析报告】您发起的《【中国中化】隐患AI辅助分析报告（2025年9月1日至2025年9月30日）》自动重试 3 次仍失败，请前往报告列表点击「重新发起」。',time:'2026-10-09 08:17',read:false,rid:'AI-1011',fail:true},
+  {id:'MSG-'+(++msgSeq),title:'AI 辅助分析报告生成失败提醒',content:'【AI 辅助分析报告】您发起的《【中国中化】隐患AI辅助分析报告（2025年9月1日至2025年9月30日）》自动重试 3 次仍失败，请前往报告列表点击「重新发起」。',time:'2026-09-08 15:42',read:true,rid:'AI-1011',fail:true},
+  {id:'MSG-'+(++msgSeq),title:'AI 辅助分析报告生成失败提醒',content:'【AI 辅助分析报告】您发起的《【中国中化】隐患AI辅助分析报告（2025年8月1日至2025年8月31日）》自动重试 3 次仍失败，请前往报告列表点击「重新发起」。',time:'2026-09-01 08:16',read:false,rid:'AI-1010',fail:true},
+  makeAIMsg('AI-1013','2026-10-13 16:40',3,2387,false,'【中国中化】隐患AI辅助分析报告（2025年11月1日至2025年11月30日）'),
+  makeAIMsg('AI-1012','2026-10-12 10:15',3,1204,false,'【中国中化】隐患AI辅助分析报告（2025年10月1日至2025年10月31日）'),
+  makeAIMsg('AI-1012','2026-10-11 18:02',3,1204,true,'【中国中化】隐患AI辅助分析报告（2025年10月1日至2025年10月31日）'),
+  makeAIMsg('AI-1013','2026-10-11 09:26',3,2387,true,'【中国中化】隐患AI辅助分析报告（2025年11月1日至2025年11月30日）'),
+  makeAIMsg('AI-1012','2026-10-10 15:47',3,1204,true,'【中国中化】隐患AI辅助分析报告（2025年10月1日至2025年10月31日）'),
+  makeAIMsg('AI-1013','2026-10-10 08:31',3,2387,true,'【中国中化】隐患AI辅助分析报告（2025年11月1日至2025年11月30日）'),
+  makeAIMsg('AI-1012','2026-10-09 20:12',3,1204,true,'【中国中化】隐患AI辅助分析报告（2025年10月1日至2025年10月31日）'),
+  makeAIMsg('AI-1013','2026-10-09 11:58',3,2387,true,'【中国中化】隐患AI辅助分析报告（2025年11月1日至2025年11月30日）'),
+  makeAIMsg('AI-1012','2026-10-08 17:23',3,1204,true,'【中国中化】隐患AI辅助分析报告（2025年10月1日至2025年10月31日）'),
+  makeAIMsg('AI-1013','2026-10-08 09:05',3,2387,true,'【中国中化】隐患AI辅助分析报告（2025年11月1日至2025年11月30日）'),
+  makeAIMsg('AI-1012','2026-10-07 14:49',3,1204,true,'【中国中化】隐患AI辅助分析报告（2025年10月1日至2025年10月31日）'),
+  makeAIMsg('AI-1013','2026-10-07 08:16',3,2387,true,'【中国中化】隐患AI辅助分析报告（2025年11月1日至2025年11月30日）')
+];
+function nowStr(){
+  const n=new Date(),pad=x=>String(x).padStart(2,'0');
+  return n.getFullYear()+'-'+pad(n.getMonth()+1)+'-'+pad(n.getDate())+' '+pad(n.getHours())+':'+pad(n.getMinutes());
+}
+function buildCfgChanges(oldC,newC){
+  const ch=[];
+  if(oldC.org!==newC.org)ch.push('所属单位：'+oldC.org+' → '+newC.org);
+  if(oldC.period!==newC.period)ch.push('生成周期：'+oldC.period+' → '+newC.period);
+  const added=newC.types.filter(t=>!oldC.types.includes(t));
+  const removed=oldC.types.filter(t=>!newC.types.includes(t));
+  if(added.length)ch.push('关注类型新增：'+added.join('、'));
+  if(removed.length)ch.push('关注类型移除：'+removed.join('、'));
+  return ch;
+}
+function renderHistory(){
+  const wrap=document.getElementById('rpt-history-list');
+  if(!wrap)return;
+  const cnt=document.getElementById('rpt-history-count');
+  if(cnt)cnt.textContent=rptCfgHistory.length;
+  if(!rptCfgHistory.length){wrap.innerHTML='<div class="his-empty">暂无修订记录</div>';return;}
+  const rows=rptCfgHistory.map((h,i)=>`
+    <tr>
+      <td class="his-idx">${i+1}</td>
+      <td><span class="his-badge ${h.action==='initial'?'initial':'rev'}">${h.action==='initial'?'初始配置':'修订'}</span></td>
+      <td class="his-time">${h.time}</td>
+      <td class="his-changes">${h.action==='initial'?'完成初始配置':(h.changes.length?h.changes.join('；'):'<span style="color:var(--text-tertiary)">无内容变更</span>')}</td>
+      <td>${h.period} 生成<span class="his-snap">所属单位：${h.org||'—'}；关注 ${h.types.length} 个类型：${h.types.join('、')}</span></td>
+    </tr>`).join('');
+  wrap.innerHTML=`
+    <table class="his-table">
+      <thead><tr><th style="width:48px">序号</th><th style="width:84px">类型</th><th style="width:130px">修订时间</th><th>修订内容</th><th style="width:220px">配置结果</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+function openHistoryModal(){
+  renderHistory();
+  const m=document.getElementById('rpt-history-modal');
+  m.hidden=false;requestAnimationFrame(()=>m.classList.add('show'));
+}
+function closeHistoryModal(){const m=document.getElementById('rpt-history-modal');m.classList.remove('show');setTimeout(()=>{m.hidden=true;},220);}
+function reportHTML(){
+  return `
+  <section id="rpt-list-view" class="rpt-list-view">
+    <div class="rpt-head-row">
+      <div class="rpt-list-head">
+        <h1>隐患分析报告</h1>
+        <div class="sub" id="rpt-list-sub">查看您名下的报告：按您的生成配置产生的周期报告 + 您发起的 AI 辅助分析报告</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-shrink:0;align-items:center">
+        <select id="rpt-role" class="fi-select" style="appearance:auto;padding-right:10px" aria-label="切换用户角色视角">
+          <option value="user">业务用户视角（仅我的报告）</option>
+          <option value="admin">管理用户视角（查看全部报告）</option>
+        </select>
+        <button class="btn-rpt-cfg" id="rpt-history-btn" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>修订记录</button>
+        <button class="btn-rpt-cfg" id="rpt-cfg-btn" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.7"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.11-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.56-1.11 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34h.08A1.7 1.7 0 0 0 10 3.09V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87v.08A1.7 1.7 0 0 0 20.91 10H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1z" stroke="currentColor" stroke-width="1.4"/></svg>报告生成配置</button>
+      </div>
+    </div>
+    <div class="rpt-cfg-summary" id="rpt-cfg-summary" aria-live="polite"></div>
+    <div class="rpt-query" role="search" aria-label="报告查询">
+      <div class="rq-field"><label for="rq-from">生成时间</label><input type="date" id="rq-from" value="2025-11-01"></div>
+      <span class="rq-sep">至</span>
+      <div class="rq-field"><label for="rq-to">&nbsp;</label><input type="date" id="rq-to" value="2025-12-31"></div>
+      <div class="rq-field"><label for="rq-org">所属单位</label><span class="rq-input-wrap"><input type="text" id="rq-org" list="rq-org-list" placeholder="输入单位名称，支持模糊" style="width:170px"><button type="button" class="rq-clear" data-target="rq-org" title="清除所选单位" aria-label="清除所属单位输入"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="currentColor"/><path d="M9 9l6 6M15 9l-6 6" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></button></span><datalist id="rq-org-list"><option value="中国昊华"></option><option value="蓝天氟材料"></option><option value="中化蓝天"></option><option value="中化新材料"></option><option value="中化环境"></option><option value="中化装备"></option></datalist></div>
+      <div class="rq-field"><label for="rq-type">隐患类型</label><span class="rq-input-wrap"><input type="text" id="rq-type" list="rq-type-list" placeholder="输入类型名称，支持模糊" style="width:190px"><button type="button" class="rq-clear" data-target="rq-type" title="清除所选类型" aria-label="清除隐患类型输入"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="currentColor"/><path d="M9 9l6 6M15 9l-6 6" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></button></span><datalist id="rq-type-list"></datalist></div>
+      <div class="rq-field" id="rq-owner-field" style="display:none"><label for="rq-owner">归属人</label><span class="rq-input-wrap"><input type="text" id="rq-owner" list="rq-owner-list" placeholder="输入归属人姓名，支持模糊" style="width:150px"><button type="button" class="rq-clear" data-target="rq-owner" title="清除归属人" aria-label="清除归属人输入"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="currentColor"/><path d="M9 9l6 6M15 9l-6 6" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></button></span><datalist id="rq-owner-list"><option value="张伟"></option><option value="李敏"></option><option value="王强"></option></datalist></div>
+      <span class="rq-spacer"></span>
+      <button class="rq-btn primary" id="rq-go">查询</button>
+      <button class="rq-btn" id="rq-reset">重置</button>
+    </div>
+    <div class="rpt-filter-tabs" role="tablist" aria-label="报告类型筛选">
+      <button class="on" data-rfilter="all" role="tab" aria-selected="true">全部</button>
+      <button data-rfilter="scheduled" role="tab" aria-selected="false">周期定时报告</button>
+      <button data-rfilter="ai" role="tab" aria-selected="false">AI 辅助分析报告</button>
+    </div>
+    <div id="rpt-list"></div>
+  </section>
+  <section id="rpt-detail-view" class="rpt-detail-view" hidden>
+    <span class="rpt-back" id="rpt-back" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>返回报告列表</span>
+    <div id="rpt-focus-bar-wrap"></div>
+    <header class="report-header" role="banner">
+      <div class="top">
+        <div>
+          <h1 id="rpt-d-title">隐患分析报告</h1>
+          <div class="subtitle" id="rpt-d-sub"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0">
+          <div class="header-badges" id="rpt-d-badges"></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="btn-rpt-cfg" id="rpt-d-excel" title="下载当前报告覆盖的原始隐患数据清单（Excel）" onclick="exportHazardExcel(event)"><svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"><path d="M4 3h16v18H4zM4 9h16M9 9v12M4 15h16" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>下载原始数据</button>
+            <button class="btn-rpt-cfg" id="rpt-d-export" title="以 Word 文档导出当前报告" onclick="exportReportWord()"><svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"><path d="M12 3v12M7 10l5 5 5-5M4 21h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>导出报告（Word）</button>
+          </div>
+        </div>
+      </div>
+      <div class="meta" id="rpt-d-meta"></div>
+    </header>
+    <section class="metrics" aria-label="报告统计概览">
+      <div class="metric"><div class="label">隐患总数</div><div class="value" id="rpt-d-count">0<span class="unit">条</span></div><div class="hint" id="rpt-d-count-hint"></div></div>
+      <div class="metric accent"><div class="label">隐患类型</div><div class="value">12<span class="unit">类</span></div><div class="hint">主语义单标签归类</div></div>
+      <div class="metric warn"><div class="label">反馈热点维度</div><div class="value" id="rpt-d-weak">设备本体及附件缺陷</div><div class="hint" id="rpt-d-weak-hint">484 条 · 占比 30.2%</div></div>
+      <div class="metric danger"><div class="label">累计反馈</div><div class="value"><span id="total-fb">42</span><span class="unit">条</span></div><div class="hint" id="total-hint">覆盖 12 个隐患类型</div></div>
+    </section>
+    <nav class="tabs" role="tablist" aria-label="报告视图切换">
+      <button class="tab" role="tab" aria-selected="true" data-rview="detail">报告详情<span class="count">12 类</span></button>
+      <button class="tab" role="tab" aria-selected="false" data-rview="board">反馈聚合看板<span class="count" id="board-tab-count">42 条</span></button>
+    </nav>
+    <section id="view-detail" class="view" role="tabpanel"><div id="cards"></div></section>
+    <section id="view-board" class="view" role="tabpanel" hidden><div class="board" id="board"></div></section>
+  </section>`;
+}
+
+function renderCards(focusSet){
+  console.log('[renderCards] start, focusSet=',focusSet,'TYPES.len=',TYPES&&TYPES.length);
+  const wrap=document.getElementById('cards');
+  if(!wrap){console.error('[renderCards] #cards NOT FOUND');return;}
+  if(!TYPES||!TYPES.length){wrap.innerHTML='<div style="padding:24px;color:#A32D2D;background:#FCEBEB;border:1px solid #E24B4A;border-radius:8px">TYPES 数据为空，无法渲染卡片</div>';return;}
+  try{
+    const list=(focusSet&&focusSet.size)?TYPES.filter(t=>focusSet.has(t.name)):TYPES;
+    wrap.innerHTML=list.map(t=>{
+    const codeHash=[...t.code].reduce((s,c)=>s+c.charCodeAt(0),0);
+    const examples=t.examples.slice(0,5).map((e,i)=>`<li>${i+1}. ${e}<span class="ex-org">${ORGS[(codeHash+i)%ORGS.length]}</span></li>`).join('');
+    const risks=(t.risks||[]).map(r=>`<li>${r}</li>`).join('');
+    const advice=(t.advice||[]).map(a=>`<li>${a}</li>`).join('');
+    const fbHot=`<span class="fb-stat">本维度累计反馈 <span class="hot">${t.fb} 条</span></span>`;
+    return `
+    <article class="type-card${(focusSet&&focusSet.has(t.name))?' focused':''}" id="card-${t.code}" data-open="false" data-submitted="false">
+      <div class="card-head" onclick="toggleCard('${t.code}')" role="button" tabindex="0" aria-expanded="false" aria-controls="body-${t.code}">
+        <div class="left">
+          <span class="type-no">${t.no}</span>
+          <div>
+            <div class="card-title">${t.name}</div>
+            <div class="card-sub">${t.count} 条<span class="sep">·</span>占比 ${t.ratio}<span class="sep">·</span>${t.risk}</div>
+          </div>
+        </div>
+        <div class="right">${fbHot}
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <div class="card-body" id="body-${t.code}">
+        <div class="examples"><div class="ti">真实隐患示例</div><ul>${examples}</ul></div>
+        <div class="ana-blocks">
+          <div class="ana-block risks"><div class="ti"><span class="dot" style="background:#D97706"></span>典型风险</div><ul>${risks}</ul></div>
+          <div class="ana-block advice"><div class="ti"><span class="dot" style="background:#2E7D32"></span>治理建议</div><ul>${advice}</ul></div>
+        </div>
+        <div class="feedback-bar">
+          <div class="fb-row">
+            <span class="default-controls" style="display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <button class="fb-btn like" aria-pressed="false" onclick="setFeedback('${t.code}','like',event)">
+                <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M7 11v8H4a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h3zM7 11l4-7a2 2 0 0 1 2 1.5L12 8h5a2 2 0 0 1 2 2.3l-1.2 6A2 2 0 0 1 15.8 18H7" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>点赞</button>
+              <button class="fb-btn dislike" aria-pressed="false" onclick="setFeedback('${t.code}','dislike',event)">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" style="transform:rotate(180deg)"><path d="M7 11v8H4a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h3zM7 11l4-7a2 2 0 0 1 2 1.5L12 8h5a2 2 0 0 1 2 2.3l-1.2 6A2 2 0 0 1 15.8 18H7" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>点踩</button>
+              <button class="fb-btn" onclick="openFeedback('${t.code}','comment',event)">意见反馈</button>
+            </span>
+            <span class="fb-done"><svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>已提交反馈 · 感谢你的评价</span>
+          </div>
+          <div class="fb-expand" id="expand-${t.code}" data-show="false">
+            <div class="fb-tags" role="group" aria-label="反馈快速标签" id="fbtags-${t.code}">
+              ${TAGS.map(tg=>`<button class="tag" aria-pressed="false" onclick="toggleTag('${t.code}','${tg}',this)">${tg}</button>`).join('')}
             </div>
             <div class="ra-target-msg" id="raTargetMsg">
               <div class="ra-ms-row"><span class="ra-tlabel">隐患处置节点</span><div class="ra-multisel" data-ms="role" data-ph="请选择隐患处置节点"></div></div>
