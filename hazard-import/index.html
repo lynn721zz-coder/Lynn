@@ -326,7 +326,6 @@
           <div class="step-ico" data-page-node-id="qykAmT786u9f58JDbww98k">1</div>
           <div class="step-c" data-page-node-id="QprDXO9Q6uIrmHFerVSuyT">
             <div class="step-t" data-page-node-id="kXU8Aq3odRDIVbLWvKTNaB">下载导入模板</div>
-            <div class="step-d" data-page-node-id="xiyaPXbKZJ2zGwD0lTFVqE">请先下载导入模板，并按模板中的填写说明录入问题数据（含各下拉枚举与级联字段）。</div>
             <div class="dl-row" data-page-node-id="eJUPMmyEQ8cLCe6UblJgYb">
               <a class="btn small" href="人工巡查问题导入模板.xlsx" download="人工巡查问题导入模板.xlsx" onclick="tplDownloaded()" data-page-node-id="0qoi1T40ygWsWwMaPH3K6f"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>下载导入模板</a>
               <span class="tpl-chip" id="tplChip" data-page-node-id="7CmFxk62expZeQamqo1Aw3"><svg style="color:#00B42A" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <span class="fn" data-page-node-id="F4beHC4RYgVTkuvVq3qUHB">人工巡查问题导入模板.xlsx</span> 已下载</span>
@@ -353,21 +352,20 @@
       <!-- 后台执行中视图（不展示进度条加载） -->
       <div class="m-progress" id="importProgress">
         <div class="pg-head"><span class="spin"></span><span class="pg-title">导入任务执行中</span></div>
-        <div class="pg-desc">文件已提交，正在进行数据校验、去重比对与写入。<br>可关闭弹窗收起至后台，任务会继续执行；完成后将自动弹出导入结果。</div>
+        <div class="pg-desc">可关闭弹窗收起至后台，任务会继续执行，完成后自动弹出结果。</div>
       </div>
       <!-- 结果视图 -->
       <div class="m-result" id="importResult" data-page-node-id="a53livJDtsddGWDlaAco22">
-        <div class="res-banner ok"><span class="big"><svg style="color:#00B42A" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span id="resTitle">导入任务已完成：成功 5 条，失败 1 条</span></div>
+        <div class="res-banner ok"><span class="big"><svg style="color:#00B42A" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span id="resTitle">导入完成</span></div>
         <div class="res-stats">
-          <div class="res-stat add"><b id="rsNew">3</b><span>新增数据</span></div>
-          <div class="res-stat upd"><b id="rsUpdate">2</b><span>更新数据（重复数据已更新，未重复新增）</span></div>
-          <div class="res-stat fail"><b id="rsFail">1</b><span>校验失败</span></div>
+          <div class="res-stat add"><b id="rsNew">3</b><span>新增</span></div>
+          <div class="res-stat upd"><b id="rsUpdate">2</b><span>更新</span></div>
+          <div class="res-stat fail"><b id="rsFail">1</b><span>失败</span></div>
         </div>
-        <div class="res-sub">本次导入已在后台执行完成，以下为校验结果。</div>
         <div class="res-actions" id="resActions">
           <a class="btn-dl" href="导入错误报告-示例.xlsx" download="导入错误报告-示例.xlsx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>下载错误报告</a>
           <a class="btn-dl ghost" href="人工巡查问题导入模板.xlsx" download="人工巡查问题导入模板.xlsx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>下载导入模板</a>
-          <span class="res-hint">仅包含失败记录：错误行红色标注 + 首列「校验结果/错误原因」，修正后可重新上传</span>
+          <span class="res-hint">错误报告仅含失败记录，修正后可重新上传</span>
         </div>
       </div>
     </div>
@@ -525,7 +523,6 @@ function renderResult(){
   var ok = 6 - demoFail;
   var updated = Math.min(demoUpdate, ok);
   var added = ok - updated;
-  document.getElementById("resTitle").textContent = "导入任务已完成：成功 " + ok + " 条，失败 " + demoFail + " 条";
   document.getElementById("rsNew").textContent = added;
   document.getElementById("rsUpdate").textContent = updated;
   document.getElementById("rsFail").textContent = demoFail;
