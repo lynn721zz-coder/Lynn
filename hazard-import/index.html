@@ -158,6 +158,28 @@
   .res-detail .rd-r { padding:8px 12px; border-top:1px solid #F2F3F5; font-size:12px; color:#86909C; display:flex; gap:10px; }
   .res-detail .rd-r .no { color:#F53F3F; }
 
+  /* ===== 后台执行 / 进度 ===== */
+  .m-progress { display:none; padding:6px 2px 2px; }
+  .pg-head { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .spin { width:18px; height:18px; border:2px solid #E8F3FF; border-top-color:#1668DC; border-radius:50%; animation:spin .8s linear infinite; flex-shrink:0; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .pg-title { font-size:14px; font-weight:600; color:#1D2129; }
+  .pg-desc { color:#86909C; font-size:12px; line-height:1.8; margin-bottom:16px; }
+  .pg-bar { height:6px; background:#F2F3F5; border-radius:3px; overflow:hidden; }
+  .pg-bar > i { display:block; height:100%; width:0; background:#1668DC; border-radius:3px; transition:width .6s ease; }
+  .pg-meta { display:flex; justify-content:space-between; margin-top:8px; font-size:12px; color:#86909C; }
+  .pg-steps { display:flex; gap:6px; margin-top:16px; }
+  .pg-step { flex:1; text-align:center; font-size:12px; color:#C9CDD4; border-top:2px solid #E5E6EB; padding-top:8px; transition:all .3s; }
+  .pg-step.on { color:#1668DC; border-top-color:#1668DC; }
+  .pg-step.done { color:#00B42A; border-top-color:#00B42A; }
+  .bg-chip { position:fixed; right:24px; bottom:112px; display:none; align-items:center; gap:9px; height:40px; padding:0 14px; border-radius:20px; background:#fff; border:1px solid #E5E6EB; box-shadow:0 4px 16px rgba(29,33,41,.14); color:#4E5969; font-size:12px; cursor:pointer; z-index:150; }
+  .bg-chip.show { display:flex; }
+  .bg-chip:hover { border-color:#1668DC; color:#1668DC; }
+  .bg-chip .spin { width:14px; height:14px; }
+  .bg-chip b { color:#1668DC; font-weight:500; }
+  .res-sub { color:#86909C; font-size:12px; margin:-4px 0 14px; }
+  .btn-dl.ghost { border-color:#C9CDD4; color:#4E5969; background:#fff; }
+  .btn-dl.ghost:hover { border-color:#1668DC; color:#1668DC; background:#F7FBFF; }
   /* ===== 回到顶部 ===== */
   .to-top { position:fixed; right:28px; bottom:56px; width:44px; height:44px; border-radius:50%; background:#1668DC; color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; cursor:pointer; box-shadow:0 4px 12px rgba(22,104,220,.35); z-index:50; line-height:1.2; text-align:center; }
   .to-top:hover { background:#3C7FE2; }
@@ -326,12 +348,27 @@
           </div>
         </div>
       </div>
+      <!-- 后台执行中视图 -->
+      <div class="m-progress" id="importProgress">
+        <div class="pg-head"><span class="spin"></span><span class="pg-title">导入任务执行中</span></div>
+        <div class="pg-desc">文件已提交，正在进行数据校验、去重比对与写入。可关闭弹窗收起至后台，任务会继续执行；完成后将自动弹出导入结果。</div>
+        <div class="pg-bar"><i id="pgBar"></i></div>
+        <div class="pg-meta"><span id="pgStage">正在解析文件…</span><span id="pgPct">0%</span></div>
+        <div class="pg-steps" id="pgSteps">
+          <div class="pg-step on">解析文件</div>
+          <div class="pg-step">数据校验</div>
+          <div class="pg-step">去重比对</div>
+          <div class="pg-step">写入系统</div>
+        </div>
+      </div>
       <!-- 结果视图 -->
       <div class="m-result" id="importResult" data-page-node-id="a53livJDtsddGWDlaAco22">
-        <div class="res-banner ok" data-page-node-id="OlTjvgrKmafBSUubBhA8lM"><span class="big" data-page-node-id="lGaWMtWp6gzt2BcoJpNJ7u">✅</span>导入完成：成功 5 条，失败 1 条</div>
-        <div class="res-actions" data-page-node-id="0m5jlPeSiu3XxLPhmJZzxq">
-          <a class="btn-dl" href="导入错误报告-示例.xlsx" download="导入错误报告-示例.xlsx" data-page-node-id="uPbzxIuFAthlANWfnkKvST"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="vshQ6zThPQDchbRHnySJtJ"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" data-page-node-id="wTPVfDvyhGhw8YURQfX0uC"></path><polyline points="7 10 12 15 17 10" data-page-node-id="ZheSs05DmsedvYRF47ooPm"></polyline><line x1="12" y1="15" x2="12" y2="3" data-page-node-id="KSLlLfSKW9zAhAHS1v1WJa"></line></svg>下载错误报告</a>
-          <span class="res-hint" data-page-node-id="5nCM4TVHCjnQqxnQXBD9b5">仅包含失败记录：错误行红色标注 + 首列「校验结果/错误原因」，修正后可重新上传</span>
+        <div class="res-banner ok"><span class="big">✅</span><span id="resTitle">导入任务已完成：成功 5 条，失败 1 条</span></div>
+        <div class="res-sub">本次导入已在后台执行完成，以下为校验结果。</div>
+        <div class="res-actions" id="resActions">
+          <a class="btn-dl" href="导入错误报告-示例.xlsx" download="导入错误报告-示例.xlsx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>下载错误报告</a>
+          <a class="btn-dl ghost" href="人工巡查问题导入模板.xlsx" download="人工巡查问题导入模板.xlsx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>下载导入模板</a>
+          <span class="res-hint">仅包含失败记录：错误行红色标注 + 首列「校验结果/错误原因」，修正后可重新上传</span>
         </div>
       </div>
     </div>
@@ -343,6 +380,7 @@
 </div>
 
 
+<div class="bg-chip" id="bgChip" onclick="openImport()"><span class="spin"></span><span>导入任务后台执行中</span><b>查看进度 ›</b></div>
 <div class="toast" id="toast" data-page-node-id="cUKLKALyOEwXEZDw9UAFe0"></div>
 
 <script>
@@ -390,14 +428,50 @@ document.getElementById("foldBtn").addEventListener("click", function(){
   this.innerHTML = folded ? '展开 <span style="font-size:10px;">▾</span>' : '隐藏 <span style="font-size:10px;">▴</span>';
 });
 
-/* ===== 导入弹窗 ===== */
+/* ===== 导入弹窗（后台执行模式） ===== */
 var mask = document.getElementById("importMask");
 var fileInput = document.getElementById("fileInput");
 var upZone = document.getElementById("upZone");
 var tplReady = false, fileReady = false;
+var bgRunning = false, bgTimer = null, bgStage = 0;
+var STAGES = ["正在解析文件…", "正在进行数据校验…", "正在比对重复数据…", "正在写入系统…"];
+var demoFail = new URLSearchParams(location.search).get("fail") === "0" ? 0 : 1;
 
-function openImport(){ mask.classList.add("show"); resetImport(); }
-function closeImport(){ mask.classList.remove("show"); }
+/* 三个视图：upload 上传 / progress 后台执行中 / result 结果 */
+function showView(v){
+  document.getElementById("importSteps").style.display     = v === "upload"   ? "block" : "none";
+  document.getElementById("importProgress").style.display = v === "progress" ? "block" : "none";
+  document.getElementById("importResult").style.display   = v === "result"   ? "block" : "none";
+  var foot = document.getElementById("mFoot");
+  if(v === "upload"){
+    foot.innerHTML = '<button class="btn" onclick="closeImport()">取消</button>' +
+      '<button class="btn primary" id="doImportBtn" '+(fileReady && !bgRunning ? "" : "disabled")+' onclick="doImport()">开始导入</button>';
+  } else if(v === "progress"){
+    foot.innerHTML = '<button class="btn" onclick="closeImport()">收起至后台</button>' +
+      '<button class="btn primary" disabled>导入中，请稍候</button>';
+  } else {
+    foot.innerHTML = '<button class="btn" onclick="resetImport()">继续导入</button>' +
+      '<button class="btn primary" onclick="closeImport()">完成</button>';
+  }
+}
+
+function openImport(){
+  mask.classList.add("show");
+  if(bgRunning){
+    document.getElementById("bgChip").classList.remove("show");
+    showView("progress");
+  } else {
+    resetImport();
+  }
+}
+/* 导入中关闭弹窗：任务不中断，收起至后台并给出提示 */
+function closeImport(){
+  mask.classList.remove("show");
+  if(bgRunning){
+    document.getElementById("bgChip").classList.add("show");
+    toast("导入任务后台执行中");
+  }
+}
 mask.addEventListener("click", function(e){ if(e.target === mask) closeImport(); });
 
 function tplDownloaded(){ tplReady = true; document.getElementById("tplChip").classList.add("show"); document.getElementById("step1").classList.add("done"); }
@@ -408,6 +482,7 @@ fileInput.addEventListener("change", function(){ if(fileInput.files[0]) setFile(
 upZone.addEventListener("drop", function(e){ var f = e.dataTransfer.files[0]; if(f) setFile(f); });
 
 function setFile(f){
+  if(bgRunning){ toast("已有导入任务在后台执行，请等待完成后再上传"); return; }
   if(!/\.(xlsx|xls)$/i.test(f.name)){ toast("仅支持 .xlsx / .xls 格式文件"); return; }
   if(f.size > 20*1024*1024){ toast("文件大小不能超过 20MB"); return; }
   fileReady = true;
@@ -416,36 +491,11 @@ function setFile(f){
   document.getElementById("fileName").textContent = f.name;
   document.getElementById("fileSize").textContent = "(" + (f.size/1024).toFixed(1) + " KB)";
   document.getElementById("fileRow").classList.add("show");
-  document.getElementById("doImportBtn").disabled = false;
+  var b = document.getElementById("doImportBtn"); if(b) b.disabled = false;
   document.getElementById("step2").classList.add("done");
 }
 function clearFile(e){
   e.stopPropagation();
-  fileReady = false; fileInput.value = "";
-  upZone.classList.remove("has");
-  upZone.querySelector(".hint").innerHTML = '将文件拖到此处，或 <b>点击上传</b>';
-  document.getElementById("fileRow").classList.remove("show");
-  document.getElementById("doImportBtn").disabled = true;
-  document.getElementById("step2").classList.remove("done");
-}
-function doImport(){
-  var btn = document.getElementById("doImportBtn");
-  btn.disabled = true; btn.textContent = "导入中...";
-  setTimeout(function(){
-    document.getElementById("importSteps").style.display = "none";
-    document.getElementById("importResult").style.display = "block";
-    document.getElementById("mFoot").innerHTML =
-      '<button class="btn" onclick="resetImport()">继续导入</button>' +
-      '<button class="btn primary" onclick="closeImport()">完成</button>';
-  }, 900);
-}
-function resetImport(){
-  document.getElementById("importSteps").style.display = "block";
-  document.getElementById("importResult").style.display = "none";
-  document.getElementById("mFoot").innerHTML =
-    '<button class="btn" onclick="closeImport()">取消</button>' +
-    '<button class="btn primary" id="doImportBtn" '+(fileReady?"":"disabled")+' onclick="doImport()">开始导入</button>';
-  if(!tplReady){ document.getElementById("tplChip").classList.remove("show"); document.getElementById("step1").classList.remove("done"); }
   clearFileProxy();
 }
 function clearFileProxy(){
@@ -453,9 +503,52 @@ function clearFileProxy(){
   upZone.classList.remove("has");
   upZone.querySelector(".hint").innerHTML = '将文件拖到此处，或 <b>点击上传</b>';
   document.getElementById("fileRow").classList.remove("show");
-  var b = document.getElementById("doImportBtn");
-  if(b) b.disabled = true;
+  var b = document.getElementById("doImportBtn"); if(b) b.disabled = true;
   document.getElementById("step2").classList.remove("done");
+}
+
+/* 开始导入 → 切进度视图，任务在后台按阶段推进 */
+function doImport(){
+  if(!fileReady || bgRunning) return;
+  bgRunning = true; bgStage = 0;
+  showView("progress");
+  updateProgress();
+  bgTimer = setInterval(function(){
+    bgStage++;
+    if(bgStage < STAGES.length){ updateProgress(); return; }
+    clearInterval(bgTimer); bgTimer = null;
+    finishImport();
+  }, 900);
+}
+function updateProgress(){
+  var i = Math.min(bgStage, STAGES.length - 1);
+  var pct = Math.round((bgStage + 1) / STAGES.length * 100);
+  document.getElementById("pgBar").style.width = pct + "%";
+  document.getElementById("pgPct").textContent = pct + "%";
+  document.getElementById("pgStage").textContent = STAGES[i];
+  document.querySelectorAll("#pgSteps .pg-step").forEach(function(n, idx){
+    n.classList.toggle("on", idx === i);
+    n.classList.toggle("done", idx < i);
+  });
+}
+/* 后台任务完成 → 自动弹出结果弹窗 */
+function finishImport(){
+  bgRunning = false;
+  document.getElementById("bgChip").classList.remove("show");
+  renderResult();
+  showView("result");
+  mask.classList.add("show");
+}
+function renderResult(){
+  var ok = 6 - demoFail;
+  document.getElementById("resTitle").textContent = "导入任务已完成：成功 " + ok + " 条，失败 " + demoFail + " 条";
+  document.getElementById("resActions").style.display = demoFail > 0 ? "flex" : "none";
+}
+function resetImport(){
+  if(bgRunning) return;
+  showView("upload");
+  if(!tplReady){ document.getElementById("tplChip").classList.remove("show"); document.getElementById("step1").classList.remove("done"); }
+  clearFileProxy();
 }
 
 /* ===== 轻提示 ===== */
