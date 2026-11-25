@@ -1314,25 +1314,18 @@
 
   /* ================= 我的隐患治理列表 ================= */
   var HZ_MINE = [
-    { level: '重大事故隐患', desc: '异常转隐患',           time: '2026-10-13 20:28:04', dept: 'X-test', person: '胡伟玲-01', extra: '员工自查｜健康/综合管理', stamp: '待审批',   cls: 'purple' },
-    { level: '一般B级隐患', desc: '作业监督检查上报的隐患', time: '2026-10-13 20:22:29', dept: 'X-test', person: '胡伟玲-01', extra: '员工自查｜健康/综合管理', stamp: '待接收',   cls: 'teal' },
-    { level: '一般B级隐患', desc: '二级待审批的隐患-或签',   time: '2026-10-13 20:15:47', dept: 'X-test', person: '胡伟玲-01', extra: '员工自查｜健康/综合管理', stamp: '待审批',   cls: 'purple' },
-    { level: '一般A级隐患', desc: '巡检发现反应釜法兰泄漏',  time: '2026-10-12 09:41:12', dept: 'X-test', person: '胡伟玲-01', extra: '专项排查｜设备/工艺管理', stamp: '待整改',   cls: 'orange' },
-    { level: '一般B级隐患', desc: '平台护栏腐蚀松动',       time: '2026-10-11 16:20:35', dept: 'X-test', person: '胡伟玲-01', extra: '日常排查｜设备/综合管理', stamp: '待整改',   cls: 'orange' },
-    { level: '一般B级隐患', desc: '安全阀校验超期未检',      time: '2026-10-11 10:05:22', dept: 'X-test', person: '胡伟玲-01', extra: '专项排查｜设备/综合管理', stamp: '待验收',   cls: 'blue' },
+    { level: '重大事故隐患', desc: '异常转隐患',            time: '2026-10-13 20:28:04', dept: 'X-test', person: '胡伟玲-01', extra: '员工自查｜健康/综合管理', stamp: '待审批',     cls: 'purple' },
+    { level: '一般B级隐患', desc: '作业监督检查上报的隐患', time: '2026-10-13 20:22:29', dept: 'X-test', person: '胡伟玲-01', extra: '员工自查｜健康/综合管理', stamp: '待接收',     cls: 'teal' },
+    { level: '一般A级隐患', desc: '巡检发现反应釜法兰泄漏',  time: '2026-10-12 09:41:12', dept: 'X-test', person: '胡伟玲-01', extra: '专项排查｜设备/工艺管理', stamp: '待整改',     cls: 'orange' },
+    { level: '一般B级隐患', desc: '安全阀校验超期未检',      time: '2026-10-11 10:05:22', dept: 'X-test', person: '胡伟玲-01', extra: '专项排查｜设备/综合管理', stamp: '待验收',     cls: 'blue' },
     { level: '重大事故隐患', desc: '液氨储罐液位计失灵',     time: '2026-10-10 14:33:08', dept: 'X-test', person: '胡伟玲-01', extra: '员工自查｜健康/综合管理', stamp: '待延期审批', cls: 'purple' },
-    { level: '一般C级隐患', desc: '消防通道被杂物占用',      time: '2026-10-10 08:57:46', dept: 'X-test', person: '胡伟玲-01', extra: '日常排查｜健康/综合管理', stamp: '待接收',   cls: 'teal' },
-    { level: '一般B级隐患', desc: '配电室绝缘垫破损',       time: '2026-10-09 17:12:50', dept: 'X-test', person: '胡伟玲-01', extra: '日常排查｜设备/综合管理', stamp: '待整改',   cls: 'orange' },
-    { level: '一般B级隐患', desc: '仓库应急照明故障',       time: '2026-10-09 11:26:14', dept: 'X-test', person: '胡伟玲-01', extra: '员工自查｜健康/综合管理', stamp: '待验收',   cls: 'blue' },
-    { level: '一般C级隐患', desc: '现场安全标识牌褪色',      time: '2026-10-08 15:40:02', dept: 'X-test', person: '胡伟玲-01', extra: '日常排查｜健康/综合管理', stamp: '' },
-    { level: '一般B级隐患', desc: '危化品仓库警示标识缺失',   time: '2026-10-07 09:22:18', dept: 'X-test', person: '胡伟玲-01', extra: '日常排查｜健康/综合管理', stamp: '已完成',   cls: 'green' }
+    { level: '一般B级隐患', desc: '危化品仓库警示标识缺失',   time: '2026-10-07 09:22:18', dept: 'X-test', person: '胡伟玲-01', extra: '日常排查｜健康/综合管理', stamp: '已完成',     cls: 'green' }
   ];
   var HZ_REL = [
     { level: '一般B级隐患', desc: '装置区照明线路老化',      time: '2026-10-13 18:02:11', dept: 'X-test', person: '陈伟霆',   extra: '日常排查｜设备/综合管理', stamp: '待整改',   cls: 'orange' },
-    { level: '一般C级隐患', desc: '检修平台踢脚板松动',      time: '2026-10-12 11:36:40', dept: 'X-test', person: '杨威01',   extra: '专项排查｜设备/工艺管理', stamp: '待接收',   cls: 'teal' },
+    { level: '一般B级隐患', desc: '检修平台踢脚板松动',      time: '2026-10-12 11:36:40', dept: 'X-test', person: '杨威01',   extra: '专项排查｜设备/工艺管理', stamp: '待接收',   cls: 'teal' },
     { level: '一般A级隐患', desc: '危废库通风机故障',       time: '2026-10-11 09:15:28', dept: 'X-test', person: '魏芝',     extra: '员工自查｜健康/综合管理', stamp: '待验收',   cls: 'blue' },
-    { level: '一般B级隐患', desc: '管道保温层局部破损',      time: '2026-10-10 16:48:03', dept: 'X-test', person: '陈伟霆',   extra: '日常排查｜设备/综合管理', stamp: '待审批',   cls: 'purple' },
-    { level: '一般C级隐患', desc: '应急集合点标识缺失',      time: '2026-10-09 13:20:55', dept: 'X-test', person: '杨威01',   extra: '日常排查｜健康/综合管理', stamp: '' }
+    { level: '一般B级隐患', desc: '管道保温层局部破损',      time: '2026-10-10 16:48:03', dept: 'X-test', person: '陈伟霆',   extra: '日常排查｜设备/综合管理', stamp: '待审批',   cls: 'purple' }
   ];
   var curLTab = 'mine';
   var listCards = document.getElementById('listCards');
