@@ -227,6 +227,7 @@
   .hz-stamp.teal   { color: #14b8a6; }
   .hz-stamp.orange { color: #fa8c16; }
   .hz-stamp.blue   { color: #2b6de8; }
+  .hz-stamp.green  { color: #00b42a; }
   .hz-empty { text-align: center; color: #8d99ad; font-size: 13px; padding: 46px 0 30px; }
 
   /* ===== 隐患登记（新增页）===== */
@@ -509,6 +510,28 @@
   .card-title {
     padding: 14px 16px 4px; font-size: 16px; font-weight: 600; color: #222;
   }
+  /* 奖励分配（已完成状态展示，移动端规范：汇总指标卡 + 卡片式明细列表） */
+  .dr-summary { display:flex; margin:10px 16px 6px; }
+  .dr-sum { flex:1; min-width:0; }
+  .dr-sum + .dr-sum { margin-left:16px; }
+  .dr-sum-val { font-size:24px; font-weight:600; line-height:1.2; color:var(--text-main); font-variant-numeric: tabular-nums; }
+  .dr-sum.amount .dr-sum-val { color:var(--primary); }
+  .dr-sum-label { margin-top:4px; font-size:12px; color:var(--text-gray); }
+  .dr-list { margin:4px 16px 0; }
+  .dr-item {
+    display:flex; align-items:center; min-height:52px;
+    padding:10px 12px; background:#f7f9fc; border-radius:8px;
+  }
+  .dr-item + .dr-item { margin-top:8px; }
+  .dr-idx {
+    width:22px; height:22px; flex-shrink:0; margin-right:10px; border-radius:50%;
+    background:var(--primary-light); color:var(--primary);
+    font-size:12px; font-weight:600; display:flex; align-items:center; justify-content:center;
+  }
+  .dr-person { display:block; flex:1; min-width:0; }
+  .dr-name { display:block; font-size:14px; color:var(--text-main); line-height:1.4; }
+  .dr-dept { display:block; margin-top:1px; font-size:12px; color:var(--text-gray); line-height:1.5; }
+  .dr-money { margin-left:10px; font-size:15px; font-weight:600; color:var(--text-main); font-variant-numeric: tabular-nums; white-space:nowrap; }
   .urge-item { padding: 12px 16px; border-bottom: 1px solid #f5f5f5; }
   .urge-item:last-child { border-bottom: none; }
   .urge-line { color: var(--text-sub); font-size: 13px; line-height: 1.7; }
@@ -1015,13 +1038,23 @@
       </div>
     </div>
 
+    <!-- 奖励分配情况（仅已完成状态显示） -->
+    <div class="card-block" id="detailRewardBlock" style="display:none;" data-page-node-id="detailRewardBlock">
+      <div class="card-title">奖励分配情况</div>
+      <div class="dr-summary">
+        <div class="dr-sum amount"><div class="dr-sum-val" id="drAmount">—</div><div class="dr-sum-label">奖励金额</div></div>
+        <div class="dr-sum"><div class="dr-sum-val" id="drCount">—</div><div class="dr-sum-label">奖励人次</div></div>
+      </div>
+      <div class="dr-list" id="drRows"></div>
+    </div>
+
     <!-- 催办记录 -->
     <div class="card-block" data-page-node-id="jBt4lGaPlfTbI34PRyY0sk">
       <div class="card-title" data-page-node-id="BgYrRk4rjoGYkn1CyaHpu6">催办记录</div>
       <div id="detailUrgeList" data-page-node-id="0D9jIbfrpkP1squcvOFdru"><div class="urge-item"><div class="urge-line"><b>2025-12-31 21:30</b>　由 HSE专员 熊辰婷 发起催办</div><div class="urge-line">催办对象：<b>杨威01（操作工 · 有机车间2）【整改责任人】</b></div><div class="urge-line">通知方式：系统消息、APP推送</div><div class="urge-line">催办内容：您有一条隐患尚未完成整改，请尽快登录系统处理并反馈整改结果。</div><div class="urge-reply-box"><b>杨威01（被催办人）</b>（2025-12-31 21:48）回复：收到，正在采购配件，预计 9 月 25 日前完成整改并提交核查。</div><div class="urge-actions"><span class="link-btn" data-reply="0">回复催办</span></div></div></div>
     </div>
 
-    <div class="bottom-bar" data-page-node-id="UlbglODxFFJNQhA31OaoTK">
+    <div class="bottom-bar" id="detailBottomBar" data-page-node-id="UlbglODxFFJNQhA31OaoTK">
       <button class="btn btn-primary" id="btnUrge" type="button" data-page-node-id="wBht5PW8bu1UHedmhTZHSN">催办</button>
     </div>
   </div>
@@ -1235,6 +1268,33 @@
   var viewFlow = document.getElementById('viewFlow');
   var viewMsg = document.getElementById('viewMsg');
   var detailFrom = 'list'; // 详情页返回目标：list=列表页 / msg=消息中心
+  /* 详情页按状态控制：已完成→展示奖励分配、隐藏催办入口；其余状态反之 */
+  var REWARD_DETAIL = { amount: '¥800.50', count: '2', rows: [
+    { person: '张明（质量效能部）', money: '500.00' },
+    { person: '李华（质量效能部）', money: '300.50' }
+  ]};
+  function renderDetailReward(status){
+    var done = status === '已完成';
+    var bar = document.getElementById('detailBottomBar');
+    if (bar) bar.style.display = done ? 'none' : '';
+    var block = document.getElementById('detailRewardBlock');
+    if (!block) return;
+    block.style.display = done ? '' : 'none';
+    if (!done) return;
+    document.getElementById('drAmount').textContent = REWARD_DETAIL.amount;
+    document.getElementById('drCount').textContent = REWARD_DETAIL.count;
+    document.getElementById('drRows').innerHTML = REWARD_DETAIL.rows.map(function(r, i){
+      var m = /^(.+?)（(.+?)）$/.exec(r.person);
+      var name = m ? m[1] : r.person;
+      var dept = m ? m[2] : '';
+      return '<div class="dr-item">'
+        + '<span class="dr-idx">' + (i + 1) + '</span>'
+        + '<span class="dr-person"><span class="dr-name">' + esc(name) + '</span>'
+        + (dept ? '<span class="dr-dept">' + esc(dept) + '</span>' : '') + '</span>'
+        + '<span class="dr-money">¥' + esc(r.money) + '</span>'
+        + '</div>';
+    }).join('');
+  }
   var flowFrom = 'detail'; // 流程页返回目标：detail=详情页 / accept=验收页
   function showView(v){
     viewPortal.classList.toggle('active', v === 'portal');
@@ -1264,7 +1324,8 @@
     { level: '一般C级隐患', desc: '消防通道被杂物占用',      time: '2026-10-10 08:57:46', dept: 'X-test', person: '胡伟玲-01', extra: '日常排查｜健康/综合管理', stamp: '待接收',   cls: 'teal' },
     { level: '一般B级隐患', desc: '配电室绝缘垫破损',       time: '2026-10-09 17:12:50', dept: 'X-test', person: '胡伟玲-01', extra: '日常排查｜设备/综合管理', stamp: '待整改',   cls: 'orange' },
     { level: '一般B级隐患', desc: '仓库应急照明故障',       time: '2026-10-09 11:26:14', dept: 'X-test', person: '胡伟玲-01', extra: '员工自查｜健康/综合管理', stamp: '待验收',   cls: 'blue' },
-    { level: '一般C级隐患', desc: '现场安全标识牌褪色',      time: '2026-10-08 15:40:02', dept: 'X-test', person: '胡伟玲-01', extra: '日常排查｜健康/综合管理', stamp: '' }
+    { level: '一般C级隐患', desc: '现场安全标识牌褪色',      time: '2026-10-08 15:40:02', dept: 'X-test', person: '胡伟玲-01', extra: '日常排查｜健康/综合管理', stamp: '' },
+    { level: '一般B级隐患', desc: '危化品仓库警示标识缺失',   time: '2026-10-07 09:22:18', dept: 'X-test', person: '胡伟玲-01', extra: '日常排查｜健康/综合管理', stamp: '已完成',   cls: 'green' }
   ];
   var HZ_REL = [
     { level: '一般B级隐患', desc: '装置区照明线路老化',      time: '2026-10-13 18:02:11', dept: 'X-test', person: '陈伟霆',   extra: '日常排查｜设备/综合管理', stamp: '待整改',   cls: 'orange' },
@@ -1289,7 +1350,7 @@
       return;
     }
     listCards.innerHTML = list.map(function(it){
-      return '<div class="hz-card">'
+      return '<div class="hz-card" data-status="' + (it.stamp || '') + '">'
         + '<div class="hz-title">' + it.level + ' – ' + it.desc + '</div>'
         + '<div class="hz-time">' + it.time + '</div>'
         + '<div class="hz-meta"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"/></svg>'
@@ -1508,6 +1569,7 @@
     if (!card) return;
     detailFrom = 'list';
     var stamp = card.querySelector('.hz-stamp');
+    renderDetailReward(card.getAttribute('data-status') || '');
     if (stamp && stamp.textContent.trim() === '待验收') {
       rwResetAccept(); /* 每次进入验收页重置奖励分配表单 */
       showView('accept'); /* 待验收数据进入验收填报页 */
@@ -1610,6 +1672,7 @@
     rwAllocList.innerHTML = '';
     rwAmt.value = '';
     rwCnt.value = '';
+    rwAddRow(); /* 默认一条空白分配，其下可继续添加 */
     rwRecompute();
   }
   /* 提交验收：校验分配完整性（对齐 PC 端） */
@@ -1774,6 +1837,7 @@
       renderMsg();
       updateBellDot();
       detailFrom = 'msg';
+      renderDetailReward('');
       showView('detail');
       showToast('已为您定位到催办的隐患详情');
     } else {
